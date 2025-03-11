@@ -7,8 +7,6 @@ public class Money
 {
     public Money(int rubles, int kopeks) : this(false, rubles, kopeks)
     {
-        //TODO
-        // надо ли тут тоже ограничения
     }
 
     public Money(bool isNegative, int rubles, int kopeks)
@@ -38,23 +36,24 @@ public class Money
 
     public static Money operator +(Money first, Money second)
     {
-        int firstTotalKopeks = GetTotalKopeks(first);
+        var firstTotalKopeks = GetTotalKopeks(first);
         var secondTotalKopeks = GetTotalKopeks(second);
+
+        bool isNegative = first.IsNegative;
+        int sum;
 
         if (first.IsNegative == second.IsNegative)
         {
-            var sum = firstTotalKopeks + secondTotalKopeks;
-
-            return new Money(first.IsNegative, sum / 100, sum % 100);
+            sum = firstTotalKopeks + secondTotalKopeks;
         }
         else
         {
-            var sum = Math.Abs(firstTotalKopeks - secondTotalKopeks);
+            sum = Math.Abs(firstTotalKopeks - secondTotalKopeks);
 
-            bool isNegative = firstTotalKopeks < secondTotalKopeks ? !first.IsNegative : first.IsNegative;
-
-            return new Money(isNegative, sum / 100, sum % 100);
+            isNegative = firstTotalKopeks < secondTotalKopeks ? !first.IsNegative : first.IsNegative;
         }
+
+        return new Money(isNegative, sum / 100, sum % 100);
     }
 
     public static Money operator -(Money first, Money second)
@@ -74,8 +73,8 @@ public class Money
         if (first.IsNegative != second.IsNegative)
             return !first.IsNegative;
 
-        int firstTotalKopeks = GetTotalKopeks(first);
-        int secondTotalKopeks = GetTotalKopeks(second);
+        var firstTotalKopeks = GetTotalKopeks(first);
+        var secondTotalKopeks = GetTotalKopeks(second);
 
         return first.IsNegative ? firstTotalKopeks < secondTotalKopeks : firstTotalKopeks > secondTotalKopeks;
     }
@@ -85,8 +84,8 @@ public class Money
         if (first.IsNegative != second.IsNegative)
             return !first.IsNegative;
 
-        int firstTotalKopeks = GetTotalKopeks(first);
-        int secondTotalKopeks = GetTotalKopeks(second);
+        var firstTotalKopeks = GetTotalKopeks(first);
+        var secondTotalKopeks = GetTotalKopeks(second);
 
         return first.IsNegative ? firstTotalKopeks <= secondTotalKopeks : firstTotalKopeks >= secondTotalKopeks;
     }
@@ -96,8 +95,8 @@ public class Money
         if (first.IsNegative != second.IsNegative)
             return first.IsNegative;
 
-        int firstTotalKopeks = GetTotalKopeks(first);
-        int secondTotalKopeks = GetTotalKopeks(second);
+        var firstTotalKopeks = GetTotalKopeks(first);
+        var secondTotalKopeks = GetTotalKopeks(second);
 
         return first.IsNegative ? firstTotalKopeks > secondTotalKopeks : firstTotalKopeks < secondTotalKopeks;
     }
@@ -107,24 +106,27 @@ public class Money
         if (first.IsNegative != second.IsNegative)
             return first.IsNegative;
 
-        int firstTotalKopeks = GetTotalKopeks(first);
-        int secondTotalKopeks = GetTotalKopeks(second);
+        var firstTotalKopeks = GetTotalKopeks(first);
+        var secondTotalKopeks = GetTotalKopeks(second);
 
         return first.IsNegative ? firstTotalKopeks >= secondTotalKopeks : firstTotalKopeks <= secondTotalKopeks;
     }
 
     public override string ToString() => $"({IsNegative}, {Rubles}, {Kopeks})";
 
-    //TODO
-    // посмотреть нужно ли создавать отдельный метод
     public override bool Equals(object? obj)
     {
-        return Equals(obj as Money);
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        return Equals((Money)obj);
     }
 
     private bool Equals(Money other)
     {
-        return other != null && IsNegative == other.IsNegative && Rubles == other.Rubles && Kopeks == other.Kopeks;
+        return IsNegative == other.IsNegative && Rubles == other.Rubles && Kopeks == other.Kopeks;
     }
 
     public override int GetHashCode()

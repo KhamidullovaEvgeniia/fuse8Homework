@@ -7,6 +7,8 @@ public class Money
 {
     public Money(int rubles, int kopeks) : this(false, rubles, kopeks)
     {
+        //TODO
+        // надо ли тут тоже ограничения
     }
 
     public Money(bool isNegative, int rubles, int kopeks)

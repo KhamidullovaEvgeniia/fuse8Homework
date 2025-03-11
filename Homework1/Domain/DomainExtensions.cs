@@ -16,7 +16,7 @@ public static class DomainExtensions
 		if (items.IsNullOrEmpty())
 			return string.Empty;
 		
-		StringBuilder stringBuilder = new StringBuilder();
+		StringBuilder stringBuilder = new StringBuilder(items.Count() * 2);
 		foreach (var item in items)
 		{
 			if (stringBuilder.Length > 0)

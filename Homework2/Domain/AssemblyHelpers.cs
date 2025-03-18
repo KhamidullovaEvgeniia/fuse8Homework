@@ -12,7 +12,7 @@ public static class AssemblyHelpers
     /// Информация о промежуточных базовых классах не возвращается
     /// </remarks>
     /// <returns>Список типов с количеством наследников</returns>
-    private static readonly string Namespace = "Fuse8.BackendInternship.Domain";
+    private const string Namespace = "Fuse8.BackendInternship.Domain";
 
     public static (string BaseTypeName, int InheritorCount)[] GetTypesWithInheritors()
     {

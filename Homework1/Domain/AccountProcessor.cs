@@ -8,25 +8,33 @@ public class AccountProcessor
         var lastOperation = bankAccount.LastOperation;
         var previousOperation = bankAccount.PreviousOperation;
 
-        var lastOperationResult0 = CalculatePerformedOperation(in lastOperation);
-        var previousOperationResult0 = CalculatePerformedOperation(in previousOperation);
-        var lastOperationResult1 = CalculatePerformedOperation1(in lastOperation);
-        var previousOperationResult1 = CalculatePerformedOperation1(in previousOperation);
-        var lastOperationResult2 = CalculatePerformedOperation2(in lastOperation);
-        var previousOperationResult2 = CalculatePerformedOperation2(in previousOperation);
-        var lastOperationResult3 = CalculatePerformedOperation3(in lastOperation);
-        var previousOperationResult3 = CalculatePerformedOperation3(in previousOperation);
-        var bankAccountResult = CalculatePerformedOperation3(in bankAccount);
-
-        return lastOperationResult0 * 3
-               + previousOperationResult0 * 3
-               + lastOperationResult1 * 3
-               + previousOperationResult1 * 3
-               + lastOperationResult2 * 3
-               + previousOperationResult2 * 3
-               + lastOperationResult3 * 3
-               + previousOperationResult3 * 3
-               + bankAccountResult * 3;
+        return CalculatePerformedOperation(in lastOperation)
+               + CalculatePerformedOperation(in previousOperation)
+               + CalculatePerformedOperation1(in lastOperation)
+               + CalculatePerformedOperation1(in previousOperation)
+               + CalculatePerformedOperation2(in lastOperation)
+               + CalculatePerformedOperation2(in previousOperation)
+               + CalculatePerformedOperation3(in lastOperation)
+               + CalculatePerformedOperation3(in previousOperation)
+               + CalculatePerformedOperation3(in bankAccount)
+               + CalculatePerformedOperation(in lastOperation)
+               + CalculatePerformedOperation(in previousOperation)
+               + CalculatePerformedOperation1(in lastOperation)
+               + CalculatePerformedOperation1(in previousOperation)
+               + CalculatePerformedOperation2(in lastOperation)
+               + CalculatePerformedOperation2(in previousOperation)
+               + CalculatePerformedOperation3(in lastOperation)
+               + CalculatePerformedOperation3(in previousOperation)
+               + CalculatePerformedOperation3(in bankAccount)
+               + CalculatePerformedOperation(in lastOperation)
+               + CalculatePerformedOperation(in previousOperation)
+               + CalculatePerformedOperation1(in lastOperation)
+               + CalculatePerformedOperation1(in previousOperation)
+               + CalculatePerformedOperation2(in lastOperation)
+               + CalculatePerformedOperation2(in previousOperation)
+               + CalculatePerformedOperation3(in lastOperation)
+               + CalculatePerformedOperation3(in previousOperation)
+               + CalculatePerformedOperation3(in bankAccount);
     }
 
     private decimal CalculatePerformedOperation(in BankOperation bankOperation)

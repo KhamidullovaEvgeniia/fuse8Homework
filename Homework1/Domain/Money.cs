@@ -5,11 +5,12 @@
 /// </summary>
 public class Money : IComparable<Money>
 {
+    /// <summary>
+    /// Количество копеек в 1 рубле
+    /// </summary>
     private const int KopeksFactor = 100;
 
     private readonly long _totalKopeks;
-
-    //private IComparable<Money> comparableImplementation;
 
     public Money(int rubles, int kopeks) : this(false, rubles, kopeks)
     {
@@ -73,69 +74,28 @@ public class Money : IComparable<Money>
             return 1;
 
         return _totalKopeks.CompareTo(other._totalKopeks);
-
-    }
-    public static bool operator >(Money first, Money second)
-    {
-        return first._totalKopeks > second._totalKopeks;
     }
 
-    public static bool operator >=(Money first, Money second)
-    {
-        if (first.IsNegative != second.IsNegative)
-            return !first.IsNegative;
+    public static bool operator ==(Money? first, Money? second) => first?.CompareTo(second) == 0;
 
-        var firstTotalKopeks = GetTotalKopeks(first);
-        var secondTotalKopeks = GetTotalKopeks(second);
+    public static bool operator !=(Money? first, Money? second) => first?.CompareTo(second) != 0;
 
-        return first.IsNegative ? firstTotalKopeks <= secondTotalKopeks : firstTotalKopeks >= secondTotalKopeks;
-    }
+    public static bool operator >(Money? first, Money? second) => first?.CompareTo(second) > 0;
 
-    public static bool operator <(Money first, Money second)
-    {
-        if (first.IsNegative != second.IsNegative)
-            return first.IsNegative;
+    public static bool operator >=(Money? first, Money? second) => first?.CompareTo(second) >= 0;
 
-        var firstTotalKopeks = GetTotalKopeks(first);
-        var secondTotalKopeks = GetTotalKopeks(second);
+    public static bool operator <(Money? first, Money? second) => first?.CompareTo(second) < 0;
 
-        return first.IsNegative ? firstTotalKopeks > secondTotalKopeks : firstTotalKopeks < secondTotalKopeks;
-    }
+    public static bool operator <=(Money? first, Money? second) => first?.CompareTo(second) <= 0;
 
-    public static bool operator <=(Money first, Money second)
-    {
-        if (first.IsNegative != second.IsNegative)
-            return first.IsNegative;
+    public override bool Equals(object? obj) => obj is Money other && this.CompareTo(other) == 0;
 
-        var firstTotalKopeks = GetTotalKopeks(first);
-        var secondTotalKopeks = GetTotalKopeks(second);
-
-        return first.IsNegative ? firstTotalKopeks >= secondTotalKopeks : firstTotalKopeks <= secondTotalKopeks;
-    }
-
-    public override string ToString() => $"({IsNegative}, {Rubles}, {Kopeks})";
-
-    public override bool Equals(object? obj)
-    {
-        if (obj == null || GetType() != obj.GetType())
-        {
-            return false;
-        }
-
-        return Equals((Money)obj);
-    }
-
-    private bool Equals(Money other)
-    {
-        return IsNegative == other.IsNegative && Rubles == other.Rubles && Kopeks == other.Kopeks;
-    }
+    public override string ToString() => $"({(IsNegative ? '-' : string.Empty)}{Rubles},{Kopeks} \u20bd)";
 
     public override int GetHashCode()
     {
         return HashCode.Combine(IsNegative, Rubles, Kopeks);
     }
-
-    private static int GetTotalKopeks(Money money) => money.Rubles * 100 + money.Kopeks;
 
     private static Money CreateFromTotalKopeks(long totalKopeks)
     {

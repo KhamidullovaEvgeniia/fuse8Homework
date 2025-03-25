@@ -5,10 +5,10 @@ namespace Fuse8.BackendInternship.PublicApi.Responses;
 public class Quotas
 {
     [JsonPropertyName("month")]
-    public QuotaDetails Month { get; set; }
+    public QuotaDetails Month { get; set; } = new();
 
     [JsonPropertyName("grace")]
-    public QuotaDetails Grace { get; set; }
+    public QuotaDetails Grace { get; set; } = new();
 }
 
 public class QuotaDetails
@@ -29,5 +29,5 @@ public class QuotaResponse
     public long AccountId { get; set; }
 
     [JsonPropertyName("quotas")]
-    public Quotas Quotas { get; set; }
+    public Quotas Quotas { get; set; } = new();
 }

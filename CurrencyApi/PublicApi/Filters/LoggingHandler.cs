@@ -14,7 +14,6 @@ public class LoggingHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        // Заголовки запроса
         var requestHeaders = FormatHeaders(request.Headers);
         var requestContentHeaders = request.Content?.Headers != null ? FormatHeaders(request.Content.Headers) : "None";
         var requestBody = request.Content != null ? await request.Content.ReadAsStringAsync(cancellationToken) : "None";

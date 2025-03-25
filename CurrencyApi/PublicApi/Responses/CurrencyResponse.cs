@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Fuse8.BackendInternship.PublicApi.Responses;
 
@@ -13,7 +11,7 @@ public class Meta
 public class CurrencyInfo
 {
     [JsonPropertyName("code")]
-    public string Code { get; set; }
+    public string Code { get; set; } = string.Empty;
 
     [JsonPropertyName("value")]
     public decimal Value { get; set; }
@@ -22,8 +20,8 @@ public class CurrencyInfo
 public class CurrencyResponse
 {
     [JsonPropertyName("meta")]
-    public Meta Meta { get; set; }
+    public Meta Meta { get; set; } = new();
 
     [JsonPropertyName("data")]
-    public Dictionary<string, CurrencyInfo> Data { get; set; }
+    public Dictionary<string, CurrencyInfo> Data { get; set; } = new();
 }

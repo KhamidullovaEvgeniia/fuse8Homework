@@ -11,13 +11,13 @@ public class ApiSettings
     /// Валюта по умолчанию.
     /// </summary>
     [JsonPropertyName("defaultCurrency")]
-    public string DefaultCurrency { get; set; }
+    public string DefaultCurrency { get; set; } = string.Empty;
 
     /// <summary>
     /// Базовая валюта.
     /// </summary>
     [JsonPropertyName("baseCurrency")]
-    public string BaseCurrency { get; set; }
+    public string BaseCurrency { get; set; } = string.Empty;
 
     /// <summary>
     /// Лимит запросов к API.

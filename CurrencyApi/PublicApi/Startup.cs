@@ -63,6 +63,8 @@ public class Startup
                 (provider, client) =>
                 {
                     var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
+                    settings.Validate();
+
                     client.BaseAddress = new Uri(settings.BaseUrl);
                     client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
                 })

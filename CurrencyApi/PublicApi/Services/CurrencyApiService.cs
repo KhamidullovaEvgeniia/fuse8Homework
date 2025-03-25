@@ -31,20 +31,10 @@ public class CurrencyApiService : ICurrencyApiService
 
     public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode)
     {
-        await GetAndCheckRequestLimit();
         var url = $"v3/latest?currencies={currencyCode}&base_currency={_baseCurrency}";
 
-        var response = await _httpClient.GetAsync(url);
-
-        if (response.StatusCode == CurrencyNotFoundHttpStatusCode)
-            throw new CurrencyNotFoundException();
-
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<CurrencyResponse>(content);
-        if (result is null)
-        {
-            throw new NullReferenceException(message: "Deserialize CurrencyResponse is null");
-        }
+        var result = await FetchCurrencyDataAsync(url);
+        
 
         var currencyRate = new CurrencyRate()
         {
@@ -57,20 +47,10 @@ public class CurrencyApiService : ICurrencyApiService
 
     public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date)
     {
-        await GetAndCheckRequestLimit();
         string formattedDate = date.ToString("yyyy-MM-dd");
         var url = $"v3/historical?currencies={currencyCode}&date={formattedDate}&base_currency={_baseCurrency}";
 
-        var response = await _httpClient.GetAsync(url);
-
-        if (response.StatusCode == CurrencyNotFoundHttpStatusCode)
-            throw new CurrencyNotFoundException();
-
-        var content = await response.Content.ReadAsStringAsync();
-
-        var result = JsonSerializer.Deserialize<CurrencyResponse>(content);
-        if (result is null)
-            throw new NullReferenceException(message: "Deserialize CurrencyResponse is null");
+        var result = await FetchCurrencyDataAsync(url);
 
         var datedCurrencyRate = new DatedCurrencyRate()
         {
@@ -122,6 +102,26 @@ public class CurrencyApiService : ICurrencyApiService
         var result = JsonSerializer.Deserialize<QuotaResponse>(content);
         if (result is null)
             throw new NullReferenceException(message: "Deserialize QuotaResponse is null");
+
+        return result;
+    }
+    
+    private async Task<CurrencyResponse> FetchCurrencyDataAsync(string url)
+    {
+        await GetAndCheckRequestLimit();
+
+        var response = await _httpClient.GetAsync(url);
+
+        if (response.StatusCode == CurrencyNotFoundHttpStatusCode)
+            throw new CurrencyNotFoundException();
+        
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<CurrencyResponse>(content);
+
+        if (result is null)
+            throw new NullReferenceException("Deserialize CurrencyResponse is null");
 
         return result;
     }

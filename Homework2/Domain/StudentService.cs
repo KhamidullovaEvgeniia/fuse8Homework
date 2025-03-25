@@ -49,28 +49,20 @@ public class StudentService
     {
         // TODO: реализовать логику с использованием LINQ без создания дополнительных коллекций (HashSet и т.д.)
 
-        return students
-            .GroupJoin(
-                testTaskResults,
-                student => student.Id,
-                result => result.StudentId,
-                (student, results) => new { student, results })
-            .SelectMany(combined => combined.results.DefaultIfEmpty(), (combined, result) => new { combined.student, result })
-            .Join(
-                groups,
-                combined => combined.student.GroupId,
-                group => group.Id,
-                (combined, group) => new StudentFullInfoModel
-                {
-                    StudentId = combined.student.Id,
-                    FirstName = combined.student.FirstName,
-                    LastName = combined.student.LastName,
-                    TestTaskGradeSum = combined.result?.GradeSum,
-                    TestTaskPassedAt = combined.result?.PassedAt,
-                    GroupId = group.Id,
-                    GroupName = group.GroupName
-                })
-            .ToArray();
+        return (from student in students
+            join result in testTaskResults on student.Id equals result.StudentId into studentResults
+            from result in studentResults.DefaultIfEmpty()
+            join @group in groups on student.GroupId equals @group.Id
+            select new StudentFullInfoModel
+        {
+            StudentId = student.Id,
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            TestTaskGradeSum = result?.GradeSum,
+            TestTaskPassedAt = result?.PassedAt,
+            GroupId = @group.Id,
+            GroupName = @group.GroupName
+        }).ToArray();
     }
 
     /// <summary>
@@ -92,14 +84,12 @@ public class StudentService
 
         return students
             .Where(s => s.TestTaskGradeSum.HasValue)
-            .GroupBy(s => s.GroupName)
-            .ToDictionary(
-                x => x.Key,
-                x => x
+            .GroupBy(s => s.GroupId,
+                (_, studentInGroup) => studentInGroup
                     .OrderByDescending(p => p.TestTaskGradeSum)
                     .ThenBy(s => s.TestTaskPassedAt)
-                    .Select(n => $"{n.FirstName} {n.LastName}")
-                    .First());
+                    .First())
+            .ToDictionary(s => s.GroupName, s =>$"{s.FirstName} {s.LastName}");
     }
 
     /// <summary>
@@ -118,8 +108,8 @@ public class StudentService
         // TODO: реализовать логику с использованием LINQ без создания дополнительных коллекций (HashSet и т.д.)
 
         return studentsFromFirstGroup
-            .IntersectBy(studentsFromSecondGroup.Select(n => n.FirstName), n => n.FirstName)
-            .Select(n => $"{n.FirstName}")
+            .IntersectBy(studentsFromSecondGroup.Select(n => n.FirstName), n => n.FirstName, StringComparer.OrdinalIgnoreCase)
+            .Select(n => n.FirstName)
             .ToArray();
     }
 
@@ -138,7 +128,7 @@ public class StudentService
     {
         // TODO: реализовать логику. Из LINQ операторов можно использовать только "Select". Можно использовать дополнительные коллекции (HashSet и т.д.)
 
-        var uniqueStudentNames = new HashSet<string>();
+        var uniqueStudentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var student in studentsFromFirstGroup)
             uniqueStudentNames.Add(student.FirstName);

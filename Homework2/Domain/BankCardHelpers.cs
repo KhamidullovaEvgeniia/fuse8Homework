@@ -13,18 +13,30 @@ public static class BankCardHelpers
     {
         // ToDo: С помощью рефлексии получить номер карты без маски
 
-        if (card == null)
+        if (card is null)
             throw new ArgumentNullException(nameof(card));
 
+        const string NumberFieldName = "_number";
         var type = card.GetType();
-        var fieldInfo = type.GetField("_number", BindingFlags.NonPublic | BindingFlags.Instance);
+        var fieldInfo = type.GetField(NumberFieldName, BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (fieldInfo == null)
-            throw new ArgumentNullException(message: "Поле не должно быть пустым", paramName: nameof(fieldInfo));
+            throw new InvalidOperationException(
+                $"Не получилось достать номер без маски: в классе {nameof(BankCard)} нет поля '{NumberFieldName}'");
 
-        return fieldInfo.GetValue(card)?.ToString()
-               ?? throw new ArgumentNullException(
-                   message: "Значение не должно быть пустым",
-                   paramName: nameof(fieldInfo.GetValue));
+        var notMaskedNumberObj = fieldInfo.GetValue(card);
+        if (notMaskedNumberObj is null)
+        {
+            throw new InvalidOperationException(
+                $"Не получилось достать номер карты без маски: в  в классе {nameof(BankCard)} поле '{NumberFieldName}' = null");
+        }
+
+        if (notMaskedNumberObj is not string notMaskedNumber)
+        {
+            throw new InvalidOperationException(
+                $"Не получилось достать номер карты без маски: в классе {nameof(BankCard)} поле '{NumberFieldName}' имеет неправильный тип '{notMaskedNumberObj.GetType()}'");
+        }
+
+        return notMaskedNumber;
     }
 }

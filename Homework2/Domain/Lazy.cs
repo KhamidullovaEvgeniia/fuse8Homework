@@ -7,13 +7,13 @@ public class Lazy<TValue>
 {
     // ToDo: Реализовать ленивое получение значение при первом обращении к Value
 
-    private readonly Func<TValue> _func;
+    private readonly Func<TValue?> _func;
 
     private bool _isCreated;
 
     private TValue? _value;
 
-    public Lazy(Func<TValue> func)
+    public Lazy(Func<TValue?> func)
     {
         _func = func;
     }

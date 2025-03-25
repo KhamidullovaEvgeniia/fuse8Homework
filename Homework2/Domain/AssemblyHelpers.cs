@@ -12,36 +12,42 @@ public static class AssemblyHelpers
     /// Информация о промежуточных базовых классах не возвращается
     /// </remarks>
     /// <returns>Список типов с количеством наследников</returns>
-    private const string Namespace = "Fuse8.BackendInternship.Domain";
-
     public static (string BaseTypeName, int InheritorCount)[] GetTypesWithInheritors()
     {
+        // Получаем текущее пространство имен, в котором находится класс AssemblyHelpers
+        var currentNamespace = typeof(AssemblyHelpers).Namespace;
+
         // Получаем все классы из текущей Assembly
-        var assemblyClassTypes =
-            Assembly.GetAssembly(typeof(AssemblyHelpers)) !.DefinedTypes.Where(p => p.IsClass && p.Namespace == Namespace);
+        var assemblyClassTypes = Assembly.GetAssembly(typeof(AssemblyHelpers)) !.DefinedTypes.Where(p => p.IsClass && p.Namespace == currentNamespace);
 
         // ToDo: Добавить реализацию
 
-        var baseTypesWithInheritors = new Dictionary<Type, HashSet<Type>>();
+        // Создаем словарь для хранения базовых классов и количества их наследников
+        var baseTypesWithInheritors = new Dictionary<Type, int>();
         foreach (var type in assemblyClassTypes)
         {
+            // Проверка: если класс абстрактный, то его не нужно учитывать, так как он не может быть создавать экземпляр
             if (type.IsAbstract)
                 continue;
 
+            // Получение базового класса
             var baseClass = GetBaseType(type);
+
+            // Если у типа нет базового класса, пропускаем его
             if (baseClass == null)
                 continue;
 
-            if (baseClass.Namespace != Namespace)
+            // Проверка, что базовый класс находится в том же пространстве имён, что и AssemblyHelpers
+            if (baseClass.Namespace != currentNamespace)
                 continue;
 
-            if (baseTypesWithInheritors.ContainsKey(baseClass))
-                baseTypesWithInheritors[baseClass].Add(type);
-            else
-                baseTypesWithInheritors[baseClass] = new HashSet<Type> { type };
+            // Добавляем базовый класс в словарь, если его там нет, либо увеличиваем счётчик наследников
+            if (baseTypesWithInheritors.TryAdd(baseClass, 1) is false)
+                baseTypesWithInheritors[baseClass]++;
         }
 
-        return baseTypesWithInheritors.Select(kvp => (BaseTypeName: kvp.Key.Name, InheritorCount: kvp.Value.Count)).ToArray();
+        // Преобразуем словарь в массив кортежей, содержащих имя базового класса и количество его наследников
+        return baseTypesWithInheritors.Select(kvp => (BaseTypeName: kvp.Key.Name, InheritorCount: kvp.Value)).ToArray();
     }
 
     /// <summary>

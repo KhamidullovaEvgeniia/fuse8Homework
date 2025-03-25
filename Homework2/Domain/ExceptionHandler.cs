@@ -13,34 +13,30 @@ public static class ExceptionHandler
     {
         // ToDo: Реализовать обработку исключений
 
+        string? errorMessage = null;
         try
         {
             action();
-            return null;
         }
-        catch (NotValidKopekCountException ex)
+        catch (HttpRequestException httpRequestException) when (httpRequestException.StatusCode == HttpStatusCode.NotFound)
         {
-            return ex.Message;
+            errorMessage = "Ресурс не найден";
         }
-        catch (NegativeRubleCountException ex)
+        catch (HttpRequestException httpRequestException)
         {
-            return ex.Message;
+            errorMessage = httpRequestException.StatusCode.ToString();
         }
-        catch (MoneyException ex)
+        catch (MoneyException exception)
         {
-            return ex.Message;
+            errorMessage = exception.Message;
         }
-        catch (HttpRequestException ex)
-        {
-            if (ex.StatusCode is HttpStatusCode.NotFound)
-                return "Ресурс не найден";
 
-            return ex.StatusCode.ToString();
-        }
         catch (Exception)
         {
             return "Произошла непредвиденная ошибка";
         }
+
+        return errorMessage;
     }
 }
 

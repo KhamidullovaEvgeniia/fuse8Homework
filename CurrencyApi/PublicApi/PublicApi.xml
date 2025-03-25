@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PublicApi</name>
+    </assembly>
+    <members>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController">
+            <summary>
+            Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
+            </summary>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.#ctor(Fuse8.BackendInternship.PublicApi.Interfaces.ICurrencyApiService,Microsoft.Extensions.Options.IOptions{Fuse8.BackendInternship.PublicApi.Settings.CurrencySetting})">
+            <summary>
+            Конструктор контроллера.
+            </summary>
+            <param name="currencyApiService">Сервис для получения данных о валюте.</param>
+            <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyRateAsync">
+            <summary>
+            Получает текущий курс валюты по умолчанию.
+            </summary>
+            <returns>Текущий курс валюты.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс валюты.
+            </response>
+            <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String)">
+            <summary>
+            Получает текущий курс указанной валюты.
+            </summary>
+            <param name="defaultCurrency">Код валюты (например, "RUB").</param>
+            <returns>Текущий курс валюты.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс валюты.
+            </response>
+            <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateTime)">
+            <summary>
+            Получает курс указанной валюты на определенную дату.
+            </summary>
+            <param name="currencyCode">Код валюты (например, "RUB").</param>
+            <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+            <returns>Курс валюты на указанную дату.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс валюты.
+            </response>
+            <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckController">
+            <summary>
+            Методы для проверки работоспособности PublicApi
+            </summary>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckController.Check(System.Nullable{System.Boolean})">
+            <summary>
+            Проверить что API работает
+            </summary>
+            <param name="checkExternalApi">Необходимо проверить работоспособность внешнего API. Если FALSE или NULL - проверяется работоспособность только текущего API</param>
+            <response code="200">
+            Возвращает если удалось получить доступ к API
+            </response>
+            <response code="400">
+            Возвращает если удалось не удалось получить доступ к API
+            </response>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult">
+            <summary>
+            Результат проверки работоспособности API
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckedOn">
+            <summary>
+            Дата проверки
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.Status">
+            <summary>
+            Статус работоспособности API
+            </summary>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckStatus">
+            <summary>
+            Статус API
+            </summary>
+        </member>
+        <member name="F:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckStatus.Ok">
+            <summary>
+            API работает
+            </summary>
+        </member>
+        <member name="F:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckStatus.Failed">
+            <summary>
+            Ошибка в работе API
+            </summary>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController">
+            <summary>
+            Метод для получения текущих настроек API.
+            </summary>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController.#ctor(Fuse8.BackendInternship.PublicApi.Interfaces.ICurrencyApiService)">
+            <summary>
+            Конструктор контроллера.
+            </summary>
+            <param name="currencyApiService">Сервис для работы с API валют.</param>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController.GetSettingsAsync">
+            <summary>
+            Получает текущие настройки API.
+            </summary>
+            <returns>Настройки API.</returns>
+            <response code="200">Успешный запрос, возвращает настройки API.</response>
+            <response code="429">Превышен лимит запросов.</response>
+            <response code="500">Ошибка сервера.</response>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Models.ApiSettings">
+            <summary>
+            Настройки API.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.DefaultCurrency">
+            <summary>
+            Валюта по умолчанию.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.BaseCurrency">
+            <summary>
+            Базовая валюта.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.RequestLimit">
+            <summary>
+            Лимит запросов к API.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.RequestCount">
+            <summary>
+            Количество уже выполненных запросов.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.CurrencyRoundCount">
+            <summary>
+            Количество знаков после запятой для округления валюты.
+            </summary>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Models.CurrencyRate">
+            <summary>
+            Курс валюты.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.CurrencyRate.Code">
+            <summary>
+            Код валюты (например, "RUB").
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.CurrencyRate.Value">
+            <summary>
+            Значение курса валюты.
+            </summary>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate">
+            <summary>
+            Курс валюты с датой.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Date">
+            <summary>
+            Дата курса валюты в формате yyyy-MM-dd.
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Code">
+            <summary>
+            Код валюты (например, "RUB").
+            </summary>
+        </member>
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Value">
+            <summary>
+            Значение курса валюты.
+            </summary>
+        </member>
+    </members>
+</doc>

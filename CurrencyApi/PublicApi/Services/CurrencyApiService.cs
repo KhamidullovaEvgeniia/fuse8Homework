@@ -8,30 +8,24 @@ using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.Extensions.Options;
 
 namespace Fuse8.BackendInternship.PublicApi.Services;
-
+// TODO
 public class CurrencyApiService : ICurrencyApiService
 {
     private const HttpStatusCode CurrencyNotFoundHttpStatusCode = (HttpStatusCode)422;
 
     private readonly HttpClient _httpClient;
 
-    private readonly int _accuracy;
+    private readonly CurrencySetting _currencySetting;
 
-    private readonly string _baseCurrency;
-
-    private readonly string _currency;
-
-    public CurrencyApiService(HttpClient httpClient, IOptions<CurrencySetting> currencySetting)
+    public CurrencyApiService(HttpClient httpClient, IOptionsSnapshot<CurrencySetting> currencySetting)
     {
         _httpClient = httpClient;
-        _accuracy = currencySetting.Value.Accuracy;
-        _baseCurrency = currencySetting.Value.BaseCurrency;
-        _currency = currencySetting.Value.DefaultCurrency;
+        _currencySetting = currencySetting.Value;
     }
 
     public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode)
     {
-        var url = $"v3/latest?currencies={currencyCode}&base_currency={_baseCurrency}";
+        var url = $"v3/latest?currencies={currencyCode}&base_currency={_currencySetting.BaseCurrency}";
 
         var result = await FetchCurrencyDataAsync(url);
         
@@ -39,7 +33,7 @@ public class CurrencyApiService : ICurrencyApiService
         var currencyRate = new CurrencyRate()
         {
             Code = result.Data.First().Value.Code,
-            Value = Math.Round(result.Data.First().Value.Value, _accuracy)
+            Value = Math.Round(result.Data.First().Value.Value, _currencySetting.Accuracy)
         };
 
         return currencyRate;
@@ -48,7 +42,7 @@ public class CurrencyApiService : ICurrencyApiService
     public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date)
     {
         string formattedDate = date.ToString("yyyy-MM-dd");
-        var url = $"v3/historical?currencies={currencyCode}&date={formattedDate}&base_currency={_baseCurrency}";
+        var url = $"v3/historical?currencies={currencyCode}&date={formattedDate}&base_currency={_currencySetting.BaseCurrency}";
 
         var result = await FetchCurrencyDataAsync(url);
 
@@ -56,7 +50,7 @@ public class CurrencyApiService : ICurrencyApiService
         {
             Date = result.Meta.LastUpdatedAt.ToString("yyyy-MM-dd"),
             Code = result.Data.First().Value.Code,
-            Value = Math.Round(result.Data.First().Value.Value, _accuracy)
+            Value = Math.Round(result.Data.First().Value.Value, _currencySetting.Accuracy)
         };
 
         return datedCurrencyRate;
@@ -69,11 +63,11 @@ public class CurrencyApiService : ICurrencyApiService
 
         var settingsApi = new ApiSettings()
         {
-            DefaultCurrency = _currency,
-            BaseCurrency = _baseCurrency,
+            DefaultCurrency = _currencySetting.Currency,
+            BaseCurrency = _currencySetting.BaseCurrency,
             RequestLimit = result.Quotas.Month.Total,
             RequestCount = result.Quotas.Month.Used,
-            CurrencyRoundCount = _accuracy
+            CurrencyRoundCount = _currencySetting.Accuracy
         };
 
         return settingsApi;

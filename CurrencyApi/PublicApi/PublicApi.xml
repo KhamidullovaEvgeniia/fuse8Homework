@@ -38,7 +38,7 @@
             <summary>
             Получает текущий курс указанной валюты.
             </summary>
-            <param name="defaultCurrency">Код валюты (например, "RUB").</param>
+            <param name="currencyCode">Код валюты (например, "RUB").</param>
             <returns>Текущий курс валюты.</returns>
             <response code="200">
             Успешный запрос, возвращает курс валюты.

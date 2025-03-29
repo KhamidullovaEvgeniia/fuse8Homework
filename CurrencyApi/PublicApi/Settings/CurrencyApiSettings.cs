@@ -2,8 +2,8 @@
 
 public class CurrencyApiSettings
 {
-    public string BaseUrl { get; set; } = string.Empty;
-    public string ApiKey { get; set; } = string.Empty;
+    public required string BaseUrl { get; init; }
+    public required string ApiKey { get; init; }
     
     public void Validate()
     {

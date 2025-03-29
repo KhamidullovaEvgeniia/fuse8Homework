@@ -14,7 +14,7 @@ public class CurrencyController : ControllerBase
 {
     private readonly ICurrencyApiService _currencyApiService;
 
-    private readonly string _defaultcurrency;
+    private readonly string _currencyCode;
 
     /// <summary>
     /// Конструктор контроллера.
@@ -25,7 +25,7 @@ public class CurrencyController : ControllerBase
     {
         _currencyApiService = currencyApiService;
 
-        _defaultcurrency = currencySetting.Value.DefaultCurrency;
+        _currencyCode = currencySetting.Value.Currency;
     }
 
     /// <summary>
@@ -45,15 +45,20 @@ public class CurrencyController : ControllerBase
     /// Ошибка сервера.
     /// </response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    
     public async Task<CurrencyRate> GetCurrencyRateAsync()
     {
-        return await _currencyApiService.GetCurrencyRateAsync(_defaultcurrency);
+        return await _currencyApiService.GetCurrencyRateAsync(_currencyCode);
     }
 
     /// <summary>
     /// Получает текущий курс указанной валюты.
     /// </summary>
-    /// <param name="defaultCurrency">Код валюты (например, "RUB").</param>
+    /// <param name="currencyCode">Код валюты (например, "RUB").</param>
     /// <returns>Текущий курс валюты.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс валюты.
@@ -67,10 +72,14 @@ public class CurrencyController : ControllerBase
     /// <response code="500">
     /// Ошибка сервера.
     /// </response>
-    [HttpGet("{defaultCurrency}")]
-    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] string defaultCurrency)
+    [HttpGet("{currencyCode}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] string currencyCode)
     {
-        return await _currencyApiService.GetCurrencyRateAsync(defaultCurrency);
+        return await _currencyApiService.GetCurrencyRateAsync(currencyCode);
     }
 
     /// <summary>
@@ -92,6 +101,10 @@ public class CurrencyController : ControllerBase
     /// Ошибка сервера.
     /// </response>
     [HttpGet("{currencyCode}/{date:datetime}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync([FromRoute] string currencyCode, [FromRoute] DateTime date)
     {
         return await _currencyApiService.GetCurrencyDataWithRateAsync(currencyCode, date);

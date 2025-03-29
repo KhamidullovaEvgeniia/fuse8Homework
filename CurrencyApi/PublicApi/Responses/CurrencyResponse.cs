@@ -2,6 +2,7 @@
 
 namespace Fuse8.BackendInternship.PublicApi.Responses;
 
+// TODO: убрать мета
 public class Meta
 {
     [JsonPropertyName("last_updated_at")]

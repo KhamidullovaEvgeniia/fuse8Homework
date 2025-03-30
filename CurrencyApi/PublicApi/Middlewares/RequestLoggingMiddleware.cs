@@ -16,16 +16,9 @@ public class RequestLoggingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        //LogRequest(context);
         var request = context.Request;
         _logger.LogInformation("Method {Method}, Path {Path}", request.Method, request.Path);
 
         await _next(context);
     }
-
-    // private void LogRequest(HttpContext context)
-    // {
-    //     var request = context.Request;
-    //     _logger.LogInformation("Method {Method}, Path {Path}", request.Method, request.Path);
-    // }
 }

@@ -8,49 +8,39 @@ using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.Extensions.Options;
 
 namespace Fuse8.BackendInternship.PublicApi.Services;
-// TODO
+
 public class CurrencyApiService : ICurrencyApiService
 {
-    private const HttpStatusCode CurrencyNotFoundHttpStatusCode = (HttpStatusCode)422;
-
-    private readonly HttpClient _httpClient;
+    private readonly ICurrencyHttpApi _currencyHttpApi;
 
     private readonly CurrencySetting _currencySetting;
 
-    public CurrencyApiService(HttpClient httpClient, IOptionsSnapshot<CurrencySetting> currencySetting)
+    public CurrencyApiService(ICurrencyHttpApi currencyHttpApi, IOptionsSnapshot<CurrencySetting> currencySetting)
     {
-        _httpClient = httpClient;
+        _currencyHttpApi = currencyHttpApi;
         _currencySetting = currencySetting.Value;
     }
 
     public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode)
     {
-        var url = $"v3/latest?currencies={currencyCode}&base_currency={_currencySetting.BaseCurrency}";
+        var result = await _currencyHttpApi.GetCurrencyRateAsync(currencyCode);
 
-        var result = await FetchCurrencyDataAsync(url);
-        
-
-        var currencyRate = new CurrencyRate()
-        {
-            Code = result.Data.First().Value.Code,
-            Value = Math.Round(result.Data.First().Value.Value, _currencySetting.Accuracy)
-        };
+        var resultFirst = result.Data.First().Value;
+        var currencyRate = new CurrencyRate() { Code = resultFirst.Code, Value = RoundCurrencyValue(resultFirst.Value) };
 
         return currencyRate;
     }
 
     public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date)
     {
-        string formattedDate = date.ToString("yyyy-MM-dd");
-        var url = $"v3/historical?currencies={currencyCode}&date={formattedDate}&base_currency={_currencySetting.BaseCurrency}";
-
-        var result = await FetchCurrencyDataAsync(url);
+        var result = await _currencyHttpApi.GetCurrencyDataWithRateAsync(currencyCode, date);
+        var resultFirst = result.Data.First().Value;
 
         var datedCurrencyRate = new DatedCurrencyRate()
         {
             Date = result.Meta.LastUpdatedAt.ToString("yyyy-MM-dd"),
-            Code = result.Data.First().Value.Code,
-            Value = Math.Round(result.Data.First().Value.Value, _currencySetting.Accuracy)
+            Code = resultFirst.Code,
+            Value = RoundCurrencyValue(resultFirst.Value)
         };
 
         return datedCurrencyRate;
@@ -58,8 +48,7 @@ public class CurrencyApiService : ICurrencyApiService
 
     public async Task<ApiSettings> GetApiSettingsAsync()
     {
-        var result = await GetQuotasResponse();
-        CheckRequestLimit(result);
+        var result = await _currencyHttpApi.GetApiQuotasAsync();
 
         var settingsApi = new ApiSettings()
         {
@@ -73,50 +62,5 @@ public class CurrencyApiService : ICurrencyApiService
         return settingsApi;
     }
 
-    private void CheckRequestLimit(QuotaResponse result)
-    {
-        if (result.Quotas.Month.Used == result.Quotas.Month.Total)
-            throw new ApiRequestLimitException();
-    }
-
-    private async Task GetAndCheckRequestLimit()
-    {
-        var result = await GetQuotasResponse();
-        CheckRequestLimit(result);
-    }
-
-    private async Task<QuotaResponse> GetQuotasResponse()
-    {
-        var url = "v3/status";
-        var response = await _httpClient.GetAsync(url);
-
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-
-        var result = JsonSerializer.Deserialize<QuotaResponse>(content);
-        if (result is null)
-            throw new NullReferenceException(message: "Deserialize QuotaResponse is null");
-
-        return result;
-    }
-    
-    private async Task<CurrencyResponse> FetchCurrencyDataAsync(string url)
-    {
-        await GetAndCheckRequestLimit();
-
-        var response = await _httpClient.GetAsync(url);
-
-        if (response.StatusCode == CurrencyNotFoundHttpStatusCode)
-            throw new CurrencyNotFoundException();
-        
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<CurrencyResponse>(content);
-
-        if (result is null)
-            throw new NullReferenceException("Deserialize CurrencyResponse is null");
-
-        return result;
-    }
+    private decimal RoundCurrencyValue(decimal value) => Math.Round(value, _currencySetting.Accuracy);
 }

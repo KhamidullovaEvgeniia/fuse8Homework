@@ -1,15 +1,13 @@
-﻿namespace Fuse8.BackendInternship.PublicApi.Settings;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Fuse8.BackendInternship.PublicApi.Settings;
 
 public class CurrencyApiSettings
 {
+    public const string SectionName = "CurrencyApiSettings";
+
     public required string BaseUrl { get; init; }
+
+    [Required(AllowEmptyStrings = false)]
     public required string ApiKey { get; init; }
-    
-    public void Validate()
-    {
-        if (string.IsNullOrEmpty(ApiKey))
-        {
-            throw new InvalidOperationException("API ключ не указан.");
-        }
-    }
 }

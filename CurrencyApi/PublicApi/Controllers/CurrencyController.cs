@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 
 namespace Fuse8.BackendInternship.PublicApi.Controllers;
 
+// TODO: date
+
 /// <summary>
 /// Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
 /// </summary>

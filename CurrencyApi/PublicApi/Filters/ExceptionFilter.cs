@@ -35,12 +35,7 @@ public class ExceptionFilter : IExceptionFilter
 
         void SetResponse(string errorDescription, int httpStatusCode)
         {
-            context.Result = new JsonResult(
-                new ProblemDetails
-                {
-                    Title = errorDescription,
-                    Status = httpStatusCode
-                });
+            context.Result = new JsonResult(new ProblemDetails { Title = errorDescription, Status = httpStatusCode });
 
             context.HttpContext.Response.StatusCode = httpStatusCode;
         }

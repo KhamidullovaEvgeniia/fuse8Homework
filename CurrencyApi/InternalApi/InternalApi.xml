@@ -1,0 +1,447 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>InternalApi</name>
+    </assembly>
+    <members>
+        <member name="T:InternalApi.Binders.DateOnlyBinderProvider">
+            <summary>
+            Задает ModelBinder для специфичного парсинга значений в запросах
+            </summary>
+        </member>
+        <member name="T:InternalApi.Binders.DateOnlyModelBinder">
+            <summary>
+            Model Binder для парсинга даты
+            </summary>
+        </member>
+        <member name="T:InternalApi.Controllers.CurrencyController">
+            <summary>
+            Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
+            </summary>
+        </member>
+        <member name="M:InternalApi.Controllers.CurrencyController.#ctor(Fuse8.BackendInternship.InternalApi.Contracts.ICachedCurrencyAPI,Microsoft.Extensions.Options.IOptions{InternalApi.Settings.CurrencySetting})">
+            <summary>
+            Конструктор контроллера.
+            </summary>
+            <param name="currencyApiService">Сервис для получения данных о валюте.</param>
+            <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
+        </member>
+        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс валюты по умолчанию.
+            </summary>
+            <returns>Текущий курс валюты.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс валюты.
+            </response>
+            <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:InternalApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.Int32,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс указанной валюты на определенную дату.
+            </summary>
+            <param name="currencyCode">Код валюты (например, "RUB").</param>
+            <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+            <returns>Курс валюты на указанную дату.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс валюты.
+            </response>
+            <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="T:InternalApi.Controllers.HealthCheckController">
+            <summary>
+            Методы для проверки работоспособности PublicApi
+            </summary>
+        </member>
+        <member name="M:InternalApi.Controllers.HealthCheckController.Check(System.Nullable{System.Boolean})">
+            <summary>
+            Проверить что API работает
+            </summary>
+            <param name="checkExternalApi">Необходимо проверить работоспособность внешнего API. Если FALSE или NULL - проверяется работоспособность только текущего API</param>
+            <response code="200">
+            Возвращает если удалось получить доступ к API
+            </response>
+            <response code="400">
+            Возвращает если удалось не удалось получить доступ к API
+            </response>
+        </member>
+        <member name="T:InternalApi.Controllers.HealthCheckResult">
+            <summary>
+            Результат проверки работоспособности API
+            </summary>
+        </member>
+        <member name="P:InternalApi.Controllers.HealthCheckResult.CheckedOn">
+            <summary>
+            Дата проверки
+            </summary>
+        </member>
+        <member name="P:InternalApi.Controllers.HealthCheckResult.Status">
+            <summary>
+            Статус работоспособности API
+            </summary>
+        </member>
+        <member name="T:InternalApi.Controllers.HealthCheckResult.CheckStatus">
+            <summary>
+            Статус API
+            </summary>
+        </member>
+        <member name="F:InternalApi.Controllers.HealthCheckResult.CheckStatus.Ok">
+            <summary>
+            API работает
+            </summary>
+        </member>
+        <member name="F:InternalApi.Controllers.HealthCheckResult.CheckStatus.Failed">
+            <summary>
+            Ошибка в работе API
+            </summary>
+        </member>
+        <member name="T:InternalApi.Controllers.SettingsController">
+            <summary>
+            Метод для получения текущих настроек API.
+            </summary>
+        </member>
+        <member name="M:InternalApi.Controllers.SettingsController.#ctor(InternalApi.Interfaces.ICurrencyApiService)">
+            <summary>
+            Конструктор контроллера.
+            </summary>
+            <param name="currencyApiService">Сервис для работы с API валют.</param>
+        </member>
+        <member name="M:InternalApi.Controllers.SettingsController.GetSettingsAsync">
+            <summary>
+            Получает текущие настройки API.
+            </summary>
+            <returns>Настройки API.</returns>
+            <response code="200">Успешный запрос, возвращает настройки API.</response>
+            <response code="429">Превышен лимит запросов.</response>
+            <response code="500">Ошибка сервера.</response>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICurrencyAPI.GetAllCurrentCurrenciesAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс для всех валют
+            </summary>
+            <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Список курсов валют</returns>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICurrencyAPI.GetAllCurrenciesOnDateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс для всех валют, актуальный на <paramref name="date"/>
+            </summary>
+            <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
+            <param name="date">Дата, на которую нужно получить курс валют</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Список курсов валют на дату</returns>
+        </member>
+        <member name="T:InternalApi.JsonConvectors.DateOnlyJsonConvector">
+            <summary>
+            Json-конвектор для получения и записи DateOnly в Json
+            </summary>
+        </member>
+        <member name="T:InternalApi.Models.ApiSettings">
+            <summary>
+            Настройки API.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.ApiSettings.DefaultCurrency">
+            <summary>
+            Валюта по умолчанию.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.ApiSettings.BaseCurrency">
+            <summary>
+            Базовая валюта.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.ApiSettings.RequestLimit">
+            <summary>
+            Лимит запросов к API.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.ApiSettings.RequestCount">
+            <summary>
+            Количество уже выполненных запросов.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.ApiSettings.CurrencyRoundCount">
+            <summary>
+            Количество знаков после запятой для округления валюты.
+            </summary>
+        </member>
+        <member name="T:InternalApi.Models.CurrenciesOnDate">
+            <summary>
+            Курс валюты с датой.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.CurrenciesOnDate.Date">
+            <summary>
+            Дата обновления данных
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.CurrenciesOnDate.Rates">
+            <summary>
+            Список курсов валют
+            </summary>
+        </member>
+        <member name="T:InternalApi.Models.CurrencyRates">
+            <summary>
+            Курс валюты.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.CurrencyRates.Code">
+            <summary>
+            Код валюты (например, "RUB").
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.CurrencyRates.Value">
+            <summary>
+            Значение курса валюты.
+            </summary>
+        </member>
+        <member name="T:InternalApi.Models.DatedCurrencyRate">
+            <summary>
+            Курс валюты с датой.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.DatedCurrencyRate.Date">
+            <summary>
+            Дата курса валюты в формате yyyy-MM-dd.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.DatedCurrencyRate.Code">
+            <summary>
+            Код валюты (например, "RUB").
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.DatedCurrencyRate.Value">
+            <summary>
+            Значение курса валюты.
+            </summary>
+        </member>
+        <member name="T:InternalApi.GRPCServiceReflection">
+            <summary>Holder for reflection information generated from Protos/gRPCService.proto</summary>
+        </member>
+        <member name="P:InternalApi.GRPCServiceReflection.Descriptor">
+            <summary>File descriptor for Protos/gRPCService.proto</summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateRequest">
+            <summary>
+            Запрос на получение курса валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateRequest.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateRequest.CurrencyCode">
+            <summary>
+            Код валюты, например, "USD"
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateResponse">
+            <summary>
+            Ответ с курсом валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateResponse.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateResponse.CurrencyCode">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateResponse.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateResponse.Value">
+            <summary>
+            Значение курса
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateOnDateRequest">
+            <summary>
+            Запрос на получение курса валюты на дату
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateRequest.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateRequest.CurrencyCode">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateRequest.DateFieldNumber">
+            <summary>Field number for the "date" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateRequest.Date">
+            <summary>
+            Дата в формате "yyyy-MM-dd"
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateOnDateResponse">
+            <summary>
+            Ответ с курсом валюты на дату
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateResponse.DateFieldNumber">
+            <summary>Field number for the "date" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateResponse.Date">
+            <summary>
+            Дата в формате "yyyy-MM-dd"
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateResponse.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateResponse.CurrencyCode">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateResponse.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateResponse.Value">
+            <summary>
+            Значение курса
+            </summary>
+        </member>
+        <member name="T:InternalApi.ApiSettingsRequest">
+            <summary>
+            Запрос настроек API (пустой, т.к. параметры не требуются)
+            </summary>
+        </member>
+        <member name="T:InternalApi.ApiSettingsResponse">
+            <summary>
+            Ответ с настройками API
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.DefaultCurrencyFieldNumber">
+            <summary>Field number for the "defaultCurrency" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.DefaultCurrency">
+            <summary>
+            Валюта по умолчанию
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.BaseCurrencyFieldNumber">
+            <summary>Field number for the "baseCurrency" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.BaseCurrency">
+            <summary>
+            Базовая валюта
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.RequestLimitFieldNumber">
+            <summary>Field number for the "requestLimit" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.RequestLimit">
+            <summary>
+            Лимит запросов
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.RequestCountFieldNumber">
+            <summary>Field number for the "requestCount" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.RequestCount">
+            <summary>
+            Количество использованных запросов
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.HasRequestsLeftFieldNumber">
+            <summary>Field number for the "hasRequestsLeft" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.HasRequestsLeft">
+            <summary>
+            Доступны ли еще запросы (requestLimit > requestCount)
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.CurrencyRoundCountFieldNumber">
+            <summary>Field number for the "currencyRoundCount" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.CurrencyRoundCount">
+            <summary>
+            Количество знаков после запятой
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyApi">
+            <summary>
+            Определение gRPC-сервиса
+            </summary>
+        </member>
+        <member name="P:InternalApi.CurrencyApi.Descriptor">
+            <summary>Service descriptor</summary>
+        </member>
+        <member name="T:InternalApi.CurrencyApi.CurrencyApiBase">
+            <summary>Base class for server-side implementations of CurrencyApi</summary>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiBase.GetCurrencyRate(InternalApi.CurrencyRateRequest,Grpc.Core.ServerCallContext)">
+            <summary>
+            Получает текущий курс указанной валюты
+            </summary>
+            <param name="request">The request received from the client.</param>
+            <param name="context">The context of the server-side call handler being invoked.</param>
+            <returns>The response to send back to the client (wrapped by a task).</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiBase.GetCurrencyDataWithRate(InternalApi.CurrencyRateOnDateRequest,Grpc.Core.ServerCallContext)">
+            <summary>
+            Получает курс валюты на указанную дату
+            </summary>
+            <param name="request">The request received from the client.</param>
+            <param name="context">The context of the server-side call handler being invoked.</param>
+            <returns>The response to send back to the client (wrapped by a task).</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiBase.GetApiSettings(InternalApi.ApiSettingsRequest,Grpc.Core.ServerCallContext)">
+            <summary>
+            Получает настройки API
+            </summary>
+            <param name="request">The request received from the client.</param>
+            <param name="context">The context of the server-side call handler being invoked.</param>
+            <returns>The response to send back to the client (wrapped by a task).</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.BindService(InternalApi.CurrencyApi.CurrencyApiBase)">
+            <summary>Creates service definition that can be registered with a server</summary>
+            <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.BindService(Grpc.Core.ServiceBinderBase,InternalApi.CurrencyApi.CurrencyApiBase)">
+            <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
+            Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+            <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+            <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+        </member>
+        <member name="M:Fuse8.BackendInternship.InternalApi.Contracts.ICachedCurrencyAPI.GetCurrentCurrencyAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс
+            </summary>
+            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Текущий курс</returns>
+        </member>
+        <member name="M:Fuse8.BackendInternship.InternalApi.Contracts.ICachedCurrencyAPI.GetCurrencyOnDateAsync(InternalApi.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс валюты, актуальный на <paramref name="date"/>
+            </summary>
+            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
+            <param name="date">Дата, на которую нужно получить курс валют</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Курс на дату</returns>
+        </member>
+    </members>
+</doc>

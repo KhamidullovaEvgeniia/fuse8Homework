@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Fuse8.BackendInternship.PublicApi.Exceptions;
-using Fuse8.BackendInternship.PublicApi.Interfaces;
-using Fuse8.BackendInternship.PublicApi.Responses;
-using Fuse8.BackendInternship.PublicApi.Settings;
+using InternalApi.Exceptions;
+using InternalApi.Interfaces;
+using InternalApi.Responses;
 using Microsoft.Extensions.Options;
+using InternalApi.Settings;
 
-namespace Fuse8.BackendInternship.PublicApi.Services;
+
+namespace InternalApi.Services;
 
 public class CurrencyHttpApi : ICurrencyHttpApi
 {

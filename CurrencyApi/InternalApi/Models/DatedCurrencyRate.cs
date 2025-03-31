@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Fuse8.BackendInternship.PublicApi.Models;
+namespace InternalApi.Models;
 
 /// <summary>
 /// Курс валюты с датой.

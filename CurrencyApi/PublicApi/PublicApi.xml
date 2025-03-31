@@ -4,6 +4,16 @@
         <name>PublicApi</name>
     </assembly>
     <members>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyBinderProvider">
+            <summary>
+            Задает ModelBinder для специфичного парсинга значений в запросах
+            </summary>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyModelBinder">
+            <summary>
+            Model Binder для парсинга даты
+            </summary>
+        </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController">
             <summary>
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
@@ -53,7 +63,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateTime)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>
@@ -139,6 +149,11 @@
             <response code="200">Успешный запрос, возвращает настройки API.</response>
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.DateOnlyJsonConvector">
+            <summary>
+            Json-конвектор для получения и записи DateOnly в Json
+            </summary>
         </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Models.ApiSettings">
             <summary>

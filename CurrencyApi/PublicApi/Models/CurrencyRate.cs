@@ -11,7 +11,7 @@ public class CurrencyRate
     /// Код валюты (например, "RUB").
     /// </summary>
     [JsonPropertyName("code")]
-    public string Code { get; set; } = string.Empty;
+    public required string Code { get; set; }
 
     /// <summary>
     /// Значение курса валюты.

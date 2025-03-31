@@ -6,7 +6,7 @@ public interface ICurrencyHttpApi
 {
     Task<CurrencyResponse> GetCurrencyRateAsync(string currencyCode);
 
-    Task<CurrencyResponse> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date);
+    Task<CurrencyResponse> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date);
 
     Task<QuotaResponse> GetApiQuotasAsync();
 }

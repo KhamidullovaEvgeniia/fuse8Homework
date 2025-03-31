@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Fuse8.BackendInternship.PublicApi.Binders;
 using Fuse8.BackendInternship.PublicApi.Filters;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Middlewares;
@@ -23,7 +24,12 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services
-            .AddControllers(options => { options.Filters.Add<ExceptionFilter>(); })
+            .AddControllers(
+                options =>
+                {
+                    options.Filters.Add<ExceptionFilter>();
+                    options.ModelBinderProviders.Insert(0, new DateOnlyBinderProvider());
+                })
 
             // Добавляем глобальные настройки для преобразования Json
             .AddJsonOptions(
@@ -33,6 +39,7 @@ public class Startup
                     // По умолчанию енам преобразуется в цифровое значение
                     // Этим конвертером задаем перевод в строковое значение
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConvector());
                 });
 
         services.AddEndpointsApiExplorer();

@@ -6,8 +6,6 @@ using Microsoft.Extensions.Options;
 
 namespace Fuse8.BackendInternship.PublicApi.Controllers;
 
-// TODO: date
-
 /// <summary>
 /// Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
 /// </summary>
@@ -51,7 +49,6 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    
     public async Task<CurrencyRate> GetCurrencyRateAsync()
     {
         return await _currencyApiService.GetCurrencyRateAsync(_currencyCode);
@@ -107,7 +104,7 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync([FromRoute] string currencyCode, [FromRoute] DateTime date)
+    public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync([FromRoute] string currencyCode, [FromRoute] DateOnly date)
     {
         return await _currencyApiService.GetCurrencyDataWithRateAsync(currencyCode, date);
     }

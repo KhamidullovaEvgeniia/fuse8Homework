@@ -6,7 +6,7 @@ public interface ICurrencyApiService
 {
     Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode);
 
-    Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date);
+    Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date);
 
     Task<ApiSettings> GetApiSettingsAsync();
 }

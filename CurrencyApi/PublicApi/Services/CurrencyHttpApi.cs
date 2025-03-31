@@ -34,7 +34,7 @@ public class CurrencyHttpApi : ICurrencyHttpApi
         return result;
     }
 
-    public async Task<CurrencyResponse> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date)
+    public async Task<CurrencyResponse> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date)
     {
         string formattedDate = date.ToString("yyyy-MM-dd");
         var url =

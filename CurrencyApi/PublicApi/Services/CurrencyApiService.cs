@@ -31,16 +31,14 @@ public class CurrencyApiService : ICurrencyApiService
         return currencyRate;
     }
 
-    public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateTime date)
+    public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date)
     {
         var result = await _currencyHttpApi.GetCurrencyDataWithRateAsync(currencyCode, date);
         var resultFirst = result.Data.First().Value;
 
         var datedCurrencyRate = new DatedCurrencyRate()
         {
-            Date = result.Meta.LastUpdatedAt.ToString("yyyy-MM-dd"),
-            Code = resultFirst.Code,
-            Value = RoundCurrencyValue(resultFirst.Value)
+            Date = date, Code = resultFirst.Code, Value = RoundCurrencyValue(resultFirst.Value)
         };
 
         return datedCurrencyRate;

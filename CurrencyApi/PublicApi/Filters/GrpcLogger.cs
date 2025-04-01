@@ -48,8 +48,7 @@ public class GrpcLogger : Interceptor
                 Response: {Response}
                 """,
                 response?.ToString());
-
-            // Создаем событие аудита с помощью Audit.Net
+            
             var auditScope = await AuditScope.CreateAsync(
                 new AuditScopeOptions
                 {
@@ -60,20 +59,16 @@ public class GrpcLogger : Interceptor
                         Timestamp = DateTime.UtcNow
                     }
                 });
-
-            // Устанавливаем дополнительные поля для аудита
+            
             auditScope.SetCustomField("Response", new { Response = response?.ToString() });
-
-            // Закрываем область аудита
+            
             await auditScope.DisposeAsync();
             return await inner;
         }
         catch (Exception ex)
         {
-            // Логируем ошибку с помощью ILogger
             _logger.LogError(ex, "Error occurred while processing gRPC request");
-
-            // Создаем событие аудита для ошибки
+            
             var errorAuditScope = await AuditScope.CreateAsync(
                 new AuditScopeOptions
                 {
@@ -84,8 +79,7 @@ public class GrpcLogger : Interceptor
                         StackTrace = ex.StackTrace
                     }
                 });
-
-            // Устанавливаем дополнительные поля для аудита ошибок
+            
             errorAuditScope.SetCustomField(
                 "Error",
                 new
@@ -93,8 +87,7 @@ public class GrpcLogger : Interceptor
                     Error = ex.Message,
                     StackTrace = ex.StackTrace
                 });
-
-            // Закрываем область аудита для ошибки
+            
             await errorAuditScope.DisposeAsync();
 
             throw new InvalidOperationException("Custom error", ex);

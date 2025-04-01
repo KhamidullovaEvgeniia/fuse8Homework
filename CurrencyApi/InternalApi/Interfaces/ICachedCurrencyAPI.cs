@@ -1,7 +1,7 @@
 ﻿using InternalApi.Enums;
 using InternalApi.Models;
 
-namespace Fuse8.BackendInternship.InternalApi.Contracts;
+namespace InternalApi.Interfaces;
 
 public interface ICachedCurrencyAPI
 {

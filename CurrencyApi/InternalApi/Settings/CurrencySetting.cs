@@ -3,6 +3,6 @@
 public class CurrencySetting
 {
     public required string BaseCurrency { get; init; }
-    public string Currency { get; init; } 
+    public required string Currency { get; init; } 
     public int Accuracy { get; set; }
 }

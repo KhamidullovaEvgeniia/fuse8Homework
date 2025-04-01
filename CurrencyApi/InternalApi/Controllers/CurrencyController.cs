@@ -1,5 +1,4 @@
-﻿using Fuse8.BackendInternship.InternalApi.Contracts;
-using InternalApi.Enums;
+﻿using InternalApi.Enums;
 using InternalApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -21,7 +20,7 @@ public class CurrencyController : ControllerBase
     /// <summary>
     /// Конструктор контроллера.
     /// </summary>
-    /// <param name="currencyApiService">Сервис для получения данных о валюте.</param>
+    /// <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
     /// <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
     public CurrencyController(
         ICachedCurrencyAPI cachedCurrencyApi,

@@ -51,6 +51,26 @@ public class CurrencyHttpApi : ICurrencyHttpApi
 
         return result;
     }
+    
+    public async Task<CurrencyResponse> GetAllCurrenciesRateAsync()
+    {
+        var url = $"latest?{BaseCurrenciesQueryKey}={_currencySetting.BaseCurrency}";
+
+        var result = await FetchCurrencyDataAsync(url);
+
+        return result;
+    }
+    
+    public async Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(string currencyCode, DateOnly date)
+    {
+        string formattedDate = date.ToString("yyyy-MM-dd");
+        var url =
+            $"historical?date={formattedDate}&{BaseCurrenciesQueryKey}={_currencySetting.BaseCurrency}";
+
+        var result = await FetchCurrencyDataAsync(url);
+
+        return result;
+    }
 
     private void CheckRequestLimit(QuotaResponse result)
     {

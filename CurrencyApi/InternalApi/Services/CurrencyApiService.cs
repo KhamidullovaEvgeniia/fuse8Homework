@@ -59,7 +59,7 @@ public class CurrencyApiService : ICurrencyApiService, ICurrencyAPI
 
     public async Task<CurrencyRates[]> GetAllCurrentCurrenciesAsync(string currencyCode, CancellationToken cancellationToken)
     {
-        var result = await _currencyHttpApi.GetCurrencyRateAsync(currencyCode);
+        var result = await _currencyHttpApi.GetAllCurrenciesRateAsync();
         return result.Data.Select(x => new CurrencyRates { Code = x.Value.Code, Value = x.Value.Value }).ToArray();
     }
 
@@ -68,7 +68,7 @@ public class CurrencyApiService : ICurrencyApiService, ICurrencyAPI
         DateOnly date,
         CancellationToken cancellationToken)
     {
-        var result = await _currencyHttpApi.GetCurrencyDataWithRateAsync(currencyCode, date);
+        var result = await _currencyHttpApi.GetAllCurrenciesDataWithRateAsync(currencyCode, date);
         var resultCurrencies = result.Data.Select(x => new CurrencyRates { Code = x.Value.Code, Value = x.Value.Value }).ToArray();
         return new CurrenciesOnDate { Date = date, Rates = resultCurrencies };
     }

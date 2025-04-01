@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
-using Fuse8.BackendInternship.InternalApi.Contracts;
 using InternalApi.Binders;
 using InternalApi.Filters;
 using InternalApi.Interfaces;

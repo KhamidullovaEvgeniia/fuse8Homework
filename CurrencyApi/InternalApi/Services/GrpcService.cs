@@ -1,5 +1,4 @@
-﻿using Fuse8.BackendInternship.InternalApi.Contracts;
-using Grpc.Core;
+﻿using Grpc.Core;
 using InternalApi.Enums;
 using InternalApi.Interfaces;
 using InternalApi.Settings;
@@ -10,20 +9,23 @@ namespace InternalApi.Services;
 public class GrpcService : CurrencyApi.CurrencyApiBase
 {
     private readonly ICachedCurrencyAPI _cachedCurrencyApi;
+
     private readonly ICurrencyApiService _currencyApiService;
+
     private readonly CurrencySetting _currencySetting;
 
-    public GrpcService(ICachedCurrencyAPI cachedCurrencyApi, ICurrencyApiService currencyApiService, IOptionsSnapshot<CurrencySetting> currencySetting)
+    public GrpcService(
+        ICachedCurrencyAPI cachedCurrencyApi,
+        ICurrencyApiService currencyApiService,
+        IOptionsSnapshot<CurrencySetting> currencySetting)
     {
         _cachedCurrencyApi = cachedCurrencyApi;
         _currencyApiService = currencyApiService;
         _currencySetting = currencySetting.Value;
     }
 
-    // Получить текущий курс валюты
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
-        //var currencyType = Enum.Parse<CurrencyType>(request.CurrencyCode);
         Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
         var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(currencyType, context.CancellationToken);
 
@@ -34,7 +36,6 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         };
     }
 
-    // Получить курс валюты на определенную дату
     public override async Task<CurrencyRateOnDateResponse> GetCurrencyDataWithRate(
         CurrencyRateOnDateRequest request,
         ServerCallContext context)
@@ -51,7 +52,6 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         };
     }
 
-    // Получить настройки API
     public override async Task<ApiSettingsResponse> GetApiSettings(ApiSettingsRequest request, ServerCallContext context)
     {
         var settings = await _currencyApiService.GetApiSettingsAsync();
@@ -66,6 +66,6 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
             CurrencyRoundCount = settings.CurrencyRoundCount
         };
     }
-    
+
     private double RoundCurrencyValue(double value) => Math.Round(value, _currencySetting.Accuracy);
 }

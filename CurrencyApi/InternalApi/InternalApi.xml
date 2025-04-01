@@ -19,11 +19,11 @@
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
             </summary>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.#ctor(Fuse8.BackendInternship.InternalApi.Contracts.ICachedCurrencyAPI,Microsoft.Extensions.Options.IOptions{InternalApi.Settings.CurrencySetting})">
+        <member name="M:InternalApi.Controllers.CurrencyController.#ctor(InternalApi.Interfaces.ICachedCurrencyAPI,Microsoft.Extensions.Options.IOptions{InternalApi.Settings.CurrencySetting})">
             <summary>
             Конструктор контроллера.
             </summary>
-            <param name="currencyApiService">Сервис для получения данных о валюте.</param>
+            <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
             <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
         <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(System.Threading.CancellationToken)">
@@ -130,6 +130,23 @@
             <response code="200">Успешный запрос, возвращает настройки API.</response>
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrentCurrencyAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс
+            </summary>
+            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Текущий курс</returns>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrencyOnDateAsync(InternalApi.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс валюты, актуальный на <paramref name="date"/>
+            </summary>
+            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
+            <param name="date">Дата, на которую нужно получить курс валют</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Курс на дату</returns>
         </member>
         <member name="M:InternalApi.Interfaces.ICurrencyAPI.GetAllCurrentCurrenciesAsync(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -425,23 +442,6 @@
             Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
             <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
             <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-        </member>
-        <member name="M:Fuse8.BackendInternship.InternalApi.Contracts.ICachedCurrencyAPI.GetCurrentCurrencyAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
-            <summary>
-            Получает текущий курс
-            </summary>
-            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
-            <param name="cancellationToken">Токен отмены</param>
-            <returns>Текущий курс</returns>
-        </member>
-        <member name="M:Fuse8.BackendInternship.InternalApi.Contracts.ICachedCurrencyAPI.GetCurrencyOnDateAsync(InternalApi.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
-            <summary>
-            Получает курс валюты, актуальный на <paramref name="date"/>
-            </summary>
-            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
-            <param name="date">Дата, на которую нужно получить курс валют</param>
-            <param name="cancellationToken">Токен отмены</param>
-            <returns>Курс на дату</returns>
         </member>
     </members>
 </doc>

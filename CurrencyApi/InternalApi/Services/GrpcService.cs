@@ -2,6 +2,8 @@
 using Grpc.Core;
 using InternalApi.Enums;
 using InternalApi.Interfaces;
+using InternalApi.Settings;
+using Microsoft.Extensions.Options;
 
 namespace InternalApi.Services;
 
@@ -9,21 +11,27 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 {
     private readonly ICachedCurrencyAPI _cachedCurrencyApi;
     private readonly ICurrencyApiService _currencyApiService;
+    private readonly CurrencySetting _currencySetting;
 
-    public GrpcService(ICachedCurrencyAPI cachedCurrencyApi, ICurrencyApiService currencyApiService)
+    public GrpcService(ICachedCurrencyAPI cachedCurrencyApi, ICurrencyApiService currencyApiService, IOptionsSnapshot<CurrencySetting> currencySetting)
     {
         _cachedCurrencyApi = cachedCurrencyApi;
         _currencyApiService = currencyApiService;
+        _currencySetting = currencySetting.Value;
     }
 
     // Получить текущий курс валюты
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
-        var currencyDto = await _cachedCurrencyApi.GetCurrentCurrencyAsync(
-            (CurrencyType)Enum.Parse(typeof(CurrencyType), request.CurrencyCode),
-            context.CancellationToken);
+        //var currencyType = Enum.Parse<CurrencyType>(request.CurrencyCode);
+        Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
+        var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(currencyType, context.CancellationToken);
 
-        return new CurrencyRateResponse { CurrencyCode = currencyDto.CurrencyType.ToString(), Value = (double)currencyDto.Value };
+        return new CurrencyRateResponse
+        {
+            CurrencyCode = request.CurrencyCode,
+            Value = RoundCurrencyValue((double)currencyData.Value)
+        };
     }
 
     // Получить курс валюты на определенную дату
@@ -31,17 +39,15 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         CurrencyRateOnDateRequest request,
         ServerCallContext context)
     {
+        Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
         var date = DateOnly.Parse(request.Date);
-        var currencyDto = await _cachedCurrencyApi.GetCurrencyOnDateAsync(
-            (CurrencyType)Enum.Parse(typeof(CurrencyType), request.CurrencyCode),
-            date,
-            context.CancellationToken);
+        var currencyData = await _cachedCurrencyApi.GetCurrencyOnDateAsync(currencyType, date, context.CancellationToken);
 
         return new CurrencyRateOnDateResponse
         {
-            Date = date.ToString("yyyy-MM-dd"),
-            CurrencyCode = currencyDto.CurrencyType.ToString(),
-            Value = (double)currencyDto.Value
+            Date = request.Date,
+            CurrencyCode = request.CurrencyCode,
+            Value = RoundCurrencyValue((double)currencyData.Value)
         };
     }
 
@@ -60,4 +66,6 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
             CurrencyRoundCount = settings.CurrencyRoundCount
         };
     }
+    
+    private double RoundCurrencyValue(double value) => Math.Round(value, _currencySetting.Accuracy);
 }

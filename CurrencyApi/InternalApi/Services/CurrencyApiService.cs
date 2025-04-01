@@ -47,7 +47,7 @@ public class CurrencyApiService : ICurrencyApiService, ICurrencyAPI
 
         var settingsApi = new ApiSettings()
         {
-            DefaultCurrency = ((CurrencyType)_currencySetting.Currency).ToString(),
+            DefaultCurrency = _currencySetting.Currency,
             BaseCurrency = _currencySetting.BaseCurrency,
             RequestLimit = result.Quotas.Month.Total,
             RequestCount = result.Quotas.Month.Used,

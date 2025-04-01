@@ -361,3 +361,6 @@ dist/
 
 # Config with secret
 appsettings.Development.json
+
+# Cache
+CurrencyCache/

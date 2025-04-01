@@ -31,8 +31,9 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         }
 
         // Данных нет или кэш устарел → запрашиваем у API
-        var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync("USD", cancellationToken);
-        var newCurrency = currencies.FirstOrDefault(c => c.Code == currencyType.ToString());
+        var currencyCode = currencyType.ToString().ToUpper();
+        var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync(currencyCode, cancellationToken);
+        var newCurrency = currencies.FirstOrDefault(c => c.Code == currencyCode);
         if (newCurrency == null)
             throw new Exception($"Currency {currencyType} not found");
 
@@ -57,8 +58,9 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         }
 
         // Данных нет → запрашиваем у API
-        var currenciesOnDate = await _currencyApi.GetAllCurrenciesOnDateAsync("USD", date, cancellationToken);
-        var currency = currenciesOnDate.Rates.FirstOrDefault(c => c.Code == currencyType.ToString());
+        var currencyCode = currencyType.ToString().ToUpper();
+        var currenciesOnDate = await _currencyApi.GetAllCurrenciesOnDateAsync(currencyCode, date, cancellationToken);
+        var currency = currenciesOnDate.Rates.FirstOrDefault(c => c.Code == currencyCode);
         if (currency == null)
             throw new Exception($"Currency {currencyType} not found on {date}");
 

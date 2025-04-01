@@ -45,8 +45,6 @@ public class Startup
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConvector());
                 });
-        
-        services.AddGrpc();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(
@@ -59,6 +57,8 @@ public class Startup
                     true);
             });
 
+        services.AddGrpc();
+        
         services.Configure<CurrencyApiSettings>(_configuration.GetSection("CurrencyApiSettings"));
         services.Configure<CurrencySetting>(_configuration.GetSection("CurrencySetting"));
 
@@ -67,6 +67,8 @@ public class Startup
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
         services.AddTransient<LoggingHandler>();
+        
+        //services.AddGrpc();
 
         services
             .AddHttpClient<ICurrencyHttpApi, CurrencyHttpApi>()

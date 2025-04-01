@@ -10,4 +10,6 @@ public class CurrencyApiSettings
 
     [Required(AllowEmptyStrings = false)]
     public required string ApiKey { get; init; }
+    
+    public required string GrpcUrl { get; init; }
 }

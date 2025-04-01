@@ -170,14 +170,9 @@
             Базовая валюта.
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.RequestLimit">
+        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.NewRequestsAvailable">
             <summary>
-            Лимит запросов к API.
-            </summary>
-        </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.RequestCount">
-            <summary>
-            Количество уже выполненных запросов.
+            Есть ли доступные запросы к API.
             </summary>
         </member>
         <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.CurrencyRoundCount">
@@ -219,6 +214,291 @@
             <summary>
             Значение курса валюты.
             </summary>
+        </member>
+        <member name="T:InternalApi.GRPCClientReflection">
+            <summary>Holder for reflection information generated from Protos/gRPCClient.proto</summary>
+        </member>
+        <member name="P:InternalApi.GRPCClientReflection.Descriptor">
+            <summary>File descriptor for Protos/gRPCClient.proto</summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateRequest">
+            <summary>
+            Запрос на получение курса валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateRequest.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateRequest.CurrencyCode">
+            <summary>
+            Код валюты, например, "USD"
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateResponse">
+            <summary>
+            Ответ с курсом валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateResponse.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateResponse.CurrencyCode">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateResponse.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateResponse.Value">
+            <summary>
+            Значение курса
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateOnDateRequest">
+            <summary>
+            Запрос на получение курса валюты на дату
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateRequest.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateRequest.CurrencyCode">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateRequest.DateFieldNumber">
+            <summary>Field number for the "date" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateRequest.Date">
+            <summary>
+            Дата в формате "yyyy-MM-dd"
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyRateOnDateResponse">
+            <summary>
+            Ответ с курсом валюты на дату
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateResponse.DateFieldNumber">
+            <summary>Field number for the "date" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateResponse.Date">
+            <summary>
+            Дата в формате "yyyy-MM-dd"
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateResponse.CurrencyCodeFieldNumber">
+            <summary>Field number for the "currencyCode" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateResponse.CurrencyCode">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.CurrencyRateOnDateResponse.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="P:InternalApi.CurrencyRateOnDateResponse.Value">
+            <summary>
+            Значение курса
+            </summary>
+        </member>
+        <member name="T:InternalApi.ApiSettingsRequest">
+            <summary>
+            Запрос настроек API (пустой, т.к. параметры не требуются)
+            </summary>
+        </member>
+        <member name="T:InternalApi.ApiSettingsResponse">
+            <summary>
+            Ответ с настройками API
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.DefaultCurrencyFieldNumber">
+            <summary>Field number for the "defaultCurrency" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.DefaultCurrency">
+            <summary>
+            Валюта по умолчанию
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.BaseCurrencyFieldNumber">
+            <summary>Field number for the "baseCurrency" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.BaseCurrency">
+            <summary>
+            Базовая валюта
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.RequestLimitFieldNumber">
+            <summary>Field number for the "requestLimit" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.RequestLimit">
+            <summary>
+            Лимит запросов
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.RequestCountFieldNumber">
+            <summary>Field number for the "requestCount" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.RequestCount">
+            <summary>
+            Количество использованных запросов
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.HasRequestsLeftFieldNumber">
+            <summary>Field number for the "hasRequestsLeft" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.HasRequestsLeft">
+            <summary>
+            Доступны ли еще запросы (requestLimit > requestCount)
+            </summary>
+        </member>
+        <member name="F:InternalApi.ApiSettingsResponse.CurrencyRoundCountFieldNumber">
+            <summary>Field number for the "currencyRoundCount" field.</summary>
+        </member>
+        <member name="P:InternalApi.ApiSettingsResponse.CurrencyRoundCount">
+            <summary>
+            Количество знаков после запятой
+            </summary>
+        </member>
+        <member name="T:InternalApi.CurrencyApi">
+            <summary>
+            Определение gRPC-сервиса
+            </summary>
+        </member>
+        <member name="P:InternalApi.CurrencyApi.Descriptor">
+            <summary>Service descriptor</summary>
+        </member>
+        <member name="T:InternalApi.CurrencyApi.CurrencyApiClient">
+            <summary>Client for CurrencyApi</summary>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.#ctor(Grpc.Core.ChannelBase)">
+            <summary>Creates a new client for CurrencyApi</summary>
+            <param name="channel">The channel to use to make remote calls.</param>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.#ctor(Grpc.Core.CallInvoker)">
+            <summary>Creates a new client for CurrencyApi that uses a custom <c>CallInvoker</c>.</summary>
+            <param name="callInvoker">The callInvoker to use to make remote calls.</param>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.#ctor">
+            <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.#ctor(Grpc.Core.ClientBase.ClientBaseConfiguration)">
+            <summary>Protected constructor to allow creation of configured clients.</summary>
+            <param name="configuration">The client configuration.</param>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyRate(InternalApi.CurrencyRateRequest,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс указанной валюты
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+            <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+            <param name="cancellationToken">An optional token for canceling the call.</param>
+            <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyRate(InternalApi.CurrencyRateRequest,Grpc.Core.CallOptions)">
+            <summary>
+            Получает текущий курс указанной валюты
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="options">The options for the call.</param>
+            <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyRateAsync(InternalApi.CurrencyRateRequest,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс указанной валюты
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+            <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+            <param name="cancellationToken">An optional token for canceling the call.</param>
+            <returns>The call object.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyRateAsync(InternalApi.CurrencyRateRequest,Grpc.Core.CallOptions)">
+            <summary>
+            Получает текущий курс указанной валюты
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="options">The options for the call.</param>
+            <returns>The call object.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyDataWithRate(InternalApi.CurrencyRateOnDateRequest,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Получает курс валюты на указанную дату
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+            <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+            <param name="cancellationToken">An optional token for canceling the call.</param>
+            <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyDataWithRate(InternalApi.CurrencyRateOnDateRequest,Grpc.Core.CallOptions)">
+            <summary>
+            Получает курс валюты на указанную дату
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="options">The options for the call.</param>
+            <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyDataWithRateAsync(InternalApi.CurrencyRateOnDateRequest,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Получает курс валюты на указанную дату
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+            <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+            <param name="cancellationToken">An optional token for canceling the call.</param>
+            <returns>The call object.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetCurrencyDataWithRateAsync(InternalApi.CurrencyRateOnDateRequest,Grpc.Core.CallOptions)">
+            <summary>
+            Получает курс валюты на указанную дату
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="options">The options for the call.</param>
+            <returns>The call object.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetApiSettings(InternalApi.ApiSettingsRequest,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Получает настройки API
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+            <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+            <param name="cancellationToken">An optional token for canceling the call.</param>
+            <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetApiSettings(InternalApi.ApiSettingsRequest,Grpc.Core.CallOptions)">
+            <summary>
+            Получает настройки API
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="options">The options for the call.</param>
+            <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetApiSettingsAsync(InternalApi.ApiSettingsRequest,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Получает настройки API
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+            <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+            <param name="cancellationToken">An optional token for canceling the call.</param>
+            <returns>The call object.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.GetApiSettingsAsync(InternalApi.ApiSettingsRequest,Grpc.Core.CallOptions)">
+            <summary>
+            Получает настройки API
+            </summary>
+            <param name="request">The request to send to the server.</param>
+            <param name="options">The options for the call.</param>
+            <returns>The call object.</returns>
+        </member>
+        <member name="M:InternalApi.CurrencyApi.CurrencyApiClient.NewInstance(Grpc.Core.ClientBase.ClientBaseConfiguration)">
+            <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
         </member>
     </members>
 </doc>

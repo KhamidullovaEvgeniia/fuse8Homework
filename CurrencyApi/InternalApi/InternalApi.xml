@@ -44,7 +44,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.Int32,System.DateOnly,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>

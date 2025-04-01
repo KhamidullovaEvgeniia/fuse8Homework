@@ -20,16 +20,10 @@ public class ApiSettings
     public required string BaseCurrency { get; set; }
 
     /// <summary>
-    /// Лимит запросов к API.
+    /// Есть ли доступные запросы к API.
     /// </summary>
-    [JsonPropertyName("requestLimit")]
-    public int RequestLimit { get; set; }
-
-    /// <summary>
-    /// Количество уже выполненных запросов.
-    /// </summary>
-    [JsonPropertyName("requestCount")]
-    public int RequestCount { get; set; }
+    [JsonPropertyName("newRequestsAvailable")]
+    public bool NewRequestsAvailable { get; set; }
 
     /// <summary>
     /// Количество знаков после запятой для округления валюты.

@@ -1,10 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using Audit.Http;
 using Fuse8.BackendInternship.PublicApi.Binders;
 using Fuse8.BackendInternship.PublicApi.Filters;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Middlewares;
 using Fuse8.BackendInternship.PublicApi.Services;
 using Fuse8.BackendInternship.PublicApi.Settings;
+using InternalApi;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
@@ -46,7 +48,14 @@ public class Startup
         services.AddSwaggerGen(
             c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "API", Version = "v1", Description = "Api" });
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo()
+                    {
+                        Title = "API",
+                        Version = "v1",
+                        Description = "Api"
+                    });
 
                 c.IncludeXmlComments(
                     Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml"),
@@ -59,6 +68,7 @@ public class Startup
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
         services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
         services.AddTransient<LoggingHandler>();
+        
 
         services
             .AddHttpClient<ICurrencyHttpApi, CurrencyHttpApi>()
@@ -86,6 +96,23 @@ public class Startup
                     client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
                 })
             .AddHttpMessageHandler<LoggingHandler>();
+        services.AddSingleton<GrpcLogger>();
+        services
+            .AddGrpcClient<CurrencyApi.CurrencyApiClient>(
+                (provider, options) =>
+                {
+                    var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
+                    options.Address = new Uri(settings.GrpcUrl);
+                })
+            .AddAuditHandler(audit => audit.IncludeRequestBody())
+            .AddInterceptor<GrpcLogger>();
+        
+        services.AddGrpc(options =>
+        {
+            options.Interceptors.Add<GrpcLogger>();
+        });
+        
+        
 
         services
             .AddOptions<CurrencyApiSettings>()

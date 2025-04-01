@@ -16,7 +16,7 @@ public class CurrencyController : ControllerBase
 {
     private readonly ICachedCurrencyAPI _cachedCurrencyAPI;
 
-    private readonly int _currencyCode;
+    private readonly string _currencyCode;
 
     /// <summary>
     /// Конструктор контроллера.
@@ -54,7 +54,8 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<CurrencyDTO> GetCurrencyRateAsync(CancellationToken cancellationToken)
     {
-        return await _cachedCurrencyAPI.GetCurrentCurrencyAsync((CurrencyType)_currencyCode, cancellationToken);
+        Enum.TryParse(_currencyCode, true, out CurrencyType currencyType);
+        return await _cachedCurrencyAPI.GetCurrentCurrencyAsync(currencyType, cancellationToken);
     }
 
     /// <summary>
@@ -81,10 +82,11 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<CurrencyDTO> GetDatedCurrencyRateAsync(
-        [FromRoute] int currencyCode,
+        [FromRoute] string currencyCode,
         [FromRoute] DateOnly date,
         CancellationToken cancellationToken)
     {
-        return await _cachedCurrencyAPI.GetCurrencyOnDateAsync((CurrencyType)currencyCode, date, cancellationToken);
+        Enum.TryParse(currencyCode, true, out CurrencyType currencyType);
+        return await _cachedCurrencyAPI.GetCurrencyOnDateAsync(currencyType, date, cancellationToken);
     }
 }

@@ -4,32 +4,35 @@ package currency;
 // Определение gRPC-сервиса
 service CurrencyApi {
   // Получает текущий курс указанной валюты
-  //rpc GetCurrencyRate (CurrencyRateRequest) returns (CurrencyRateResponse);
-  rpc GetCurrentCurrency (CurrencyRequest) returns (CurrencyDTO);
+  rpc GetCurrencyRate (CurrencyRateRequest) returns (CurrencyRateResponse);
   // Получает курс валюты на указанную дату
-  //rpc GetCurrencyDataWithRate (CurrencyRateOnDateRequest) returns (CurrencyRateOnDateResponse);
-  rpc GetCurrencyOnDate (CurrencyOnDateRequest) returns (CurrencyDTO);
+  rpc GetCurrencyDataWithRate (CurrencyRateOnDateRequest) returns (CurrencyRateOnDateResponse);
   // Получает настройки API
   rpc GetApiSettings (ApiSettingsRequest) returns (ApiSettingsResponse);
 }
-message CurrencyRequest {
-  CurrencyType currency_type = 1;
+
+// Запрос на получение курса валюты
+message CurrencyRateRequest {
+  string currencyCode = 1; // Код валюты, например, "USD"
 }
 
-message CurrencyOnDateRequest {
-  CurrencyType currency_type = 1;
-  string date = 2; // Используем строку для DateOnly (формат YYYY-MM-DD)
+// Ответ с курсом валюты
+message CurrencyRateResponse {
+  string currencyCode = 1;  // Код валюты
+  double value = 2;         // Значение курса
 }
 
-message CurrencyDTO {
-  string code = 1;
-  double rate = 2;
+// Запрос на получение курса валюты на дату
+message CurrencyRateOnDateRequest {
+  string currencyCode = 1; // Код валюты
+  string date = 2;         // Дата в формате "yyyy-MM-dd"
 }
 
-enum CurrencyType {
-  USD = 0;
-  EUR = 1;
-  GBP = 2;
+// Ответ с курсом валюты на дату
+message CurrencyRateOnDateResponse {
+  string date = 1;          // Дата в формате "yyyy-MM-dd"
+  string currencyCode = 2;  // Код валюты
+  double value = 3;         // Значение курса
 }
 
 // Запрос настроек API (пустой, т.к. параметры не требуются)

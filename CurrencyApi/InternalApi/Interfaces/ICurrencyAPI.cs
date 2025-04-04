@@ -20,14 +20,10 @@ public interface ICurrencyAPI
 	/// <param name="cancellationToken">Токен отмены</param>
 	/// <returns>Список курсов валют на дату</returns>
 	Task<CurrenciesOnDate> GetAllCurrenciesOnDateAsync(string baseCurrency, DateOnly date, CancellationToken cancellationToken);
+	Task<CurrencyRates> GetCurrencyRateAsync(string currencyCode);
+
+	Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date);
+
+	Task<ApiSettings> GetApiSettingsAsync();
 }
 
-// Данные модели использовать не обязательно, можно реализовать свои
-
-
-// /// <summary>
-// /// Курсы валют на конкретную дату
-// /// </summary>
-// /// <param name="LastUpdatedAt">Дата обновления данных</param>
-// /// <param name="Currencies">Список курсов валют</param>
-// record CurrenciesOnDate(DateTime LastUpdatedAt, Currency[] Currencies);

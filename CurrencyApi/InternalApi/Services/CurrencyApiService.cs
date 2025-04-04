@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace InternalApi.Services;
 
-public class CurrencyApiService : ICurrencyApiService, ICurrencyAPI
+public class CurrencyApiService : ICurrencyAPI
 {
     private readonly ICurrencyHttpApi _currencyHttpApi;
 

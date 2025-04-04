@@ -22,9 +22,7 @@ public class CurrencyController : ControllerBase
     /// </summary>
     /// <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
     /// <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
-    public CurrencyController(
-        ICachedCurrencyAPI cachedCurrencyApi,
-        IOptions<CurrencySetting> currencySetting)
+    public CurrencyController(ICachedCurrencyAPI cachedCurrencyApi, IOptions<CurrencySetting> currencySetting)
     {
         _cachedCurrencyAPI = cachedCurrencyApi;
         _currencyCode = currencySetting.Value.Currency;
@@ -88,4 +86,6 @@ public class CurrencyController : ControllerBase
         Enum.TryParse(currencyCode, true, out CurrencyType currencyType);
         return await _cachedCurrencyAPI.GetCurrencyOnDateAsync(currencyType, date, cancellationToken);
     }
+    
+    // TO-DO:  string currencyCode
 }

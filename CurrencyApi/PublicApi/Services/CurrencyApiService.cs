@@ -33,6 +33,7 @@ public class CurrencyApiService : ICurrencyApiService
         };
 
         // Отправляем запрос к gRPC-серверу
+        // TO-DO:  сладй 54-55
         var grpcResponse = await _currencyApiClient.GetCurrencyRateAsync(request);
 
         // Преобразуем результат из gRPC-ответа в свой объект ответа

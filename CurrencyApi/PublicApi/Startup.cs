@@ -62,8 +62,7 @@ public class Startup
                     true);
             });
 
-        services.Configure<CurrencyApiSettings>(_configuration.GetSection("CurrencyApiSettings"));
-        services.Configure<CurrencySetting>(_configuration.GetSection("CurrencySetting"));
+
 
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
         services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
@@ -101,11 +100,15 @@ public class Startup
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(
                 (provider, options) =>
                 {
-                    var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
+                    var settings = provider.GetRequiredService<IOptionsSnapshot<CurrencyApiSettings>>().Value;
                     options.Address = new Uri(settings.GrpcUrl);
                 })
-            .AddAuditHandler(audit => audit.IncludeRequestBody())
-            .AddInterceptor<GrpcLogger>();
+            .AddAuditHandler(audit => audit
+            .IncludeRequestBody()
+            .IncludeResponseBody()
+            .IncludeContentHeaders()
+            .IncludeRequestHeaders()
+            .IncludeResponseHeaders());
         
         services.AddGrpc(options =>
         {
@@ -122,6 +125,11 @@ public class Startup
             .ValidateDataAnnotations()
 
             // Настраиваем, чтобы валидация свойств была при старте приложения
+            .ValidateOnStart();
+        
+        services.AddOptions<CurrencySetting>()
+            .Bind(_configuration.GetSection(CurrencySetting.SectionName))
+            .ValidateDataAnnotations()
             .ValidateOnStart();
     }
 

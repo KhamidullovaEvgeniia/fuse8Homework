@@ -100,7 +100,7 @@ public class Startup
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(
                 (provider, options) =>
                 {
-                    var settings = provider.GetRequiredService<IOptionsSnapshot<CurrencyApiSettings>>().Value;
+                    var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
                     options.Address = new Uri(settings.GrpcUrl);
                 })
             .AddAuditHandler(audit => audit

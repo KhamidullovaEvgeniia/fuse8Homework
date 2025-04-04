@@ -10,13 +10,13 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 {
     private readonly ICachedCurrencyAPI _cachedCurrencyApi;
 
-    private readonly ICurrencyApiService _currencyApiService;
+    private readonly ICurrencyAPI _currencyApiService;
 
     private readonly CurrencySetting _currencySetting;
 
     public GrpcService(
         ICachedCurrencyAPI cachedCurrencyApi,
-        ICurrencyApiService currencyApiService,
+        ICurrencyAPI currencyApiService,
         IOptionsSnapshot<CurrencySetting> currencySetting)
     {
         _cachedCurrencyApi = cachedCurrencyApi;

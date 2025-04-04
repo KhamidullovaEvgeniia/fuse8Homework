@@ -34,7 +34,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        Configuration.Setup().UseSerilog();
         services
             .AddControllers(
                 options =>
@@ -72,14 +71,25 @@ public class Startup
                     true);
             });
 
-        services.AddGrpc();
-        
-        
+        services
+            .AddOptions<CurrencyApiSettings>()
+            .Bind(_configuration.GetSection(CurrencyApiSettings.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services
+            .AddOptions<CurrencySetting>()
+            .Bind(_configuration.GetSection(CurrencySetting.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
-        services.AddTransient<LoggingHandler>();
+        
 
-        //services.AddGrpc();
+        services.AddGrpc();
+
+        Configuration.Setup().UseSerilog();
 
         services
             .AddHttpClient<ICurrencyHttpApi, CurrencyHttpApi>()
@@ -101,10 +111,13 @@ public class Startup
             .ConfigureHttpClient(
                 (provider, client) =>
                 {
-                    var settings = provider.GetRequiredService<IOptionsSnapshot<CurrencyApiSettings>>().Value;
-
-                    client.BaseAddress = new Uri(settings.BaseUrl);
-                    client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
+                    using (var scope = provider.CreateScope())
+                    {
+                        var scopedProvider = scope.ServiceProvider;
+                        var settings = scopedProvider.GetRequiredService<IOptionsSnapshot<CurrencyApiSettings>>().Value;
+                        client.BaseAddress = new Uri(settings.BaseUrl);
+                        client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
+                    }
                 })
             .AddAuditHandler(audit => audit.IncludeRequestBody())
             .AddAuditHandler(
@@ -114,48 +127,10 @@ public class Startup
                     .IncludeContentHeaders()
                     .IncludeRequestHeaders()
                     .IncludeResponseHeaders());
-
-        services
-            .AddOptions<CurrencyApiSettings>()
-            .Bind(_configuration.GetSection(CurrencyApiSettings.SectionName))
-
-            // Настраиваем валидацию свойств по дата-атрибутам
-            .ValidateDataAnnotations()
-
-            // Настраиваем, чтобы валидация свойств была при старте приложения
-            .ValidateOnStart();
-        
-        services.AddOptions<CurrencySetting>()
-            .Bind(_configuration.GetSection(CurrencySetting.SectionName))
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        // if (env.IsDevelopment())
-        // {
-        //     app.UseSwagger();
-        //     app.UseSwaggerUI(
-        //         options =>
-        //         {
-        //             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Currency API v1");
-        //             options.RoutePrefix = "";
-        //         });
-        // }
-        //
-        // app.UseMiddleware<RequestLoggingMiddleware>();
-        //
-        // app.UseWhen(
-        //     predicate: context => context.Connection.LocalPort == _configuration.GetValue<int>("GrpcPort"),
-        //     configuration: grpcBuilder =>
-        //     {
-        //         grpcBuilder.UseRouting();
-        //         grpcBuilder.UseEndpoints(endpoints => endpoints.MapGrpcService<GrpcService>());
-        //     });
-        //
-        // app.UseRouting().UseEndpoints(endpoints => endpoints.MapControllers());
-
         var (grpcPort, webApiPort) = GetPorts();
 
         // Настраиваем доступ к webApi только по webApi-порту

@@ -10,13 +10,13 @@ namespace InternalApi.Controllers;
 [Route("settings")]
 public class SettingsController : ControllerBase
 {
-    private readonly ICurrencyApiService _currencyApiService;
+    private readonly ICurrencyAPI _currencyApiService;
 
     /// <summary>
     /// Конструктор контроллера.
     /// </summary>
     /// <param name="currencyApiService">Сервис для работы с API валют.</param>
-    public SettingsController(ICurrencyApiService currencyApiService)
+    public SettingsController(ICurrencyAPI currencyApiService)
     {
         _currencyApiService = currencyApiService;
     }

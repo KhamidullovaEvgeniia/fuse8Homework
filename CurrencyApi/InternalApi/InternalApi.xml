@@ -116,7 +116,7 @@
             Метод для получения текущих настроек API.
             </summary>
         </member>
-        <member name="M:InternalApi.Controllers.SettingsController.#ctor(InternalApi.Interfaces.ICurrencyApiService)">
+        <member name="M:InternalApi.Controllers.SettingsController.#ctor(InternalApi.Interfaces.ICurrencyAPI)">
             <summary>
             Конструктор контроллера.
             </summary>

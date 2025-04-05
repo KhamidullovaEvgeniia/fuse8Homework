@@ -10,7 +10,7 @@ public class CurrenciesOnDate
     /// Дата обновления данных
     /// </summary>
     [JsonPropertyName("lastUpdatedAt")]
-    public required DateOnly Date { get; init; }
+    public required DateTime Date { get; init; }
 
     /// <summary>
     /// Список курсов валют

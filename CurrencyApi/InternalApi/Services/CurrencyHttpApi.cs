@@ -52,20 +52,20 @@ public class CurrencyHttpApi : ICurrencyHttpApi
         return result;
     }
     
-    public async Task<CurrencyResponse> GetAllCurrenciesRateAsync()
+    public async Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency)
     {
-        var url = $"latest?{BaseCurrenciesQueryKey}={_currencySetting.BaseCurrency}";
+        var url = $"latest?{BaseCurrenciesQueryKey}={baseCurrency}";
 
         var result = await FetchCurrencyDataAsync(url);
 
         return result;
     }
     
-    public async Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(string currencyCode, DateOnly date)
+    public async Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(string baseCurrency, DateOnly date)
     {
         string formattedDate = date.ToString("yyyy-MM-dd");
         var url =
-            $"historical?date={formattedDate}&{BaseCurrenciesQueryKey}={_currencySetting.BaseCurrency}";
+            $"historical?date={formattedDate}&{BaseCurrenciesQueryKey}={baseCurrency}";
 
         var result = await FetchCurrencyDataAsync(url);
 

@@ -10,6 +10,9 @@
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
       </Content>
+      <Content Include="..\CurrencyApiService.proto">
+        <Link>Protos\CurrencyApiService.proto</Link>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -39,12 +42,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos/gRPCService.proto" GrpcServices="Server" />
+      <_ContentIncludedByDefault Remove="wwwroot\app.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\favicon.png" />
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\app.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\favicon.png" />
+        <Protobuf Include="..\CurrencyApiService.proto" GrpcServices="Service" />
     </ItemGroup>
 
 </Project>

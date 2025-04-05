@@ -1,8 +1,11 @@
-﻿using Grpc.Core;
+﻿using Currency;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using InternalApi.Enums;
 using InternalApi.Interfaces;
 using InternalApi.Settings;
 using Microsoft.Extensions.Options;
+using Enum = System.Enum;
 
 namespace InternalApi.Services;
 
@@ -27,6 +30,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
         Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
+        
         var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(currencyType, context.CancellationToken);
 
         return new CurrencyRateResponse
@@ -41,7 +45,9 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         ServerCallContext context)
     {
         Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
-        var date = DateOnly.Parse(request.Date);
+
+        var grpcDateOnly = request.Date;
+        var date = new DateOnly(grpcDateOnly.Year, grpcDateOnly.Month, grpcDateOnly.Day);
         var currencyData = await _cachedCurrencyApi.GetCurrencyOnDateAsync(currencyType, date, context.CancellationToken);
 
         return new CurrencyRateOnDateResponse
@@ -52,20 +58,17 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         };
     }
 
-    public override async Task<ApiSettingsResponse> GetApiSettings(ApiSettingsRequest request, ServerCallContext context)
+    public override async Task<ApiSettingsResponse> GetApiSettings(Empty request, ServerCallContext context)
     {
         var settings = await _currencyApiService.GetApiSettingsAsync();
 
         return new ApiSettingsResponse
         {
-            DefaultCurrency = settings.DefaultCurrency,
             BaseCurrency = settings.BaseCurrency,
-            RequestLimit = settings.RequestLimit,
-            RequestCount = settings.RequestCount,
             HasRequestsLeft = settings.RequestLimit > settings.RequestCount,
-            CurrencyRoundCount = settings.CurrencyRoundCount
         };
     }
 
     private double RoundCurrencyValue(double value) => Math.Round(value, _currencySetting.Accuracy);
+    
 }

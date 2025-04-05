@@ -2,6 +2,12 @@
 
 namespace InternalApi.Responses;
 
+public class Meta
+{
+    [JsonPropertyName("last_updated_at")]
+    public required DateTime LastUpdatedAt { get; set; }
+}
+
 public class CurrencyInfo
 {
     [JsonPropertyName("code")]
@@ -13,6 +19,9 @@ public class CurrencyInfo
 
 public class CurrencyResponse
 {
+    [JsonPropertyName("meta")]
+    public required Meta Meta { get; set; }
+
     [JsonPropertyName("data")]
     public required Dictionary<string, CurrencyInfo> Data { get; set; }
 }

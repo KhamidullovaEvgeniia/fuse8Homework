@@ -1,6 +1,7 @@
 ﻿using InternalApi.Enums;
 using InternalApi.Interfaces;
 using InternalApi.Models;
+using InternalApi.Responses;
 using InternalApi.Settings;
 using Microsoft.Extensions.Options;
 
@@ -16,29 +17,6 @@ public class CurrencyApiService : ICurrencyAPI
     {
         _currencyHttpApi = currencyHttpApi;
         _currencySetting = currencySetting.Value;
-    }
-
-    public async Task<CurrencyRates> GetCurrencyRateAsync(string currencyCode)
-    {
-        var result = await _currencyHttpApi.GetCurrencyRateAsync(currencyCode);
-
-        var resultFirst = result.Data.First().Value;
-        var currencyRate = new CurrencyRates() { Code = resultFirst.Code, Value = RoundCurrencyValue(resultFirst.Value) };
-
-        return currencyRate;
-    }
-
-    public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date)
-    {
-        var result = await _currencyHttpApi.GetCurrencyDataWithRateAsync(currencyCode, date);
-        var resultFirst = result.Data.First().Value;
-
-        var datedCurrencyRate = new DatedCurrencyRate()
-        {
-            Date = date, Code = resultFirst.Code, Value = RoundCurrencyValue(resultFirst.Value)
-        };
-
-        return datedCurrencyRate;
     }
 
     public async Task<ApiSettings> GetApiSettingsAsync()
@@ -57,10 +35,16 @@ public class CurrencyApiService : ICurrencyAPI
         return settingsApi;
     }
 
-    public async Task<CurrencyRates[]> GetAllCurrentCurrenciesAsync(string currencyCode, CancellationToken cancellationToken)
+    public async Task<CurrenciesOnDate> GetAllCurrentCurrenciesAsync(string baseCurrency, CancellationToken cancellationToken)
     {
-        var result = await _currencyHttpApi.GetAllCurrenciesRateAsync();
-        return result.Data.Select(x => new CurrencyRates { Code = x.Value.Code, Value = x.Value.Value }).ToArray();
+        var result = await _currencyHttpApi.GetAllCurrenciesRateAsync(baseCurrency);
+        var resultCurrencies = GetAllCurrenciesRates(result);
+
+        return new CurrenciesOnDate
+        {
+            Date = result.Meta.LastUpdatedAt,
+            Rates = resultCurrencies
+        };
     }
 
     public async Task<CurrenciesOnDate> GetAllCurrenciesOnDateAsync(
@@ -69,8 +53,27 @@ public class CurrencyApiService : ICurrencyAPI
         CancellationToken cancellationToken)
     {
         var result = await _currencyHttpApi.GetAllCurrenciesDataWithRateAsync(currencyCode, date);
-        var resultCurrencies = result.Data.Select(x => new CurrencyRates { Code = x.Value.Code, Value = x.Value.Value }).ToArray();
-        return new CurrenciesOnDate { Date = date, Rates = resultCurrencies };
+        var resultCurrencies = GetAllCurrenciesRates(result);
+
+        return new CurrenciesOnDate
+        {
+            Date = result.Meta.LastUpdatedAt,
+            Rates = resultCurrencies
+        };
+    }
+
+    private CurrencyRates[] GetAllCurrenciesRates(CurrencyResponse currencyResponse)
+    {
+        return currencyResponse
+            .Data
+            .Values
+            .Select(
+                x => new CurrencyRates
+                {
+                    Code = x.Code,
+                    Value = x.Value
+                })
+            .ToArray();
     }
 
     private decimal RoundCurrencyValue(decimal value) => Math.Round(value, _currencySetting.Accuracy);

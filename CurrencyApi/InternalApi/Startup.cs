@@ -119,7 +119,6 @@ public class Startup
                         client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
                     }
                 })
-            .AddAuditHandler(audit => audit.IncludeRequestBody())
             .AddAuditHandler(
                 audit => audit
                     .IncludeRequestBody()

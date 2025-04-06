@@ -16,20 +16,7 @@ public class ExceptionFilter : IExceptionFilter
 
     public void OnException(ExceptionContext context)
     {
-        var exception = context.Exception;
-        switch (exception)
-        {
-            case ApiRequestLimitException apiRequestLimitException:
-                _logger.LogError(context.Exception, "Too Many Requests");
-                SetResponse(apiRequestLimitException.Message, StatusCodes.Status429TooManyRequests);
-                break;
-            case CurrencyNotFoundException currencyNotFoundException:
-                SetResponse(currencyNotFoundException.Message, StatusCodes.Status404NotFound);
-                break;
-            default:
-                SetResponse("Произошла ошибка при обработке запроса", StatusCodes.Status500InternalServerError);
-                break;
-        }
+        SetResponse("Произошла ошибка при обработке запроса", StatusCodes.Status500InternalServerError);
 
         context.ExceptionHandled = true;
 

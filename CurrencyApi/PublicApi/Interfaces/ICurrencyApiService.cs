@@ -1,4 +1,5 @@
 ﻿using Fuse8.BackendInternship.PublicApi.Models;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Fuse8.BackendInternship.PublicApi.Interfaces;
 
@@ -8,5 +9,5 @@ public interface ICurrencyApiService
 
     Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date);
 
-    Task<ApiSettings> GetApiSettingsAsync();
+    Task<ApiSettings> GetApiSettingsAsync(Empty request);
 }

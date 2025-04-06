@@ -15,8 +15,6 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
     private readonly ICurrencyAPI _currencyApiService;
 
-    private readonly CurrencySetting _currencySetting;
-
     public GrpcService(
         ICachedCurrencyAPI cachedCurrencyApi,
         ICurrencyAPI currencyApiService,
@@ -24,20 +22,15 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
     {
         _cachedCurrencyApi = cachedCurrencyApi;
         _currencyApiService = currencyApiService;
-        _currencySetting = currencySetting.Value;
     }
 
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
         Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
-        
+
         var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(currencyType, context.CancellationToken);
 
-        return new CurrencyRateResponse
-        {
-            CurrencyCode = request.CurrencyCode,
-            Value = RoundCurrencyValue((double)currencyData.Value)
-        };
+        return new CurrencyRateResponse { CurrencyCode = request.CurrencyCode, Value = (double)currencyData.Value, };
     }
 
     public override async Task<CurrencyRateOnDateResponse> GetCurrencyDataWithRate(
@@ -52,9 +45,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
         return new CurrencyRateOnDateResponse
         {
-            Date = request.Date,
-            CurrencyCode = request.CurrencyCode,
-            Value = RoundCurrencyValue((double)currencyData.Value)
+            Date = request.Date, CurrencyCode = request.CurrencyCode, Value = (double)currencyData.Value
         };
     }
 
@@ -64,11 +55,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
         return new ApiSettingsResponse
         {
-            BaseCurrency = settings.BaseCurrency,
-            HasRequestsLeft = settings.RequestLimit > settings.RequestCount,
+            BaseCurrency = settings.BaseCurrency, HasRequestsLeft = settings.RequestLimit > settings.RequestCount,
         };
     }
-
-    private double RoundCurrencyValue(double value) => Math.Round(value, _currencySetting.Accuracy);
-    
 }

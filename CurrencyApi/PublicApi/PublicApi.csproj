@@ -29,17 +29,13 @@
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
       </Content>
+      <Content Include="..\CurrencyApiService.proto">
+        <Link>Protos\CurrencyApiService.proto</Link>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Protobuf Include="Protos\gRPCClient.proto">
-        <GrpcServices>Server</GrpcServices>
-        <Access>Public</Access>
-        <ProtoCompile>True</ProtoCompile>
-        <CompileOutputs>True</CompileOutputs>
-        <OutputDir>obj\Debug\net9.0\</OutputDir>
-        <Generator>MSBuild:Compile</Generator>
-      </Protobuf>
+        <Protobuf Include="..\CurrencyApiService.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -47,8 +43,4 @@
         <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Protobuf Include="Protos\gRPCClient.proto" GrpcServices="Client" />
-    </ItemGroup>
 </Project>

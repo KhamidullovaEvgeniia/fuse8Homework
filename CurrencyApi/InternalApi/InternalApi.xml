@@ -26,7 +26,7 @@
             <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
             <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс валюты по умолчанию.
             </summary>
@@ -66,7 +66,7 @@
         </member>
         <member name="T:InternalApi.Controllers.HealthCheckController">
             <summary>
-            Методы для проверки работоспособности PublicApi
+            Методы для проверки работоспособности InternalApi
             </summary>
         </member>
         <member name="M:InternalApi.Controllers.HealthCheckController.Check(System.Nullable{System.Boolean})">

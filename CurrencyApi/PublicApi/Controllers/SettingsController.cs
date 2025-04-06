@@ -3,6 +3,7 @@ using Fuse8.BackendInternship.PublicApi.Models;
 using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Fuse8.BackendInternship.PublicApi.Controllers;
 /// <summary>
@@ -31,6 +32,6 @@ public class SettingsController : ControllerBase
     [HttpGet]
     public async Task<ApiSettings> GetSettingsAsync()
     {
-        return await _currencyApiService.GetApiSettingsAsync();
+        return await _currencyApiService.GetApiSettingsAsync(new Empty());
     }
 }

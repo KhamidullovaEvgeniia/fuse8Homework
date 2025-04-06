@@ -1,32 +1,32 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>PublicApi</name>
+        <name>InternalApi</name>
     </assembly>
     <members>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyBinderProvider">
+        <member name="T:InternalApi.Binders.DateOnlyBinderProvider">
             <summary>
             Задает ModelBinder для специфичного парсинга значений в запросах
             </summary>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyModelBinder">
+        <member name="T:InternalApi.Binders.DateOnlyModelBinder">
             <summary>
             Model Binder для парсинга даты
             </summary>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController">
+        <member name="T:InternalApi.Controllers.CurrencyController">
             <summary>
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
             </summary>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.#ctor(Fuse8.BackendInternship.PublicApi.Interfaces.ICurrencyApiService,Microsoft.Extensions.Options.IOptions{Fuse8.BackendInternship.PublicApi.Settings.CurrencySetting})">
+        <member name="M:InternalApi.Controllers.CurrencyController.#ctor(InternalApi.Interfaces.ICachedCurrencyAPI,Microsoft.Extensions.Options.IOptions{InternalApi.Settings.CurrencySetting})">
             <summary>
             Конструктор контроллера.
             </summary>
-            <param name="currencyApiService">Сервис для получения данных о валюте.</param>
+            <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
             <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyRateAsync">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс валюты по умолчанию.
             </summary>
@@ -44,26 +44,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String)">
-            <summary>
-            Получает текущий курс указанной валюты.
-            </summary>
-            <param name="currencyCode">Код валюты (например, "RUB").</param>
-            <returns>Текущий курс валюты.</returns>
-            <response code="200">
-            Успешный запрос, возвращает курс валюты.
-            </response>
-            <response code="404">
-            Курс валюты не найден.
-            </response>
-            <response code="429">
-            Превышен лимит запросов.
-            </response>
-            <response code="500">
-            Ошибка сервера.
-            </response>
-        </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly)">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>
@@ -83,12 +64,12 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckController">
+        <member name="T:InternalApi.Controllers.HealthCheckController">
             <summary>
-            Методы для проверки работоспособности PublicApi
+            Методы для проверки работоспособности InternalApi
             </summary>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckController.Check(System.Nullable{System.Boolean})">
+        <member name="M:InternalApi.Controllers.HealthCheckController.Check(System.Nullable{System.Boolean})">
             <summary>
             Проверить что API работает
             </summary>
@@ -100,48 +81,48 @@
             Возвращает если удалось не удалось получить доступ к API
             </response>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult">
+        <member name="T:InternalApi.Controllers.HealthCheckResult">
             <summary>
             Результат проверки работоспособности API
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckedOn">
+        <member name="P:InternalApi.Controllers.HealthCheckResult.CheckedOn">
             <summary>
             Дата проверки
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.Status">
+        <member name="P:InternalApi.Controllers.HealthCheckResult.Status">
             <summary>
             Статус работоспособности API
             </summary>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckStatus">
+        <member name="T:InternalApi.Controllers.HealthCheckResult.CheckStatus">
             <summary>
             Статус API
             </summary>
         </member>
-        <member name="F:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckStatus.Ok">
+        <member name="F:InternalApi.Controllers.HealthCheckResult.CheckStatus.Ok">
             <summary>
             API работает
             </summary>
         </member>
-        <member name="F:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckResult.CheckStatus.Failed">
+        <member name="F:InternalApi.Controllers.HealthCheckResult.CheckStatus.Failed">
             <summary>
             Ошибка в работе API
             </summary>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController">
+        <member name="T:InternalApi.Controllers.SettingsController">
             <summary>
             Метод для получения текущих настроек API.
             </summary>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController.#ctor(Fuse8.BackendInternship.PublicApi.Interfaces.ICurrencyApiService)">
+        <member name="M:InternalApi.Controllers.SettingsController.#ctor(InternalApi.Interfaces.ICurrencyAPI)">
             <summary>
             Конструктор контроллера.
             </summary>
             <param name="currencyApiService">Сервис для работы с API валют.</param>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController.GetSettingsAsync">
+        <member name="M:InternalApi.Controllers.SettingsController.GetSettingsAsync">
             <summary>
             Получает текущие настройки API.
             </summary>
@@ -150,67 +131,154 @@
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.DateOnlyJsonConvector">
+        <member name="T:InternalApi.Enums.CurrencyType">
+            <summary>
+            Код валюты
+            </summary>
+        </member>
+        <member name="F:InternalApi.Enums.CurrencyType.NotSet">
+            <summary>
+            Default value
+            </summary>
+        </member>
+        <member name="F:InternalApi.Enums.CurrencyType.USD">
+            <summary>
+            USD
+            </summary>
+        </member>
+        <member name="F:InternalApi.Enums.CurrencyType.RUB">
+            <summary>
+            RUB
+            </summary>
+        </member>
+        <member name="F:InternalApi.Enums.CurrencyType.KZT">
+            <summary>
+            KZT
+            </summary>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrentCurrencyAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс
+            </summary>
+            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Текущий курс</returns>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrencyOnDateAsync(InternalApi.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс валюты, актуальный на <paramref name="date"/>
+            </summary>
+            <param name="currencyType">Валюта, для которой необходимо получить курс</param>
+            <param name="date">Дата, на которую нужно получить курс валют</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Курс на дату</returns>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICurrencyAPI.GetAllCurrentCurrenciesAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс для всех валют
+            </summary>
+            <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Список курсов валют</returns>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICurrencyAPI.GetAllCurrenciesOnDateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс для всех валют, актуальный на <paramref name="date"/>
+            </summary>
+            <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
+            <param name="date">Дата, на которую нужно получить курс валют</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Список курсов валют на дату</returns>
+        </member>
+        <member name="M:InternalApi.Interfaces.ICurrencyAPI.GetApiSettingsAsync">
+            <summary>
+            Получает настройки 
+            </summary>
+            <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
+            <param name="cancellationToken">Токен отмены</param>
+            <returns>Список курсов валют на дату</returns>
+        </member>
+        <member name="T:InternalApi.JsonConvectors.DateOnlyJsonConvector">
             <summary>
             Json-конвектор для получения и записи DateOnly в Json
             </summary>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Models.ApiSettings">
+        <member name="T:InternalApi.Models.ApiSettings">
             <summary>
             Настройки API.
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.DefaultCurrency">
+        <member name="P:InternalApi.Models.ApiSettings.DefaultCurrency">
             <summary>
             Валюта по умолчанию.
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.BaseCurrency">
+        <member name="P:InternalApi.Models.ApiSettings.BaseCurrency">
             <summary>
             Базовая валюта.
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.NewRequestsAvailable">
+        <member name="P:InternalApi.Models.ApiSettings.RequestLimit">
             <summary>
-            Есть ли доступные запросы к API.
+            Лимит запросов к API.
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.CurrencyRoundCount">
+        <member name="P:InternalApi.Models.ApiSettings.RequestCount">
+            <summary>
+            Количество уже выполненных запросов.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.ApiSettings.CurrencyRoundCount">
             <summary>
             Количество знаков после запятой для округления валюты.
             </summary>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Models.CurrencyRate">
-            <summary>
-            Курс валюты.
-            </summary>
-        </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.CurrencyRate.Code">
-            <summary>
-            Код валюты (например, "RUB").
-            </summary>
-        </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.CurrencyRate.Value">
-            <summary>
-            Значение курса валюты.
-            </summary>
-        </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate">
+        <member name="T:InternalApi.Models.CurrenciesOnDate">
             <summary>
             Курс валюты с датой.
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Date">
+        <member name="P:InternalApi.Models.CurrenciesOnDate.Date">
             <summary>
-            Дата курса валюты в формате yyyy-MM-dd.
+            Дата обновления данных
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Code">
+        <member name="P:InternalApi.Models.CurrenciesOnDate.Rates">
+            <summary>
+            Список курсов валют
+            </summary>
+        </member>
+        <member name="T:InternalApi.Models.CurrencyRates">
+            <summary>
+            Курс валюты.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.CurrencyRates.Code">
             <summary>
             Код валюты (например, "RUB").
             </summary>
         </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Value">
+        <member name="P:InternalApi.Models.CurrencyRates.Value">
+            <summary>
+            Значение курса валюты.
+            </summary>
+        </member>
+        <member name="T:InternalApi.Models.DatedCurrencyRate">
+            <summary>
+            Курс валюты с датой.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.DatedCurrencyRate.Date">
+            <summary>
+            Дата курса валюты в формате yyyy-MM-dd.
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.DatedCurrencyRate.Code">
+            <summary>
+            Код валюты (например, "RUB").
+            </summary>
+        </member>
+        <member name="P:InternalApi.Models.DatedCurrencyRate.Value">
             <summary>
             Значение курса валюты.
             </summary>
@@ -363,6 +431,33 @@
         <member name="P:Currency.CurrencyApi.Descriptor">
             <summary>Service descriptor</summary>
         </member>
+        <member name="T:Currency.CurrencyApi.CurrencyApiBase">
+            <summary>Base class for server-side implementations of CurrencyApi</summary>
+        </member>
+        <member name="M:Currency.CurrencyApi.CurrencyApiBase.GetCurrencyRate(Currency.CurrencyRateRequest,Grpc.Core.ServerCallContext)">
+            <summary>
+            Получает текущий курс указанной валюты
+            </summary>
+            <param name="request">The request received from the client.</param>
+            <param name="context">The context of the server-side call handler being invoked.</param>
+            <returns>The response to send back to the client (wrapped by a task).</returns>
+        </member>
+        <member name="M:Currency.CurrencyApi.CurrencyApiBase.GetCurrencyDataWithRate(Currency.CurrencyRateOnDateRequest,Grpc.Core.ServerCallContext)">
+            <summary>
+            Получает курс валюты на указанную дату
+            </summary>
+            <param name="request">The request received from the client.</param>
+            <param name="context">The context of the server-side call handler being invoked.</param>
+            <returns>The response to send back to the client (wrapped by a task).</returns>
+        </member>
+        <member name="M:Currency.CurrencyApi.CurrencyApiBase.GetApiSettings(Google.Protobuf.WellKnownTypes.Empty,Grpc.Core.ServerCallContext)">
+            <summary>
+            Получает настройки API
+            </summary>
+            <param name="request">The request received from the client.</param>
+            <param name="context">The context of the server-side call handler being invoked.</param>
+            <returns>The response to send back to the client (wrapped by a task).</returns>
+        </member>
         <member name="T:Currency.CurrencyApi.CurrencyApiClient">
             <summary>Client for CurrencyApi</summary>
         </member>
@@ -491,6 +586,16 @@
         </member>
         <member name="M:Currency.CurrencyApi.CurrencyApiClient.NewInstance(Grpc.Core.ClientBase.ClientBaseConfiguration)">
             <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
+        </member>
+        <member name="M:Currency.CurrencyApi.BindService(Currency.CurrencyApi.CurrencyApiBase)">
+            <summary>Creates service definition that can be registered with a server</summary>
+            <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+        </member>
+        <member name="M:Currency.CurrencyApi.BindService(Grpc.Core.ServiceBinderBase,Currency.CurrencyApi.CurrencyApiBase)">
+            <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
+            Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+            <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+            <param name="serviceImpl">An object implementing the server-side handling logic.</param>
         </member>
     </members>
 </doc>

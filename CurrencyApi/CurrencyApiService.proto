@@ -1,0 +1,50 @@
+﻿syntax = "proto3";
+import "google/protobuf/empty.proto";
+package currency;
+// Определение gRPC-сервиса
+service CurrencyApi {
+  // Получает текущий курс указанной валюты
+  rpc GetCurrencyRate (CurrencyRateRequest) returns (CurrencyRateResponse);
+  // Получает курс валюты на указанную дату
+  rpc GetCurrencyDataWithRate (CurrencyRateOnDateRequest) returns (CurrencyRateOnDateResponse);
+  // Получает настройки API
+  rpc GetApiSettings (google.protobuf.Empty) returns (ApiSettingsResponse);
+}
+
+// Запрос на получение курса валюты
+message CurrencyRateRequest {
+  string currencyCode = 1; // Код валюты, например, "USD"
+}
+
+// Ответ с курсом валюты
+message CurrencyRateResponse {
+  string currencyCode = 1;  // Код валюты
+  double value = 2;         // Значение курса
+}
+// Тип для передачи даты
+message GRPCDateOnly {
+  // Год
+  int32 year = 1;
+  // Месяц
+  int32 month = 2;
+  // День
+  int32 day = 3;
+}
+// Запрос на получение курса валюты на дату
+message CurrencyRateOnDateRequest {
+  string currencyCode = 1; // Код валюты
+  GRPCDateOnly date = 2;   // Дата в формате "yyyy-MM-dd"
+}
+
+// Ответ с курсом валюты на дату
+message CurrencyRateOnDateResponse {
+  GRPCDateOnly date = 1;    // Дата в формате "yyyy-MM-dd"
+  string currencyCode = 2;  // Код валюты
+  double value = 3;         // Значение курса
+}
+
+// Ответ с настройками API
+message ApiSettingsResponse {
+  string baseCurrency = 2;      // Базовая валюта
+  bool hasRequestsLeft = 5;     // Доступны ли еще запросы (requestLimit > requestCount)
+}

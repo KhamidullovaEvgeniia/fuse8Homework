@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Audit.Http;
+using Currency;
 using Fuse8.BackendInternship.PublicApi.Binders;
 using Fuse8.BackendInternship.PublicApi.Filters;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
@@ -53,48 +55,66 @@ public class Startup
                     true);
             });
 
-        services.Configure<CurrencyApiSettings>(_configuration.GetSection("CurrencyApiSettings"));
-        services.Configure<CurrencySetting>(_configuration.GetSection("CurrencySetting"));
-
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
         services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
         services.AddTransient<LoggingHandler>();
 
+        // services
+        //     .AddHttpClient<ICurrencyHttpApi, CurrencyHttpApi>()
+        //     .AddPolicyHandler(
+        //         HttpPolicyExtensions
+        //
+        //             // Настраиваем повторный запрос при получении ошибок сервера (HTTP-код = 5XX) и для таймаута выполнения запроса (HTTP-код = 408)
+        //             .HandleTransientHttpError()
+        //             .WaitAndRetryAsync(
+        //                 retryCount: 3,
+        //                 sleepDurationProvider: retryAttempt =>
+        //                 {
+        //                     // Настраиваем экспоненциальную задержку для отправки повторного запроса при ошибке
+        //                     // 1-я попытка будет выполнена через 1 сек
+        //                     // 2-я - через 3 сек
+        //                     // 3-я - через 7 сек
+        //                     return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) - 1);
+        //                 }))
+        //     .ConfigureHttpClient(
+        //         (provider, client) =>
+        //         {
+        //             var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
+        //
+        //             client.BaseAddress = new Uri(settings.BaseUrl);
+        //             client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
+        //         })
+        //     .AddHttpMessageHandler<LoggingHandler>();
+
         services
-            .AddHttpClient<ICurrencyHttpApi, CurrencyHttpApi>()
-            .AddPolicyHandler(
-                HttpPolicyExtensions
-
-                    // Настраиваем повторный запрос при получении ошибок сервера (HTTP-код = 5XX) и для таймаута выполнения запроса (HTTP-код = 408)
-                    .HandleTransientHttpError()
-                    .WaitAndRetryAsync(
-                        retryCount: 3,
-                        sleepDurationProvider: retryAttempt =>
-                        {
-                            // Настраиваем экспоненциальную задержку для отправки повторного запроса при ошибке
-                            // 1-я попытка будет выполнена через 1 сек
-                            // 2-я - через 3 сек
-                            // 3-я - через 7 сек
-                            return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) - 1);
-                        }))
-            .ConfigureHttpClient(
-                (provider, client) =>
+            .AddGrpcClient<CurrencyApi.CurrencyApiClient>(
+                (provider, options) =>
                 {
-                    var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
-
-                    client.BaseAddress = new Uri(settings.BaseUrl);
-                    client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
+                    using (var scope = provider.CreateScope())
+                    {
+                        var scopedProvider = scope.ServiceProvider;
+                        var settings = scopedProvider.GetRequiredService<IOptionsSnapshot<CurrencyApiSettings>>().Value;
+                        options.Address = new Uri(settings.GrpcUrl);
+                    }
                 })
-            .AddHttpMessageHandler<LoggingHandler>();
+            .AddAuditHandler(
+                audit => audit
+                    .IncludeRequestBody()
+                    .IncludeResponseBody()
+                    .IncludeContentHeaders()
+                    .IncludeRequestHeaders()
+                    .IncludeResponseHeaders());
 
         services
             .AddOptions<CurrencyApiSettings>()
             .Bind(_configuration.GetSection(CurrencyApiSettings.SectionName))
-
-            // Настраиваем валидацию свойств по дата-атрибутам
             .ValidateDataAnnotations()
+            .ValidateOnStart();
 
-            // Настраиваем, чтобы валидация свойств была при старте приложения
+        services
+            .AddOptions<CurrencySetting>()
+            .Bind(_configuration.GetSection(CurrencySetting.SectionName))
+            .ValidateDataAnnotations()
             .ValidateOnStart();
     }
 

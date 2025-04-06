@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Fuse8.BackendInternship.PublicApi.Models;
+namespace InternalApi.Models;
 
 /// <summary>
 /// Настройки API.
@@ -20,10 +20,16 @@ public class ApiSettings
     public required string BaseCurrency { get; set; }
 
     /// <summary>
-    /// Есть ли доступные запросы к API.
+    /// Лимит запросов к API.
     /// </summary>
-    [JsonPropertyName("newRequestsAvailable")]
-    public bool NewRequestsAvailable { get; set; }
+    [JsonPropertyName("requestLimit")]
+    public int RequestLimit { get; set; }
+
+    /// <summary>
+    /// Количество уже выполненных запросов.
+    /// </summary>
+    [JsonPropertyName("requestCount")]
+    public int RequestCount { get; set; }
 
     /// <summary>
     /// Количество знаков после запятой для округления валюты.

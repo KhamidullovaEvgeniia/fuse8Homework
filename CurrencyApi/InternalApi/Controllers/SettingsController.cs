@@ -1,23 +1,22 @@
-﻿using Fuse8.BackendInternship.PublicApi.Interfaces;
-using Fuse8.BackendInternship.PublicApi.Models;
-using Fuse8.BackendInternship.PublicApi.Settings;
+﻿using InternalApi.Interfaces;
+using InternalApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Google.Protobuf.WellKnownTypes;
 
-namespace Fuse8.BackendInternship.PublicApi.Controllers;
+namespace InternalApi.Controllers;
+
 /// <summary>
 /// Метод для получения текущих настроек API.
 /// </summary>
 [Route("settings")]
 public class SettingsController : ControllerBase
 {
-    private readonly ICurrencyApiService _currencyApiService;
+    private readonly ICurrencyAPI _currencyApiService;
+
     /// <summary>
     /// Конструктор контроллера.
     /// </summary>
     /// <param name="currencyApiService">Сервис для работы с API валют.</param>
-    public SettingsController(ICurrencyApiService currencyApiService)
+    public SettingsController(ICurrencyAPI currencyApiService)
     {
         _currencyApiService = currencyApiService;
     }
@@ -32,6 +31,6 @@ public class SettingsController : ControllerBase
     [HttpGet]
     public async Task<ApiSettings> GetSettingsAsync()
     {
-        return await _currencyApiService.GetApiSettingsAsync(new Empty());
+        return await _currencyApiService.GetApiSettingsAsync();
     }
 }

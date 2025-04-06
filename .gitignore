@@ -359,5 +359,8 @@ MigrationBackup/
 # Assets
 dist/
 
-# AppSetting
+# Config with secret
 appsettings.Development.json
+
+# Cache
+CurrencyCache/

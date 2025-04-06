@@ -6,8 +6,5 @@ public class CurrencyApiSettings
 {
     public const string SectionName = "CurrencyApiSettings";
 
-    public required string BaseUrl { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string ApiKey { get; init; }
+    public required string GrpcUrl { get; init; }
 }

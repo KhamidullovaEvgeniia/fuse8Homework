@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Fuse8.BackendInternship.PublicApi.Exceptions;
-using Fuse8.BackendInternship.PublicApi.Interfaces;
-using Fuse8.BackendInternship.PublicApi.Responses;
-using Fuse8.BackendInternship.PublicApi.Settings;
+using InternalApi.Exceptions;
+using InternalApi.Interfaces;
+using InternalApi.Responses;
 using Microsoft.Extensions.Options;
+using InternalApi.Settings;
 
-namespace Fuse8.BackendInternship.PublicApi.Services;
+
+namespace InternalApi.Services;
 
 public class CurrencyHttpApi : ICurrencyHttpApi
 {
@@ -47,6 +48,26 @@ public class CurrencyHttpApi : ICurrencyHttpApi
     public async Task<QuotaResponse> GetApiQuotasAsync()
     {
         var result = await GetQuotasResponse();
+
+        return result;
+    }
+    
+    public async Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency)
+    {
+        var url = $"latest?{BaseCurrenciesQueryKey}={baseCurrency}";
+
+        var result = await FetchCurrencyDataAsync(url);
+
+        return result;
+    }
+    
+    public async Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(string baseCurrency, DateOnly date)
+    {
+        string formattedDate = date.ToString("yyyy-MM-dd");
+        var url =
+            $"historical?date={formattedDate}&{BaseCurrenciesQueryKey}={baseCurrency}";
+
+        var result = await FetchCurrencyDataAsync(url);
 
         return result;
     }

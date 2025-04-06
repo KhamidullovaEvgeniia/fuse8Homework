@@ -1,10 +1,11 @@
-﻿using Fuse8.BackendInternship.PublicApi.Interfaces;
-using Fuse8.BackendInternship.PublicApi.Models;
-using Fuse8.BackendInternship.PublicApi.Settings;
+﻿using InternalApi.Enums;
+using InternalApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using InternalApi.Models;
+using InternalApi.Settings;
 
-namespace Fuse8.BackendInternship.PublicApi.Controllers;
+namespace InternalApi.Controllers;
 
 /// <summary>
 /// Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
@@ -12,19 +13,18 @@ namespace Fuse8.BackendInternship.PublicApi.Controllers;
 [Route("currency")]
 public class CurrencyController : ControllerBase
 {
-    private readonly ICurrencyApiService _currencyApiService;
+    private readonly ICachedCurrencyAPI _cachedCurrencyAPI;
 
     private readonly string _currencyCode;
 
     /// <summary>
     /// Конструктор контроллера.
     /// </summary>
-    /// <param name="currencyApiService">Сервис для получения данных о валюте.</param>
+    /// <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
     /// <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
-    public CurrencyController(ICurrencyApiService currencyApiService, IOptions<CurrencySetting> currencySetting)
+    public CurrencyController(ICachedCurrencyAPI cachedCurrencyApi, IOptions<CurrencySetting> currencySetting)
     {
-        _currencyApiService = currencyApiService;
-
+        _cachedCurrencyAPI = cachedCurrencyApi;
         _currencyCode = currencySetting.Value.Currency;
     }
 
@@ -49,36 +49,11 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyRate> GetCurrencyRateAsync()
+    public async Task<ActionResult<CurrencyDTO>> GetCurrencyRateAsync([FromQuery]CurrencyType currencyType,CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetCurrencyRateAsync(_currencyCode);
-    }
-
-    /// <summary>
-    /// Получает текущий курс указанной валюты.
-    /// </summary>
-    /// <param name="currencyCode">Код валюты (например, "RUB").</param>
-    /// <returns>Текущий курс валюты.</returns>
-    /// <response code="200">
-    /// Успешный запрос, возвращает курс валюты.
-    /// </response>
-    /// <response code="404">
-    /// Курс валюты не найден.
-    /// </response>
-    /// <response code="429">
-    /// Превышен лимит запросов.
-    /// </response>
-    /// <response code="500">
-    /// Ошибка сервера.
-    /// </response>
-    [HttpGet("{currencyCode}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] string currencyCode)
-    {
-        return await _currencyApiService.GetCurrencyRateAsync(currencyCode);
+        if (currencyType == CurrencyType.NotSet)
+            return BadRequest();
+        return await _cachedCurrencyAPI.GetCurrentCurrencyAsync(currencyType, cancellationToken);
     }
 
     /// <summary>
@@ -104,9 +79,14 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync([FromRoute] string currencyCode, [FromRoute] DateOnly date)
+    public async Task<CurrencyDTO> GetDatedCurrencyRateAsync(
+        [FromRoute] string currencyCode,
+        [FromRoute] DateOnly date,
+        CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetCurrencyDataWithRateAsync(currencyCode, date);
+        Enum.TryParse(currencyCode, true, out CurrencyType currencyType);
+        return await _cachedCurrencyAPI.GetCurrencyOnDateAsync(currencyType, date, cancellationToken);
     }
+    
     // TODO:  string currencyCode
 }

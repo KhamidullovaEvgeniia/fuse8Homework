@@ -4,7 +4,7 @@ using static InternalApi.Controllers.HealthCheckResult;
 namespace InternalApi.Controllers;
 
 /// <summary>
-/// Методы для проверки работоспособности PublicApi
+/// Методы для проверки работоспособности InternalApi
 /// </summary>
 [Route("healthcheck")]
 public class HealthCheckController : ControllerBase

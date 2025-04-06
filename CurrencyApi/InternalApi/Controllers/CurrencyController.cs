@@ -49,9 +49,10 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyDTO> GetCurrencyRateAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<CurrencyDTO>> GetCurrencyRateAsync([FromQuery]CurrencyType currencyType,CancellationToken cancellationToken)
     {
-        Enum.TryParse(_currencyCode, true, out CurrencyType currencyType);
+        if (currencyType == CurrencyType.NotSet)
+            return BadRequest();
         return await _cachedCurrencyAPI.GetCurrentCurrencyAsync(currencyType, cancellationToken);
     }
 

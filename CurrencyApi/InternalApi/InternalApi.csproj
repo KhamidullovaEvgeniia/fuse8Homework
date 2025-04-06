@@ -50,4 +50,8 @@
         <Protobuf Include="..\CurrencyApiService.proto" GrpcServices="Service" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="CurrencyCache\" />
+    </ItemGroup>
+
 </Project>

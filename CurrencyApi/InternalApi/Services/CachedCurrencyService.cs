@@ -40,19 +40,8 @@ public class CachedCurrencyService : ICachedCurrencyAPI
 
         var baseCurrency = _currencySetting.BaseCurrency;
         var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync(baseCurrency, cancellationToken);
-
-        var currencyDto = currencies
-            .Rates
-            .Select(
-                x =>
-                {
-                    Enum.TryParse(x.Code, true, out CurrencyType result);
-                    return new CurrencyDTO(result, x.Value);
-                })
-            .ToArray();
-
-        await WriteCacheAsync(currencyDto, currencies.Date);
-        return currencyDto.Single(x => x.CurrencyType == currencyType);
+        
+        return await GetCurrencyDto(currencies, currencyType);
     }
 
     public async Task<CurrencyDTO> GetCurrencyOnDateAsync(
@@ -63,7 +52,7 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         string? dateFile = GetCacheFileForDate(date);
         if (dateFile is not null)
         {
-            var currencyFromCache = await GetCurrencyFromCache(dateFile, currencyType, cancellationToken);
+            var currencyFromCache = await GetCurrencyForDateFromCache(dateFile, currencyType, cancellationToken);
             if (currencyFromCache is not null)
                 return currencyFromCache;
         }
@@ -71,24 +60,7 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         var baseCurrency = _currencySetting.BaseCurrency;
         var currenciesOnDate = await _currencyApi.GetAllCurrenciesOnDateAsync(baseCurrency, date, cancellationToken);
 
-        var currencyDto = currenciesOnDate
-            .Rates
-            .Select(
-                x =>
-                {
-                    if (!Enum.TryParse<CurrencyType>(x.Code, true, out var result)
-                        || !Enum.IsDefined(typeof(CurrencyType), result))
-                    {
-                        _logger.LogWarning("Пропущена неизвестная валюта из API: {Code}", x.Code);
-                        return null;
-                    }
-
-                    return new CurrencyDTO(result, x.Value);
-                })
-            .ToArray();
-
-        await WriteCacheAsync(currencyDto, currenciesOnDate.Date);
-        return currencyDto.First(x => x.CurrencyType == currencyType);
+        return await GetCurrencyDto(currenciesOnDate, currencyType);
     }
 
     private string? GetLatestCacheFile()
@@ -98,17 +70,19 @@ public class CachedCurrencyService : ICachedCurrencyAPI
 
     private string? GetCacheFileForDate(DateOnly date)
     {
+        // TODO: доработать время файла
         var datePart = date.ToString("yyyy-MM-dd");
         return Directory
             .GetFiles(_currencySetting.CacheDirectory)
             .Where(f => f.Contains(datePart))
             .OrderByDescending(File.GetLastWriteTimeUtc)
+            // .OrderByDescending(t => TimeSpan.ParseExact(t, "yyyy-MM-dd_hh'-'mm", null))
             .FirstOrDefault();
     }
 
-    private async Task WriteCacheAsync(CurrencyDTO[] data, DateTime date)
+    private async Task WriteCacheAsync(CurrencyDTO?[] data, DateTime date)
     {
-        string fileName = date.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm");
+        string fileName = date.ToString("yyyy-MM-dd_HH-mm");
         string filePath = Path.Combine(_currencySetting.CacheDirectory, $"{fileName}.json");
         string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
         await File.WriteAllTextAsync(filePath, json);
@@ -121,6 +95,7 @@ public class CachedCurrencyService : ICachedCurrencyAPI
     {
         if (!File.Exists(filePath))
             return null;
+
         var fileName = Path.GetFileNameWithoutExtension(filePath);
         if (!TryParseCacheDate(fileName, out var fileDateTime))
         {
@@ -131,6 +106,7 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         // Проверка свежести по дате из имени файла
         if ((DateTime.UtcNow - fileDateTime) > _currencySetting.CacheExpiration)
             return null;
+
         string json = await File.ReadAllTextAsync(filePath, cancellationToken);
         var cachedData = JsonSerializer.Deserialize<CurrencyDTO[]>(json);
 
@@ -141,6 +117,28 @@ public class CachedCurrencyService : ICachedCurrencyAPI
 
         return null;
     }
+    
+    private async Task<CurrencyDTO?> GetCurrencyForDateFromCache(
+        string filePath,
+        CurrencyType currencyType,
+        CancellationToken cancellationToken)
+    {
+        if (!File.Exists(filePath))
+            return null;
+
+        var fileName = Path.GetFileNameWithoutExtension(filePath);
+        if (!TryParseCacheDate(fileName, out var fileDateTime))
+        {
+            _logger.LogWarning("Не удалось распарсить дату из имени кэш-файла: {FileName}", fileName);
+            return null;
+        }
+
+        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
+        var cachedData = JsonSerializer.Deserialize<CurrencyDTO[]>(json);
+
+        return cachedData?.FirstOrDefault(x => x.CurrencyType == currencyType);
+    }
+
     private bool TryParseCacheDate(string fileName, out DateTime dateTime)
     {
         // Попробуем с временем: "yyyy-MM-dd_HH-mm"
@@ -155,5 +153,39 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         }
 
         return false;
+    }
+
+    private CurrencyDTO?[] GetCurrencyDtos(CurrenciesOnDate currenciesOnDate)
+    {
+        return currenciesOnDate
+            .Rates
+            .Select(
+                x =>
+                {
+                    var result = ParsingCurrencyCode(x.Code);
+                    return new CurrencyDTO(result, x.Value);
+                })
+            .Where(r => r.CurrencyType != CurrencyType.NotSet)
+            .ToArray();
+    }
+
+    private CurrencyType ParsingCurrencyCode(string currencyCode)
+    {
+        return currencyCode switch
+        {
+            "USD" => CurrencyType.USD,
+            "RUB" => CurrencyType.RUB,
+            "KZT" => CurrencyType.KZT,
+            _ => CurrencyType.NotSet
+            //_ => throw new InvalidOperationException($"Неправильное значение кода валюты: '{currencyCode}'")
+        };
+    }
+
+    private async Task<CurrencyDTO> GetCurrencyDto(CurrenciesOnDate currenciesOnDate, CurrencyType currencyType)
+    {
+        var currencyDto = GetCurrencyDtos(currenciesOnDate);
+
+        await WriteCacheAsync(currencyDto, currenciesOnDate.Date);
+        return currencyDto.Single(x => x.CurrencyType == currencyType);
     }
 }

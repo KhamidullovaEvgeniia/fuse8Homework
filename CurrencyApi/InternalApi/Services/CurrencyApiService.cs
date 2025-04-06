@@ -75,6 +75,4 @@ public class CurrencyApiService : ICurrencyAPI
                 })
             .ToArray();
     }
-
-    private decimal RoundCurrencyValue(decimal value) => Math.Round(value, _currencySetting.Accuracy);
 }

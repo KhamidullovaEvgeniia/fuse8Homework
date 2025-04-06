@@ -59,33 +59,6 @@ public class Startup
         services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
         services.AddTransient<LoggingHandler>();
 
-        // services
-        //     .AddHttpClient<ICurrencyHttpApi, CurrencyHttpApi>()
-        //     .AddPolicyHandler(
-        //         HttpPolicyExtensions
-        //
-        //             // Настраиваем повторный запрос при получении ошибок сервера (HTTP-код = 5XX) и для таймаута выполнения запроса (HTTP-код = 408)
-        //             .HandleTransientHttpError()
-        //             .WaitAndRetryAsync(
-        //                 retryCount: 3,
-        //                 sleepDurationProvider: retryAttempt =>
-        //                 {
-        //                     // Настраиваем экспоненциальную задержку для отправки повторного запроса при ошибке
-        //                     // 1-я попытка будет выполнена через 1 сек
-        //                     // 2-я - через 3 сек
-        //                     // 3-я - через 7 сек
-        //                     return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) - 1);
-        //                 }))
-        //     .ConfigureHttpClient(
-        //         (provider, client) =>
-        //         {
-        //             var settings = provider.GetRequiredService<IOptions<CurrencyApiSettings>>().Value;
-        //
-        //             client.BaseAddress = new Uri(settings.BaseUrl);
-        //             client.DefaultRequestHeaders.Add("apikey", settings.ApiKey);
-        //         })
-        //     .AddHttpMessageHandler<LoggingHandler>();
-
         services
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(
                 (provider, options) =>

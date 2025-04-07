@@ -21,27 +21,28 @@ public class CachedCurrencyService : ICachedCurrencyAPI
 
     private readonly CurrencySetting _currencySetting;
 
-    private readonly ILogger<ExceptionFilter> _logger;
-
     private readonly CurrencyType _currencyType = CurrencyType.USD;
 
     public CachedCurrencyService(
         ICurrencyAPI currencyApi,
         IOptionsSnapshot<CurrencySetting> currencySetting,
-        ILogger<ExceptionFilter> logger,
         IExchangeDateRepository exchangeDateRepo,
         ICurrencyRateRepository currencyRateRepo)
     {
         _currencyApi = currencyApi;
         _currencySetting = currencySetting.Value;
         Directory.CreateDirectory(_currencySetting.CacheDirectory);
-        _logger = logger;
+
         _exchangeDateRepo = exchangeDateRepo;
         _currencyRateRepo = currencyRateRepo;
     }
 
-    public async Task<CurrencyDTO> GetCurrentCurrencyAsync(CurrencyType currencyType, CancellationToken cancellationToken)
+    public async Task<CurrencyDTO> GetCurrentCurrencyAsync(
+        CurrencyType baseCurrencyType,
+        CurrencyType currencyType,
+        CancellationToken cancellationToken)
     {
+        // TODO: какое время тут правильнее поставить
         var requestedDate = DateTime.UtcNow;
 
         var exchangeDate =
@@ -49,169 +50,35 @@ public class CachedCurrencyService : ICachedCurrencyAPI
 
         if (exchangeDate != null)
         {
-            
-            var apiRates = await _currencyRateRepo.GetByKeyAsync((int)currencyType, exchangeDate.Id);
-            if (apiRates is null)
-            {
-                throw new InvalidOperationException("Could not find currency rates");
-            }
-
-            return new CurrencyDTO((CurrencyType)apiRates.Currency, apiRates.Value);
+            return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, exchangeDate.Id);
         }
-
-        // Дата не найдена — добавляем новую и запрашиваем API
-        var newExchangeDate = await _exchangeDateRepo.AddAsync(requestedDate);
-        if (newExchangeDate == null)
-            throw new InvalidOperationException("Could not add currency date");
 
         var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync(_currencyType.ToString(), cancellationToken);
-        foreach (var rate in currencies.Rates)
-        {
-            var d = ParsingCurrencyCode(rate.Code);
-            if (d == CurrencyType.NotSet)
-                continue;
 
-            var a = new CurrencyRate
-            {
-                Currency = (int)d,
-                Value = rate.Value,
-                DateId = newExchangeDate.Id,
-                ExchangeDate = newExchangeDate,
-            };
+        var newExchangeDate = await SaveCurrencyRatesAsync(currencies.Rates, currencies.Date);
 
-            await _currencyRateRepo.AddAsync(a);
-        }
-
-        await _exchangeDateRepo.SaveChangesAsync();
-        await _currencyRateRepo.SaveChangesAsync();
-
-        return await GetCurrencyDtoFromDb(newExchangeDate.Id, (int)currencyType);
+        return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, newExchangeDate.Id);
     }
 
     public async Task<CurrencyDTO> GetCurrencyOnDateAsync(
+        CurrencyType baseCurrencyType,
         CurrencyType currencyType,
         DateOnly date,
         CancellationToken cancellationToken)
     {
-        string? dateFile = GetCacheFileForDate(date);
-        if (dateFile is not null)
+        var dateTime = DateTime.SpecifyKind(date.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
+        var exchangeDate = await _exchangeDateRepo.FindByDateWithinExpirationAsync(dateTime, _currencySetting.CacheExpiration);
+
+        if (exchangeDate != null)
         {
-            var currencyFromCache = await GetCurrencyForDateFromCache(dateFile, currencyType, cancellationToken);
-            if (currencyFromCache is not null)
-                return currencyFromCache;
+            return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, exchangeDate.Id);
         }
 
-        var baseCurrency = _currencySetting.BaseCurrency;
-        var currenciesOnDate = await _currencyApi.GetAllCurrenciesOnDateAsync(baseCurrency, date, cancellationToken);
+        var currenciesOnDate = await _currencyApi.GetAllCurrenciesOnDateAsync(_currencyType.ToString(), date, cancellationToken);
 
-        return await GetCurrencyDto(currenciesOnDate, currencyType);
-    }
+        var newExchangeDate = await SaveCurrencyRatesAsync(currenciesOnDate.Rates, currenciesOnDate.Date);
 
-    private string? GetLatestCacheFile()
-    {
-        return Directory.GetFiles(_currencySetting.CacheDirectory).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
-    }
-
-    private string? GetCacheFileForDate(DateOnly date)
-    {
-        // TODO: доработать время файла
-        var datePart = date.ToString("yyyy-MM-dd");
-        return Directory
-            .GetFiles(_currencySetting.CacheDirectory)
-            .Where(f => f.Contains(datePart))
-            .OrderByDescending(File.GetLastWriteTimeUtc)
-
-            // .OrderByDescending(t => TimeSpan.ParseExact(t, "yyyy-MM-dd_hh'-'mm", null))
-            .FirstOrDefault();
-    }
-
-    private async Task WriteCacheAsync(CurrencyDTO?[] data, DateTime date)
-    {
-        string fileName = date.ToString("yyyy-MM-dd_HH-mm");
-        string filePath = Path.Combine(_currencySetting.CacheDirectory, $"{fileName}.json");
-        string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(filePath, json);
-    }
-
-    private async Task<CurrencyDTO?> GetCurrencyFromCache(
-        string filePath,
-        CurrencyType currencyType,
-        CancellationToken cancellationToken)
-    {
-        if (!File.Exists(filePath))
-            return null;
-
-        var fileName = Path.GetFileNameWithoutExtension(filePath);
-        if (!TryParseCacheDate(fileName, out var fileDateTime))
-        {
-            _logger.LogWarning("Не удалось распарсить дату из имени кэш-файла: {FileName}", fileName);
-            return null;
-        }
-
-        // Проверка свежести по дате из имени файла
-        if ((DateTime.UtcNow - fileDateTime) > _currencySetting.CacheExpiration)
-            return null;
-
-        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
-        var cachedData = JsonSerializer.Deserialize<CurrencyDTO[]>(json);
-
-        if (cachedData != null && (DateTime.UtcNow - File.GetLastWriteTimeUtc(filePath)) < _currencySetting.CacheExpiration)
-        {
-            return cachedData.FirstOrDefault(x => x.CurrencyType == currencyType);
-        }
-
-        return null;
-    }
-
-    private async Task<CurrencyDTO?> GetCurrencyForDateFromCache(
-        string filePath,
-        CurrencyType currencyType,
-        CancellationToken cancellationToken)
-    {
-        if (!File.Exists(filePath))
-            return null;
-
-        var fileName = Path.GetFileNameWithoutExtension(filePath);
-        if (!TryParseCacheDate(fileName, out var fileDateTime))
-        {
-            _logger.LogWarning("Не удалось распарсить дату из имени кэш-файла: {FileName}", fileName);
-            return null;
-        }
-
-        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
-        var cachedData = JsonSerializer.Deserialize<CurrencyDTO[]>(json);
-
-        return cachedData?.FirstOrDefault(x => x.CurrencyType == currencyType);
-    }
-
-    private bool TryParseCacheDate(string fileName, out DateTime dateTime)
-    {
-        // Попробуем с временем: "yyyy-MM-dd_HH-mm"
-        if (DateTime.TryParseExact(fileName, "yyyy-MM-dd_HH-mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-            return true;
-
-        // Попробуем только дату: "yyyy-MM-dd"
-        if (DateTime.TryParseExact(fileName, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateOnly))
-        {
-            dateTime = dateOnly;
-            return true;
-        }
-
-        return false;
-    }
-
-    private CurrencyDTO?[] GetCurrencyDtos(CurrenciesOnDate currenciesOnDate)
-    {
-        return currenciesOnDate
-            .Rates
-            .Select(
-                x =>
-                {
-                    var result = ParsingCurrencyCode(x.Code);
-                    return new CurrencyDTO(result, x.Value);
-                })
-            .Where(r => r.CurrencyType != CurrencyType.NotSet)
-            .ToArray();
+        return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, newExchangeDate.Id);
     }
 
     private CurrencyType ParsingCurrencyCode(string currencyCode)
@@ -227,17 +94,54 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         };
     }
 
-    private async Task<CurrencyDTO> GetCurrencyDto(CurrenciesOnDate currenciesOnDate, CurrencyType currencyType)
+    private async Task<CurrencyRate> GetCurrencyRateFromDbAsync(int currencyType, int dateId)
     {
-        var currencyDto = GetCurrencyDtos(currenciesOnDate);
+        var currentCurrencyRate = await _currencyRateRepo.GetByKeyAsync(currencyType, dateId);
+        if (currentCurrencyRate is null)
+        {
+            throw new InvalidOperationException("Could not find currency rates");
+        }
 
-        await WriteCacheAsync(currencyDto, currenciesOnDate.Date);
-        return currencyDto.Single(x => x.CurrencyType == currencyType);
+        return currentCurrencyRate;
     }
 
-    private async Task<CurrencyDTO> GetCurrencyDtoFromDb(int dateId, int currencyType)
+    private async Task<CurrencyDTO> GetCurrencyDTOAsync(int baseCurrencyType, int currencyType, int dateId)
     {
-        var apiRates = await _currencyRateRepo.GetByKeyAsync(currencyType, dateId);
-        return new CurrencyDTO((CurrencyType)apiRates.Currency, apiRates.Value);
+        var currentCurrencyRate = await GetCurrencyRateFromDbAsync(currencyType, dateId);
+
+        var baseCurrencyRate = await GetCurrencyRateFromDbAsync(baseCurrencyType, dateId);
+
+        var resultCurrencyValue = currentCurrencyRate.Value / baseCurrencyRate.Value;
+
+        return new CurrencyDTO((CurrencyType)currentCurrencyRate.Currency, resultCurrencyValue);
+    }
+
+    private async Task<ExchangeDate> SaveCurrencyRatesAsync(IEnumerable<CurrencyRates> rates, DateTime dateTime)
+    {
+        var newExchangeDate = await _exchangeDateRepo.AddAsync(dateTime);
+        if (newExchangeDate == null)
+            throw new InvalidOperationException("Could not add currency date");
+
+        foreach (var rate in rates)
+        {
+            var currencyType = ParsingCurrencyCode(rate.Code);
+            if (currencyType == CurrencyType.NotSet)
+                continue;
+
+            var currencyRate = new CurrencyRate
+            {
+                Currency = (int)currencyType,
+                Value = rate.Value,
+                DateId = newExchangeDate.Id,
+                ExchangeDate = newExchangeDate,
+            };
+
+            await _currencyRateRepo.AddAsync(currencyRate);
+        }
+
+        await _exchangeDateRepo.SaveChangesAsync();
+        await _currencyRateRepo.SaveChangesAsync();
+
+        return newExchangeDate;
     }
 }

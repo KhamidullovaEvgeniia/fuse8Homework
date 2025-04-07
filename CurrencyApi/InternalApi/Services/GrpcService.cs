@@ -27,25 +27,36 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
         Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
+        Enum.TryParse(request.BaseCurrencyCode, true, out CurrencyType baseCurrencyType);
 
-        var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(currencyType, context.CancellationToken);
+        var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(
+            baseCurrencyType,
+            currencyType,
+            context.CancellationToken);
 
-        return new CurrencyRateResponse { CurrencyCode = request.CurrencyCode, Value = (double)currencyData.Value, };
+        return new CurrencyRateResponse
+        {
+            CurrencyCode = request.CurrencyCode,
+            Value = (double)currencyData.Value,
+        };
     }
 
     public override async Task<CurrencyRateOnDateResponse> GetCurrencyDataWithRate(
         CurrencyRateOnDateRequest request,
         ServerCallContext context)
     {
+        Enum.TryParse(request.BaseCurrencyCode, true, out CurrencyType baseCurrencyType);
         Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
 
         var grpcDateOnly = request.Date;
         var date = new DateOnly(grpcDateOnly.Year, grpcDateOnly.Month, grpcDateOnly.Day);
-        var currencyData = await _cachedCurrencyApi.GetCurrencyOnDateAsync(currencyType, date, context.CancellationToken);
+        var currencyData = await _cachedCurrencyApi.GetCurrencyOnDateAsync(baseCurrencyType,currencyType, date, context.CancellationToken);
 
         return new CurrencyRateOnDateResponse
         {
-            Date = request.Date, CurrencyCode = request.CurrencyCode, Value = (double)currencyData.Value
+            Date = request.Date,
+            CurrencyCode = request.CurrencyCode,
+            Value = (double)currencyData.Value
         };
     }
 

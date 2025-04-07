@@ -19,7 +19,7 @@ message CurrencyRateRequest {
 
 // Ответ с курсом валюты
 message CurrencyRateResponse {
-  string currencyCode = 1;  // Код валюты
+  string currencyCode = 1;  // Код валюты, например, "RUB"
   double value = 2;         // Значение курса
 }
 // Тип для передачи даты
@@ -33,14 +33,15 @@ message GRPCDateOnly {
 }
 // Запрос на получение курса валюты на дату
 message CurrencyRateOnDateRequest {
-  string currencyCode = 1; // Код валюты
-  GRPCDateOnly date = 2;   // Дата в формате "yyyy-MM-dd"
+  string baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+  string currencyCode = 2; // Код валюты, например, "RUB"
+  GRPCDateOnly date = 3;   // Дата в формате "yyyy-MM-dd"
 }
 
 // Ответ с курсом валюты на дату
 message CurrencyRateOnDateResponse {
   GRPCDateOnly date = 1;    // Дата в формате "yyyy-MM-dd"
-  string currencyCode = 2;  // Код валюты
+  string currencyCode = 2;  // Код валюты, например, "RUB"
   double value = 3;         // Значение курса
 }
 

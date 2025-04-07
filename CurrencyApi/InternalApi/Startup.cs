@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Audit.Core;
 using Audit.Http;
 using InternalApi.Binders;
+using InternalApi.DataAccess;
 using InternalApi.Filters;
 using InternalApi.Interfaces;
 using InternalApi.JsonConvectors;
@@ -86,6 +87,7 @@ public class Startup
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
         
+        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
 
         services.AddGrpc();
 

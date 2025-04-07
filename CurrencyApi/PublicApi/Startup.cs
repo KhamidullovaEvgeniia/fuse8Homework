@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
+using PublicApi.DataAccess;
 
 namespace Fuse8.BackendInternship.PublicApi;
 
@@ -57,7 +58,7 @@ public class Startup
 
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
         services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
-        services.AddTransient<LoggingHandler>();
+        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
 
         services
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(

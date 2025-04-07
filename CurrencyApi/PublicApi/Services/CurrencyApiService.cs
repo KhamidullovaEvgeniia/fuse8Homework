@@ -13,25 +13,21 @@ namespace Fuse8.BackendInternship.PublicApi.Services;
 
 public class CurrencyApiService : ICurrencyApiService
 {
-    private readonly ICurrencyHttpApi _currencyHttpApi;
-
     private readonly CurrencySetting _currencySetting;
-    
+
     private readonly CurrencyApi.CurrencyApiClient _currencyApiClient;
 
-    public CurrencyApiService(ICurrencyHttpApi currencyHttpApi, IOptionsSnapshot<CurrencySetting> currencySetting, CurrencyApi.CurrencyApiClient currencyApiClient)
+    public CurrencyApiService(
+        IOptionsSnapshot<CurrencySetting> currencySetting,
+        CurrencyApi.CurrencyApiClient currencyApiClient)
     {
-        _currencyHttpApi = currencyHttpApi;
         _currencyApiClient = currencyApiClient;
         _currencySetting = currencySetting.Value;
     }
 
     public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode)
     {
-        var request = new CurrencyRateRequest
-        {
-            CurrencyCode = currencyCode
-        };
+        var request = new CurrencyRateRequest { CurrencyCode = currencyCode };
 
         // Отправляем запрос к gRPC-серверу
         // TODO:  сладй 54-55
@@ -63,7 +59,6 @@ public class CurrencyApiService : ICurrencyApiService
 
         // Выполняем gRPC запрос
         var response = await _currencyApiClient.GetCurrencyDataWithRateAsync(request);
-        
 
         // Формируем результат
         var datedCurrencyRate = new DatedCurrencyRate()
@@ -85,7 +80,6 @@ public class CurrencyApiService : ICurrencyApiService
         var settingsApi = new ApiSettings()
         {
             DefaultCurrency = _currencySetting.Currency, // Берем валюту по умолчанию из конфигурации
-            BaseCurrency = response.BaseCurrency, // Базовая валюта, полученная через gRPC
             NewRequestsAvailable = response.HasRequestsLeft, // Проверка на доступность новых запросов
             CurrencyRoundCount = _currencySetting.Accuracy // Количество знаков после запятой из конфигурации
         };

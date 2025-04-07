@@ -18,11 +18,11 @@ public class CurrencyDbContext: DbContext
             .HasKey(e => e.Id);
 
         modelBuilder.Entity<CurrencyRate>()
-            .HasKey(cr => new { cr.Currency, cr.Date }); 
+            .HasKey(cr => new { cr.Currency, cr.DateId }); 
         modelBuilder.Entity<CurrencyRate>()
             .HasOne(cr => cr.ExchangeDate)
             .WithMany(ed => ed.CurrencyRates)
-            .HasForeignKey(cr => cr.Date)
-            .HasPrincipalKey(ed => ed.Date); 
+            .HasForeignKey(cr => cr.DateId)
+            .HasPrincipalKey(ed => ed.Id); 
     }
 }

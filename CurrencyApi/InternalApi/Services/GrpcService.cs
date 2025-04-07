@@ -55,7 +55,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
         return new ApiSettingsResponse
         {
-            BaseCurrency = settings.BaseCurrency, HasRequestsLeft = settings.RequestLimit > settings.RequestCount,
+            HasRequestsLeft = settings.RequestLimit > settings.RequestCount,
         };
     }
 }

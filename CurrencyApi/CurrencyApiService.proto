@@ -13,7 +13,8 @@ service CurrencyApi {
 
 // Запрос на получение курса валюты
 message CurrencyRateRequest {
-  string currencyCode = 1; // Код валюты, например, "USD"
+  string baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+  string currencyCode = 2; // Код валюты, например, "RUB"
 }
 
 // Ответ с курсом валюты
@@ -45,6 +46,5 @@ message CurrencyRateOnDateResponse {
 
 // Ответ с настройками API
 message ApiSettingsResponse {
-  string baseCurrency = 2;      // Базовая валюта
   bool hasRequestsLeft = 5;     // Доступны ли еще запросы (requestLimit > requestCount)
 }

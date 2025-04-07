@@ -294,12 +294,20 @@
             Запрос на получение курса валюты
             </summary>
         </member>
+        <member name="F:Currency.CurrencyRateRequest.BaseCurrencyCodeFieldNumber">
+            <summary>Field number for the "baseCurrencyCode" field.</summary>
+        </member>
+        <member name="P:Currency.CurrencyRateRequest.BaseCurrencyCode">
+            <summary>
+            Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+            </summary>
+        </member>
         <member name="F:Currency.CurrencyRateRequest.CurrencyCodeFieldNumber">
             <summary>Field number for the "currencyCode" field.</summary>
         </member>
         <member name="P:Currency.CurrencyRateRequest.CurrencyCode">
             <summary>
-            Код валюты, например, "USD"
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="T:Currency.CurrencyRateResponse">
@@ -405,14 +413,6 @@
         <member name="T:Currency.ApiSettingsResponse">
             <summary>
             Ответ с настройками API
-            </summary>
-        </member>
-        <member name="F:Currency.ApiSettingsResponse.BaseCurrencyFieldNumber">
-            <summary>Field number for the "baseCurrency" field.</summary>
-        </member>
-        <member name="P:Currency.ApiSettingsResponse.BaseCurrency">
-            <summary>
-            Базовая валюта
             </summary>
         </member>
         <member name="F:Currency.ApiSettingsResponse.HasRequestsLeftFieldNumber">

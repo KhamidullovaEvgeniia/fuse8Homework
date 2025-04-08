@@ -1,6 +1,7 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace Fuse8.BackendInternship.PublicApi.Middlewares;
+namespace Framework.Middlewares;
 
 public class RequestLoggingMiddleware
 {

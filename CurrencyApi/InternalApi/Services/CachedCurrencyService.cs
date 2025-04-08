@@ -3,7 +3,6 @@ using System.Text.Json;
 using InternalApi.DataAccess.Interfaces;
 using InternalApi.DataAccess.Models;
 using InternalApi.Enums;
-using InternalApi.Filters;
 using InternalApi.Interfaces;
 using InternalApi.Models;
 using InternalApi.Settings;

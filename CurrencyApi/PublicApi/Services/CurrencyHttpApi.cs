@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Fuse8.BackendInternship.PublicApi.Exceptions;
+using Framework.Exceptions;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Responses;
 using Fuse8.BackendInternship.PublicApi.Settings;

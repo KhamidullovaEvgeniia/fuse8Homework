@@ -1,4 +1,4 @@
-﻿namespace InternalApi.Models;
+﻿namespace Framework.Models;
 
 public class ModelBinderConstans
 {

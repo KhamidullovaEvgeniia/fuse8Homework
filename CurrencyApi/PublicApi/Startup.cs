@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using Audit.Http;
 using Currency;
-using Fuse8.BackendInternship.PublicApi.Binders;
-using Fuse8.BackendInternship.PublicApi.Filters;
+using Framework.Binders;
+using Framework.Filters;
+using Framework.JsonConvectors;
+using Framework.Middlewares;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
-using Fuse8.BackendInternship.PublicApi.Middlewares;
 using Fuse8.BackendInternship.PublicApi.Services;
 using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.Extensions.Options;

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using InternalApi.Exceptions;
+using Framework.Exceptions;
 using InternalApi.Interfaces;
 using InternalApi.Responses;
 using Microsoft.Extensions.Options;

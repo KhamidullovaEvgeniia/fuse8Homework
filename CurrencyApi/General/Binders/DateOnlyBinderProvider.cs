@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Fuse8.BackendInternship.PublicApi.Binders;
+namespace Framework.Binders;
 
 /// <summary>
 /// Задает ModelBinder для специфичного парсинга значений в запросах

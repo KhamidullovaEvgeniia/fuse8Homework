@@ -4,16 +4,6 @@
         <name>InternalApi</name>
     </assembly>
     <members>
-        <member name="T:InternalApi.Binders.DateOnlyBinderProvider">
-            <summary>
-            Задает ModelBinder для специфичного парсинга значений в запросах
-            </summary>
-        </member>
-        <member name="T:InternalApi.Binders.DateOnlyModelBinder">
-            <summary>
-            Model Binder для парсинга даты
-            </summary>
-        </member>
         <member name="T:InternalApi.Controllers.CurrencyController">
             <summary>
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.

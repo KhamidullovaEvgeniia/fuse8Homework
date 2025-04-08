@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
-using Fuse8.BackendInternship.PublicApi.Models;
+using Framework.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Fuse8.BackendInternship.PublicApi.Binders;
+namespace Framework.Binders;
 
 /// <summary>
 /// Model Binder для парсинга даты

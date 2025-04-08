@@ -59,7 +59,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Framework\Framework.csproj" />
+      <ProjectReference Include="..\General\General.csproj" />
       <ProjectReference Include="..\InternalApi.DataAccess\InternalApi.DataAccess.csproj" />
     </ItemGroup>
 

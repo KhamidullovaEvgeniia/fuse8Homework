@@ -1,4 +1,4 @@
-﻿namespace InternalApi.Exceptions;
+﻿namespace Framework.Exceptions;
 
 public class CurrencyNotFoundException : Exception
 {

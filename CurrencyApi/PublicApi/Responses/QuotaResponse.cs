@@ -2,7 +2,6 @@
 
 namespace Fuse8.BackendInternship.PublicApi.Responses;
 
-// TODO: убрать лишнее
 public class Quotas
 {
     [JsonPropertyName("month")]

@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Currency;
-using Fuse8.BackendInternship.PublicApi.Exceptions;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
 using Fuse8.BackendInternship.PublicApi.Responses;

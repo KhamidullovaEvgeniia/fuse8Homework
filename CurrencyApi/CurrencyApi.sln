@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalApi.DataAccess", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicApi.DataAccess", "PublicApi.DataAccess\PublicApi.DataAccess.csproj", "{16B10315-C0A3-4D11-BCC5-464108DEA63B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General", "General\General.csproj", "{2F2C5358-08BD-4BDD-BC57-D8B100D4E347}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{16B10315-C0A3-4D11-BCC5-464108DEA63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16B10315-C0A3-4D11-BCC5-464108DEA63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16B10315-C0A3-4D11-BCC5-464108DEA63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F2C5358-08BD-4BDD-BC57-D8B100D4E347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F2C5358-08BD-4BDD-BC57-D8B100D4E347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F2C5358-08BD-4BDD-BC57-D8B100D4E347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F2C5358-08BD-4BDD-BC57-D8B100D4E347}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

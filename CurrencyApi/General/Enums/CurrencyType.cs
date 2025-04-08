@@ -1,4 +1,4 @@
-﻿namespace InternalApi.Enums;
+﻿namespace Framework.Enums;
 /// <summary>
 /// Код валюты
 /// </summary>

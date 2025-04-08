@@ -4,17 +4,17 @@ namespace Fuse8.BackendInternship.PublicApi.Interfaces;
 
 public interface IFavoriteCurrencyService
 {
-    Task<FavoriteCurrencyRateDTO> GetFavoriteCurrencyRateByNameAsync(string name);
+    Task<FavoriteCurrencyRateDTO> GetFavoriteCurrencyRateByNameAsync(string name, CancellationToken cancellationToken);
 
-    Task<FavoriteCurrencyRateDTO[]> GetAllFavoriteCurrencyRatesAsync();
+    Task<FavoriteCurrencyRateDTO[]> GetAllFavoriteCurrencyRatesAsync(CancellationToken cancellationToken);
 
-    Task AddFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO currencyRateDTO);
+    Task AddFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO currencyRateDTO, CancellationToken cancellationToken);
 
-    Task UpdateFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO rateDto);
+    Task UpdateFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO rateDTO, CancellationToken cancellationToken);
 
-    Task DeleteFavoriteCurrencyRateByNameAsync(string name);
+    Task DeleteFavoriteCurrencyRateByNameAsync(string name, CancellationToken cancellationToken);
 
-    Task<CurrencyRate> GetSelectedCurrencyRateByName(string name);
+    Task<CurrencyRate> GetSelectedCurrencyRateByName(string name, CancellationToken cancellationToken);
     
-    Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate(string name, DateOnly date);
+    Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate(string name, DateOnly date, CancellationToken cancellationToken);
 }

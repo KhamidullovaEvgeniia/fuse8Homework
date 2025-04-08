@@ -1,4 +1,5 @@
-﻿using InternalApi.Enums;
+﻿using Framework.Enums;
+using Framework.Helper;
 using InternalApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -93,10 +94,8 @@ public class CurrencyController : ControllerBase
         [FromRoute] DateOnly date,
         CancellationToken cancellationToken)
     {
-        Enum.TryParse(baseCurrencyCode, true, out CurrencyType baseCurrencyType);
-        Enum.TryParse(currencyCode, true, out CurrencyType currencyType);
+        var baseCurrencyType = CurrencyHelper.ParsingCurrencyCode(baseCurrencyCode);
+        var currencyType = CurrencyHelper.ParsingCurrencyCode(currencyCode);
         return await _cachedCurrencyAPI.GetCurrencyOnDateAsync(baseCurrencyType, currencyType, date, cancellationToken);
     }
-
-    // TODO:  string currencyCode
 }

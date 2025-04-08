@@ -1,9 +1,6 @@
-﻿using System.Net;
-using System.Text.Json;
-using Currency;
+﻿using Currency;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
-using Fuse8.BackendInternship.PublicApi.Responses;
 using Fuse8.BackendInternship.PublicApi.Settings;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Options;
@@ -22,7 +19,7 @@ public class CurrencyApiService : ICurrencyApiService
         _currencySetting = currencySetting.Value;
     }
 
-    public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode)
+    public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode, CancellationToken cancellationToken)
     {
         var request = new CurrencyRateRequest
         {
@@ -30,23 +27,22 @@ public class CurrencyApiService : ICurrencyApiService
             CurrencyCode = currencyCode
         };
 
-        // Отправляем запрос к gRPC-серверу
-        // TODO:  сладй 54-55
         var grpcResponse = await _currencyApiClient.GetCurrencyRateAsync(request);
 
-        // Преобразуем результат из gRPC-ответа в свой объект ответа
         var response = new CurrencyRate
         {
             Code = grpcResponse.CurrencyCode,
-            Value = RoundCurrencyValue(grpcResponse.Value)
+            Value = Helpers.CurrencyHelper.RoundCurrencyValue(grpcResponse.Value, _currencySetting.Accuracy)
         };
 
         return response;
     }
 
-    public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date)
+    public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(
+        string currencyCode,
+        DateOnly date,
+        CancellationToken cancellationToken)
     {
-        // Создаем запрос для gRPC
         var request = new CurrencyRateOnDateRequest
         {
             BaseCurrencyCode = _currencySetting.BaseCurrency,
@@ -56,18 +52,16 @@ public class CurrencyApiService : ICurrencyApiService
                 Day = date.Day,
                 Month = date.Month,
                 Year = date.Year
-            } // Преобразуем дату в строку
+            }
         };
 
-        // Выполняем gRPC запрос
         var response = await _currencyApiClient.GetCurrencyDataWithRateAsync(request);
 
-        // Формируем результат
         var datedCurrencyRate = new DatedCurrencyRate()
         {
             Date = date,
             Code = response.CurrencyCode,
-            Value = RoundCurrencyValue(response.Value) // Округляем значение курса валюты
+            Value = Helpers.CurrencyHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy)
         };
 
         return datedCurrencyRate;
@@ -75,19 +69,15 @@ public class CurrencyApiService : ICurrencyApiService
 
     public async Task<ApiSettings> GetApiSettingsAsync(Empty request)
     {
-        // Получаем настройки через gRPC
         var response = await _currencyApiClient.GetApiSettingsAsync(request);
 
-        // Формируем объект ApiSettings
-        var settingsApi = new ApiSettings()
+        var settingsApi = new ApiSettings
         {
-            DefaultCurrency = _currencySetting.Currency, // Берем валюту по умолчанию из конфигурации
-            NewRequestsAvailable = response.HasRequestsLeft, // Проверка на доступность новых запросов
-            CurrencyRoundCount = _currencySetting.Accuracy // Количество знаков после запятой из конфигурации
+            DefaultCurrency = _currencySetting.Currency,
+            NewRequestsAvailable = response.HasRequestsLeft,
+            CurrencyRoundCount = _currencySetting.Accuracy
         };
 
         return settingsApi;
     }
-
-    private decimal RoundCurrencyValue(double value) => Math.Round((decimal)value, _currencySetting.Accuracy);
 }

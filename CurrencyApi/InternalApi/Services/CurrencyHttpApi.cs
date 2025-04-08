@@ -6,7 +6,6 @@ using InternalApi.Responses;
 using Microsoft.Extensions.Options;
 using InternalApi.Settings;
 
-
 namespace InternalApi.Services;
 
 public class CurrencyHttpApi : ICurrencyHttpApi
@@ -17,32 +16,9 @@ public class CurrencyHttpApi : ICurrencyHttpApi
 
     private readonly HttpClient _httpClient;
 
-    private readonly CurrencySetting _currencySetting;
-
-    public CurrencyHttpApi(HttpClient httpClient, IOptionsSnapshot<CurrencySetting> currencySetting)
+    public CurrencyHttpApi(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _currencySetting = currencySetting.Value;
-    }
-
-    public async Task<CurrencyResponse> GetCurrencyRateAsync(string currencyCode)
-    {
-        var url = $"latest?{CurrenciesQueryKey}={currencyCode}&{BaseCurrenciesQueryKey}={_currencySetting.BaseCurrency}";
-
-        var result = await FetchCurrencyDataAsync(url);
-
-        return result;
-    }
-
-    public async Task<CurrencyResponse> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date)
-    {
-        string formattedDate = date.ToString("yyyy-MM-dd");
-        var url =
-            $"historical?{CurrenciesQueryKey}={currencyCode}&date={formattedDate}&{BaseCurrenciesQueryKey}={_currencySetting.BaseCurrency}";
-
-        var result = await FetchCurrencyDataAsync(url);
-
-        return result;
     }
 
     public async Task<QuotaResponse> GetApiQuotasAsync()
@@ -51,23 +27,25 @@ public class CurrencyHttpApi : ICurrencyHttpApi
 
         return result;
     }
-    
-    public async Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency)
+
+    public async Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency, CancellationToken cancellationToken)
     {
         var url = $"latest?{BaseCurrenciesQueryKey}={baseCurrency}";
 
-        var result = await FetchCurrencyDataAsync(url);
+        var result = await FetchCurrencyDataAsync(url, cancellationToken);
 
         return result;
     }
-    
-    public async Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(string baseCurrency, DateOnly date)
+
+    public async Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(
+        string baseCurrency,
+        DateOnly date,
+        CancellationToken cancellationToken)
     {
         string formattedDate = date.ToString("yyyy-MM-dd");
-        var url =
-            $"historical?date={formattedDate}&{BaseCurrenciesQueryKey}={baseCurrency}";
+        var url = $"historical?date={formattedDate}&{BaseCurrenciesQueryKey}={baseCurrency}";
 
-        var result = await FetchCurrencyDataAsync(url);
+        var result = await FetchCurrencyDataAsync(url, cancellationToken);
 
         return result;
     }
@@ -99,7 +77,7 @@ public class CurrencyHttpApi : ICurrencyHttpApi
         return result;
     }
 
-    private async Task<CurrencyResponse> FetchCurrencyDataAsync(string url)
+    private async Task<CurrencyResponse> FetchCurrencyDataAsync(string url, CancellationToken cancellationToken)
     {
         await GetAndCheckRequestLimit();
 

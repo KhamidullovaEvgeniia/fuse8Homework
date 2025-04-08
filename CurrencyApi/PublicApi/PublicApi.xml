@@ -4,16 +4,6 @@
         <name>PublicApi</name>
     </assembly>
     <members>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyBinderProvider">
-            <summary>
-            Задает ModelBinder для специфичного парсинга значений в запросах
-            </summary>
-        </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyModelBinder">
-            <summary>
-            Model Binder для парсинга даты
-            </summary>
-        </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController">
             <summary>
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
@@ -26,7 +16,7 @@
             <param name="currencyApiService">Сервис для получения данных о валюте.</param>
             <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyRateAsync">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyRateAsync(System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс валюты по умолчанию.
             </summary>
@@ -44,7 +34,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс указанной валюты.
             </summary>
@@ -63,7 +53,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>
@@ -95,7 +85,7 @@
             </summary>
             <param name="favoriteCurrencyService">Сервис для получения данных об Избранных курсах валют.</param>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetFavoriteCurrencyRateByNameAsync(System.String)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetFavoriteCurrencyRateByNameAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Получает Избранное по его названию.
             </summary>
@@ -114,7 +104,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetAllFavoriteCurrencyRatesAsync">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetAllFavoriteCurrencyRatesAsync(System.Threading.CancellationToken)">
             <summary>
             Получает список всех Избранных.
             </summary>
@@ -132,7 +122,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByName(System.String)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByName(System.String,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс для Избранной валюты по её названию.
             </summary>
@@ -150,7 +140,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByDate(System.String,System.DateOnly)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByDate(System.String,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс для Избранного по его названию на конкретную дату.
             </summary>
@@ -168,7 +158,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.AddFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.AddFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO,System.Threading.CancellationToken)">
             <summary>
             Добавляет новое Избранное.
             </summary>
@@ -185,7 +175,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.UpdateFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.UpdateFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO,System.Threading.CancellationToken)">
             <summary>
             Изменяет Избранное по его названию.
             </summary>
@@ -199,7 +189,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.DeleteFavoriteCurrencyRateByNameAsync(System.String)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.DeleteFavoriteCurrencyRateByNameAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Удаляет Избранное по его названию.
             </summary>
@@ -279,11 +269,6 @@
             <response code="200">Успешный запрос, возвращает настройки API.</response>
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
-        </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.DateOnlyJsonConvector">
-            <summary>
-            Json-конвектор для получения и записи DateOnly в Json
-            </summary>
         </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Models.ApiSettings">
             <summary>

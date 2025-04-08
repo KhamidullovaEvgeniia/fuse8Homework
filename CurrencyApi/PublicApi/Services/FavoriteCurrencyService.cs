@@ -26,7 +26,9 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         _repository = repository;
     }
 
-    public async Task<FavoriteCurrencyRateDTO> GetFavoriteCurrencyRateByNameAsync(string name)
+    public async Task<FavoriteCurrencyRateDTO> GetFavoriteCurrencyRateByNameAsync(
+        string name,
+        CancellationToken cancellationToken)
     {
         var currencyRate = await _repository.GetByNameAsync(name);
         if (currencyRate is null)
@@ -40,7 +42,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         };
     }
 
-    public async Task<FavoriteCurrencyRateDTO[]> GetAllFavoriteCurrencyRatesAsync()
+    public async Task<FavoriteCurrencyRateDTO[]> GetAllFavoriteCurrencyRatesAsync(CancellationToken cancellationToken)
     {
         var currencyRates = await _repository.GetAllAsync();
         if (currencyRates is null)
@@ -57,7 +59,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
             .ToArray();
     }
 
-    public async Task AddFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO currencyRateDTO)
+    public async Task AddFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO currencyRateDTO, CancellationToken cancellationToken)
     {
         if (await _repository.ExistsByNameAsync(currencyRateDTO.Name))
         {
@@ -79,17 +81,15 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         await _repository.AddAsync(currencyRate);
     }
 
-    public async Task UpdateFavoriteCurrencyRateAsync(FavoriteCurrencyRateDTO currencyRateDTO)
+    public async Task UpdateFavoriteCurrencyRateAsync(
+        FavoriteCurrencyRateDTO currencyRateDTO,
+        CancellationToken cancellationToken)
     {
         if (await _repository.ExistsByCurrenciesAsync(currencyRateDTO.Currency, currencyRateDTO.BaseCurrency))
-        {
             throw new InvalidOperationException("Такой курс с данной валютной парой уже существует.");
-        }
 
         if (!await _repository.ExistsByNameAsync(currencyRateDTO.Name))
-        {
             throw new InvalidOperationException("Курс с таким именем не существует.");
-        }
 
         var currencyRate = new FavoriteCurrencyRate
         {
@@ -101,12 +101,12 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         await _repository.UpdateByNameAsync(currencyRate);
     }
 
-    public async Task DeleteFavoriteCurrencyRateByNameAsync(string name)
+    public async Task DeleteFavoriteCurrencyRateByNameAsync(string name, CancellationToken cancellationToken)
     {
         await _repository.DeleteAsync(name);
     }
 
-    public async Task<CurrencyRate> GetSelectedCurrencyRateByName(string name)
+    public async Task<CurrencyRate> GetSelectedCurrencyRateByName(string name, CancellationToken cancellationToken)
     {
         var currencyRate = await _repository.GetByNameAsync(name);
         if (currencyRate is null)
@@ -125,11 +125,14 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         return new CurrencyRate
         {
             Code = response.CurrencyCode,
-            Value = RoundCurrencyValue(response.Value)
+            Value = Helpers.CurrencyHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy)
         };
     }
 
-    public async Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate(string name, DateOnly date)
+    public async Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate(
+        string name,
+        DateOnly date,
+        CancellationToken cancellationToken)
     {
         var currencyRate = await _repository.GetByNameAsync(name);
         if (currencyRate is null)
@@ -158,11 +161,8 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         return new DatedCurrencyRate()
         {
             Code = response.CurrencyCode,
-            Value = RoundCurrencyValue(response.Value),
+            Value = Helpers.CurrencyHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy),
             Date = dateOnly
         };
     }
-
-    // TODO: вынести в отдельный класс
-    private decimal RoundCurrencyValue(double value) => Math.Round((decimal)value, _currencySetting.Accuracy);
 }

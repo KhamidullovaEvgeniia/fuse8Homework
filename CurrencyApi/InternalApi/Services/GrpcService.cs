@@ -1,7 +1,8 @@
 ﻿using Currency;
+using Framework.Enums;
+using Framework.Helper;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using InternalApi.Enums;
 using InternalApi.Interfaces;
 using InternalApi.Settings;
 using Microsoft.Extensions.Options;
@@ -17,8 +18,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
     public GrpcService(
         ICachedCurrencyAPI cachedCurrencyApi,
-        ICurrencyAPI currencyApiService,
-        IOptionsSnapshot<CurrencySetting> currencySetting)
+        ICurrencyAPI currencyApiService)
     {
         _cachedCurrencyApi = cachedCurrencyApi;
         _currencyApiService = currencyApiService;
@@ -26,8 +26,8 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
-        Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
-        Enum.TryParse(request.BaseCurrencyCode, true, out CurrencyType baseCurrencyType);
+        var baseCurrencyType = CurrencyHelper.ParsingCurrencyCode(request.BaseCurrencyCode);
+        var currencyType = CurrencyHelper.ParsingCurrencyCode(request.CurrencyCode);
 
         var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(
             baseCurrencyType,
@@ -45,8 +45,8 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         CurrencyRateOnDateRequest request,
         ServerCallContext context)
     {
-        Enum.TryParse(request.BaseCurrencyCode, true, out CurrencyType baseCurrencyType);
-        Enum.TryParse(request.CurrencyCode, true, out CurrencyType currencyType);
+        var baseCurrencyType = CurrencyHelper.ParsingCurrencyCode(request.BaseCurrencyCode);
+        var currencyType = CurrencyHelper.ParsingCurrencyCode(request.CurrencyCode);
 
         var grpcDateOnly = request.Date;
         var date = new DateOnly(grpcDateOnly.Year, grpcDateOnly.Month, grpcDateOnly.Day);

@@ -44,9 +44,11 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<FavoriteCurrencyRateDTO> GetFavoriteCurrencyRateByNameAsync([FromRoute] string name)
+    public async Task<FavoriteCurrencyRateDTO> GetFavoriteCurrencyRateByNameAsync(
+        [FromRoute] string name,
+        CancellationToken cancellationToken)
     {
-        return await _favoriteCurrencyService.GetFavoriteCurrencyRateByNameAsync(name);
+        return await _favoriteCurrencyService.GetFavoriteCurrencyRateByNameAsync(name, cancellationToken);
     }
 
     /// <summary>
@@ -70,9 +72,9 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<FavoriteCurrencyRateDTO[]> GetAllFavoriteCurrencyRatesAsync()
+    public async Task<FavoriteCurrencyRateDTO[]> GetAllFavoriteCurrencyRatesAsync(CancellationToken cancellationToken)
     {
-        return await _favoriteCurrencyService.GetAllFavoriteCurrencyRatesAsync();
+        return await _favoriteCurrencyService.GetAllFavoriteCurrencyRatesAsync(cancellationToken);
     }
 
     /// <summary>
@@ -96,9 +98,9 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyRate> GetSelectedCurrencyRateByName([FromRoute] string name)
+    public async Task<CurrencyRate> GetSelectedCurrencyRateByName([FromRoute] string name, CancellationToken cancellationToken)
     {
-        return await _favoriteCurrencyService.GetSelectedCurrencyRateByName(name);
+        return await _favoriteCurrencyService.GetSelectedCurrencyRateByName(name, cancellationToken);
     }
 
     /// <summary>
@@ -122,9 +124,12 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate([FromRoute] string name, [FromRoute] DateOnly date)
+    public async Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate(
+        [FromRoute] string name,
+        [FromRoute] DateOnly date,
+        CancellationToken cancellationToken)
     {
-        return await _favoriteCurrencyService.GetSelectedCurrencyRateByDate(name, date);
+        return await _favoriteCurrencyService.GetSelectedCurrencyRateByDate(name, date, cancellationToken);
     }
 
     /// <summary>
@@ -146,9 +151,11 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task AddFavoriteCurrencyRateAsync([FromBody] FavoriteCurrencyRateDTO currencyRate)
+    public async Task AddFavoriteCurrencyRateAsync(
+        [FromBody] FavoriteCurrencyRateDTO currencyRate,
+        CancellationToken cancellationToken)
     {
-        await _favoriteCurrencyService.AddFavoriteCurrencyRateAsync(currencyRate);
+        await _favoriteCurrencyService.AddFavoriteCurrencyRateAsync(currencyRate, cancellationToken);
     }
 
     /// <summary>
@@ -167,9 +174,11 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task UpdateFavoriteCurrencyRateAsync([FromBody] FavoriteCurrencyRateDTO currencyRate)
+    public async Task UpdateFavoriteCurrencyRateAsync(
+        [FromBody] FavoriteCurrencyRateDTO currencyRate,
+        CancellationToken cancellationToken)
     {
-        await _favoriteCurrencyService.UpdateFavoriteCurrencyRateAsync(currencyRate);
+        await _favoriteCurrencyService.UpdateFavoriteCurrencyRateAsync(currencyRate, cancellationToken);
     }
 
     /// <summary>
@@ -188,8 +197,8 @@ public class FavoriteCurrencyController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task DeleteFavoriteCurrencyRateByNameAsync([FromRoute] string name)
+    public async Task DeleteFavoriteCurrencyRateByNameAsync([FromRoute] string name, CancellationToken cancellationToken)
     {
-        await _favoriteCurrencyService.DeleteFavoriteCurrencyRateByNameAsync(name);
+        await _favoriteCurrencyService.DeleteFavoriteCurrencyRateByNameAsync(name, cancellationToken);
     }
 }

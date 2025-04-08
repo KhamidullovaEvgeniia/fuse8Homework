@@ -30,9 +30,6 @@ public class FavoriteCurrencyController : ControllerBase
     /// <response code="200">
     /// Успешный запрос, возвращает Избранное по его названию.
     /// </response>
-    /// <response code="404">
-    /// Избранное по его названию не найден.
-    /// </response>
     /// <response code="429">
     /// Превышен лимит запросов.
     /// </response>
@@ -58,9 +55,6 @@ public class FavoriteCurrencyController : ControllerBase
     /// <response code="200">
     /// Успешный запрос, возвращает список всех Избранных.
     /// </response>
-    /// <response code="404">
-    /// Избранное по его названию не найден.
-    /// </response>
     /// <response code="429">
     /// Превышен лимит запросов.
     /// </response>
@@ -84,9 +78,6 @@ public class FavoriteCurrencyController : ControllerBase
     /// <response code="200">
     /// Успешный запрос, возвращает текущий курс для Избранной валюты по её названию.
     /// </response>
-    /// <response code="404">
-    /// Избранное по его названию не найден.
-    /// </response>
     /// <response code="429">
     /// Превышен лимит запросов.
     /// </response>
@@ -109,9 +100,6 @@ public class FavoriteCurrencyController : ControllerBase
     /// <returns>Курс для Избранного по его названию на конкретную дату.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс для Избранного по его названию на конкретную дату.
-    /// </response>
-    /// <response code="404">
-    /// Избранное по его названию не найден.
     /// </response>
     /// <response code="429">
     /// Превышен лимит запросов.
@@ -139,7 +127,7 @@ public class FavoriteCurrencyController : ControllerBase
     /// Успешный запрос, добавляет новое Избранное.
     /// </response>
     /// <response code="404">
-    /// Избранное по его названию не найден.
+    /// Курс валюты не найден.
     /// </response>
     /// <response code="429">
     /// Превышен лимит запросов.
@@ -163,6 +151,9 @@ public class FavoriteCurrencyController : ControllerBase
     /// </summary>
     /// <response code="200">
     /// Успешный запрос, изменяет Избранное по его названию.
+    /// </response>
+    /// /// <response code="404">
+    /// Курс валюты не найден.
     /// </response>
     /// <response code="429">
     /// Превышен лимит запросов.

@@ -46,7 +46,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
     {
         var currencyRates = await _repository.GetAllAsync();
         if (currencyRates is null)
-            throw new KeyNotFoundException();
+            throw new InvalidOperationException("Favorite currency not found");
 
         return currencyRates
             .Select(

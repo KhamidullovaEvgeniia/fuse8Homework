@@ -58,6 +58,7 @@ public class Startup
 
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
         services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
+        services.AddScoped<IFavoriteCurrencyService, FavoriteCurrencyService>();
         services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
 
         services

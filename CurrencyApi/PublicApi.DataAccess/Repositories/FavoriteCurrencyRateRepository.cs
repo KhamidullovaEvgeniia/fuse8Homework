@@ -44,7 +44,8 @@ public class FavoriteCurrencyRateRepository: IFavoriteCurrencyRateRepository
 
     public async Task DeleteAsync(string name)
     {
-        var entity = await _context.FavoriteCurrencyRates.FindAsync(name);
+        var entity = await _context.FavoriteCurrencyRates
+            .FirstOrDefaultAsync(x => x.Name == name);
         if (entity != null)
         {
             _context.FavoriteCurrencyRates.Remove(entity);

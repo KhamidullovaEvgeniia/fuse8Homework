@@ -17,9 +17,7 @@ public class CurrencyApiService : ICurrencyApiService
 
     private readonly CurrencyApi.CurrencyApiClient _currencyApiClient;
 
-    public CurrencyApiService(
-        IOptionsSnapshot<CurrencySetting> currencySetting,
-        CurrencyApi.CurrencyApiClient currencyApiClient)
+    public CurrencyApiService(IOptionsSnapshot<CurrencySetting> currencySetting, CurrencyApi.CurrencyApiClient currencyApiClient)
     {
         _currencyApiClient = currencyApiClient;
         _currencySetting = currencySetting.Value;
@@ -27,7 +25,11 @@ public class CurrencyApiService : ICurrencyApiService
 
     public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode)
     {
-        var request = new CurrencyRateRequest { CurrencyCode = currencyCode };
+        var request = new CurrencyRateRequest
+        {
+            BaseCurrencyCode = _currencySetting.BaseCurrency,
+            CurrencyCode = currencyCode
+        };
 
         // Отправляем запрос к gRPC-серверу
         // TODO:  сладй 54-55
@@ -48,6 +50,7 @@ public class CurrencyApiService : ICurrencyApiService
         // Создаем запрос для gRPC
         var request = new CurrencyRateOnDateRequest
         {
+            BaseCurrencyCode = _currencySetting.BaseCurrency,
             CurrencyCode = currencyCode,
             Date = new GRPCDateOnly
             {

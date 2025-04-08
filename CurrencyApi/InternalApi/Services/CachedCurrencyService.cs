@@ -42,11 +42,8 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         CurrencyType currencyType,
         CancellationToken cancellationToken)
     {
-        // TODO: какое время тут правильнее поставить
-        var requestedDate = DateTime.UtcNow;
-
         var exchangeDate =
-            await _exchangeDateRepo.FindByDateWithinExpirationAsync(requestedDate, _currencySetting.CacheExpiration);
+            await _exchangeDateRepo.FindByDateWithinExpirationAsync(DateTime.UtcNow, _currencySetting.CacheExpiration);
 
         if (exchangeDate != null)
         {
@@ -54,6 +51,14 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         }
 
         var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync(_currencyType.ToString(), cancellationToken);
+        
+        exchangeDate =
+            await _exchangeDateRepo.FindByDateWithinExpirationAsync(currencies.Date, _currencySetting.CacheExpiration);
+
+        if (exchangeDate != null)
+        {
+            return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, exchangeDate.Id);
+        }
 
         var newExchangeDate = await SaveCurrencyRatesAsync(currencies.Rates, currencies.Date);
 
@@ -66,7 +71,7 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         DateOnly date,
         CancellationToken cancellationToken)
     {
-        var dateTime = DateTime.SpecifyKind(date.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
+        var dateTime = DateTime.SpecifyKind(date.ToDateTime(TimeOnly.MaxValue), DateTimeKind.Utc);
         var exchangeDate = await _exchangeDateRepo.FindByDateWithinExpirationAsync(dateTime, _currencySetting.CacheExpiration);
 
         if (exchangeDate != null)

@@ -43,6 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Framework\Framework.csproj" />
       <ProjectReference Include="..\PublicApi.DataAccess\PublicApi.DataAccess.csproj" />
     </ItemGroup>
 

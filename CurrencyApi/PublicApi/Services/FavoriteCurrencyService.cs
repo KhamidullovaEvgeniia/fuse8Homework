@@ -30,7 +30,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
     {
         var currencyRate = await _repository.GetByNameAsync(name);
         if (currencyRate is null)
-            throw new KeyNotFoundException();
+            throw new InvalidOperationException($"Favorite currency {name} not found");
 
         return new FavoriteCurrencyRateDTO
         {
@@ -46,7 +46,8 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         if (currencyRates is null)
             throw new KeyNotFoundException();
 
-        return currencyRates.Select(
+        return currencyRates
+            .Select(
                 x => new FavoriteCurrencyRateDTO
                 {
                     Name = x.Name,
@@ -67,14 +68,14 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         {
             throw new InvalidOperationException("Такой курс с данной валютной парой уже существует.");
         }
-        
+
         var currencyRate = new FavoriteCurrencyRate
         {
             Name = currencyRateDTO.Name,
             Currency = currencyRateDTO.Currency,
             BaseCurrency = currencyRateDTO.BaseCurrency
         };
-        
+
         await _repository.AddAsync(currencyRate);
     }
 
@@ -89,14 +90,14 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         {
             throw new InvalidOperationException("Курс с таким именем не существует.");
         }
-        
+
         var currencyRate = new FavoriteCurrencyRate
         {
             Name = currencyRateDTO.Name,
             Currency = currencyRateDTO.Currency,
             BaseCurrency = currencyRateDTO.BaseCurrency
         };
-        
+
         await _repository.UpdateByNameAsync(currencyRate);
     }
 
@@ -104,4 +105,64 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
     {
         await _repository.DeleteAsync(name);
     }
+
+    public async Task<CurrencyRate> GetSelectedCurrencyRateByName(string name)
+    {
+        var currencyRate = await _repository.GetByNameAsync(name);
+        if (currencyRate is null)
+            throw new KeyNotFoundException();
+
+        var currency = currencyRate.Currency;
+        var baseCurrency = currencyRate.BaseCurrency;
+        var currencyRateRequest = new CurrencyRateRequest
+        {
+            BaseCurrencyCode = baseCurrency,
+            CurrencyCode = currency,
+        };
+
+        var response = await _currencyApiClient.GetCurrencyRateAsync(currencyRateRequest);
+
+        return new CurrencyRate
+        {
+            Code = response.CurrencyCode,
+            Value = RoundCurrencyValue(response.Value)
+        };
+    }
+
+    public async Task<DatedCurrencyRate> GetSelectedCurrencyRateByDate(string name, DateOnly date)
+    {
+        var currencyRate = await _repository.GetByNameAsync(name);
+        if (currencyRate is null)
+            throw new KeyNotFoundException();
+
+        var currency = currencyRate.Currency;
+        var baseCurrency = currencyRate.BaseCurrency;
+        var grpcDate = new GRPCDateOnly
+        {
+            Year = date.Year,
+            Month = date.Month,
+            Day = date.Day
+        };
+
+        var currencyRateRequest = new CurrencyRateOnDateRequest
+        {
+            BaseCurrencyCode = baseCurrency,
+            CurrencyCode = currency,
+            Date = grpcDate
+        };
+
+        var response = await _currencyApiClient.GetCurrencyDataWithRateAsync(currencyRateRequest);
+
+        var dateOnly = new DateOnly(response.Date.Year, response.Date.Month, response.Date.Day);
+
+        return new DatedCurrencyRate()
+        {
+            Code = response.CurrencyCode,
+            Value = RoundCurrencyValue(response.Value),
+            Date = dateOnly
+        };
+    }
+
+    // TODO: вынести в отдельный класс
+    private decimal RoundCurrencyValue(double value) => Math.Round((decimal)value, _currencySetting.Accuracy);
 }

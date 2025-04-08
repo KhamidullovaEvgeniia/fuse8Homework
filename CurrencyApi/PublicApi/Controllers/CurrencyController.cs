@@ -108,5 +108,4 @@ public class CurrencyController : ControllerBase
     {
         return await _currencyApiService.GetCurrencyDataWithRateAsync(currencyCode, date);
     }
-    // TODO:  string currencyCode
 }

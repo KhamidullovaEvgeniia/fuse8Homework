@@ -83,6 +83,136 @@
             Ошибка сервера.
             </response>
         </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController">
+            <summary>
+            Методы для операций над Избранными курсами валют
+            </summary>
+            
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.#ctor(Fuse8.BackendInternship.PublicApi.Interfaces.IFavoriteCurrencyService)">
+            <summary>
+            Конструктор контроллера.
+            </summary>
+            <param name="favoriteCurrencyService">Сервис для получения данных об Избранных курсах валют.</param>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetFavoriteCurrencyRateByNameAsync(System.String)">
+            <summary>
+            Получает Избранное по его названию.
+            </summary>
+            <param name="name">Избранное (например, "RubToEuro").</param>
+            <returns>Избранное по его названию.</returns>
+            <response code="200">
+            Успешный запрос, возвращает Избранное по его названию.
+            </response>
+            <response code="404">
+            Избранное по его названию не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetAllFavoriteCurrencyRatesAsync">
+            <summary>
+            Получает список всех Избранных.
+            </summary>
+            <returns>Список всех Избранных.</returns>
+            <response code="200">
+            Успешный запрос, возвращает список всех Избранных.
+            </response>
+            <response code="404">
+            Избранное по его названию не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByName(System.String)">
+            <summary>
+            Получает текущий курс для Избранной валюты по её названию.
+            </summary>
+            <returns>Текущий курс для Избранной валюты по её названию.</returns>
+            <response code="200">
+            Успешный запрос, возвращает текущий курс для Избранной валюты по её названию.
+            </response>
+            <response code="404">
+            Избранное по его названию не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByDate(System.String,System.DateOnly)">
+            <summary>
+            Получает курс для Избранного по его названию на конкретную дату.
+            </summary>
+            <returns>Курс для Избранного по его названию на конкретную дату.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс для Избранного по его названию на конкретную дату.
+            </response>
+            <response code="404">
+            Избранное по его названию не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.AddFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO)">
+            <summary>
+            Добавляет новое Избранное.
+            </summary>
+            <response code="200">
+            Успешный запрос, добавляет новое Избранное.
+            </response>
+            <response code="404">
+            Избранное по его названию не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.UpdateFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO)">
+            <summary>
+            Изменяет Избранное по его названию.
+            </summary>
+            <response code="200">
+            Успешный запрос, изменяет Избранное по его названию.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.DeleteFavoriteCurrencyRateByNameAsync(System.String)">
+            <summary>
+            Удаляет Избранное по его названию.
+            </summary>
+            <response code="200">
+            Успешный запрос, удаляет Избранное по его названию.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.HealthCheckController">
             <summary>
             Методы для проверки работоспособности PublicApi

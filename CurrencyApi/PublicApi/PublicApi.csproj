@@ -47,6 +47,12 @@
       <ProjectReference Include="..\PublicApi.DataAccess\PublicApi.DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="..\DecimalValue.cs">
+        <Link>DecimalValue.cs</Link>
+      </Compile>
+    </ItemGroup>
+
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <DocumentationFile>$(AssemblyName).xml</DocumentationFile>

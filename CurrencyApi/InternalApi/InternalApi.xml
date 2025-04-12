@@ -246,6 +246,23 @@
             Значение курса валюты.
             </summary>
         </member>
+        <member name="F:Currency.DecimalValue.UnitsFieldNumber">
+            <summary>Field number for the "units" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Units">
+            <summary>
+            Whole units part of the amount
+            </summary>
+        </member>
+        <member name="F:Currency.DecimalValue.NanosFieldNumber">
+            <summary>Field number for the "nanos" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Nanos">
+            <summary>
+            Nano units of the amount (10^-9)
+            Must be same sign as units
+            </summary>
+        </member>
         <member name="T:Currency.CurrencyApiServiceReflection">
             <summary>Holder for reflection information generated from CurrencyApiService.proto</summary>
         </member>

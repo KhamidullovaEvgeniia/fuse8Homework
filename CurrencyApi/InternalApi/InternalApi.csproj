@@ -63,4 +63,10 @@
       <ProjectReference Include="..\InternalApi.DataAccess\InternalApi.DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="..\DecimalValue.cs">
+        <Link>DecimalValue.cs</Link>
+      </Compile>
+    </ItemGroup>
+
 </Project>

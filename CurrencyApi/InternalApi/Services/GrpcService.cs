@@ -37,7 +37,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         return new CurrencyRateResponse
         {
             CurrencyCode = request.CurrencyCode,
-            Value = (double)currencyData.Value,
+            Value = (DecimalValue)currencyData.Value,
         };
     }
 
@@ -51,12 +51,12 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         var grpcDateOnly = request.Date;
         var date = new DateOnly(grpcDateOnly.Year, grpcDateOnly.Month, grpcDateOnly.Day);
         var currencyData = await _cachedCurrencyApi.GetCurrencyOnDateAsync(baseCurrencyType,currencyType, date, context.CancellationToken);
-
+        
         return new CurrencyRateOnDateResponse
         {
             Date = request.Date,
             CurrencyCode = request.CurrencyCode,
-            Value = (double)currencyData.Value
+            Value = (DecimalValue)currencyData.Value
         };
     }
 

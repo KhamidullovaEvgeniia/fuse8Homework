@@ -11,6 +11,16 @@ service CurrencyApi {
   rpc GetApiSettings (google.protobuf.Empty) returns (ApiSettingsResponse);
 }
 
+message DecimalValue {
+
+  // Whole units part of the amount
+  int64 units = 1;
+
+  // Nano units of the amount (10^-9)
+  // Must be same sign as units
+  sfixed32 nanos = 2;
+}
+
 // Запрос на получение курса валюты
 message CurrencyRateRequest {
   string baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
@@ -20,7 +30,7 @@ message CurrencyRateRequest {
 // Ответ с курсом валюты
 message CurrencyRateResponse {
   string currencyCode = 1;  // Код валюты, например, "RUB"
-  double value = 2;         // Значение курса
+  DecimalValue value = 2;         // Значение курса
 }
 // Тип для передачи даты
 message GRPCDateOnly {
@@ -42,7 +52,7 @@ message CurrencyRateOnDateRequest {
 message CurrencyRateOnDateResponse {
   GRPCDateOnly date = 1;    // Дата в формате "yyyy-MM-dd"
   string currencyCode = 2;  // Код валюты, например, "RUB"
-  double value = 3;         // Значение курса
+  DecimalValue value = 3;         // Значение курса
 }
 
 // Ответ с настройками API

@@ -94,9 +94,6 @@
             <response code="200">
             Успешный запрос, возвращает Избранное по его названию.
             </response>
-            <response code="404">
-            Избранное по его названию не найден.
-            </response>
             <response code="429">
             Превышен лимит запросов.
             </response>
@@ -111,9 +108,6 @@
             <returns>Список всех Избранных.</returns>
             <response code="200">
             Успешный запрос, возвращает список всех Избранных.
-            </response>
-            <response code="404">
-            Избранное по его названию не найден.
             </response>
             <response code="429">
             Превышен лимит запросов.
@@ -130,9 +124,6 @@
             <response code="200">
             Успешный запрос, возвращает текущий курс для Избранной валюты по её названию.
             </response>
-            <response code="404">
-            Избранное по его названию не найден.
-            </response>
             <response code="429">
             Превышен лимит запросов.
             </response>
@@ -147,9 +138,6 @@
             <returns>Курс для Избранного по его названию на конкретную дату.</returns>
             <response code="200">
             Успешный запрос, возвращает курс для Избранного по его названию на конкретную дату.
-            </response>
-            <response code="404">
-            Избранное по его названию не найден.
             </response>
             <response code="429">
             Превышен лимит запросов.
@@ -166,7 +154,7 @@
             Успешный запрос, добавляет новое Избранное.
             </response>
             <response code="404">
-            Избранное по его названию не найден.
+            Курс валюты не найден.
             </response>
             <response code="429">
             Превышен лимит запросов.
@@ -181,6 +169,9 @@
             </summary>
             <response code="200">
             Успешный запрос, изменяет Избранное по его названию.
+            </response>
+            /// <response code="404">
+            Курс валюты не найден.
             </response>
             <response code="429">
             Превышен лимит запросов.
@@ -323,6 +314,23 @@
         <member name="P:Fuse8.BackendInternship.PublicApi.Models.DatedCurrencyRate.Value">
             <summary>
             Значение курса валюты.
+            </summary>
+        </member>
+        <member name="F:Currency.DecimalValue.UnitsFieldNumber">
+            <summary>Field number for the "units" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Units">
+            <summary>
+            Whole units part of the amount
+            </summary>
+        </member>
+        <member name="F:Currency.DecimalValue.NanosFieldNumber">
+            <summary>Field number for the "nanos" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Nanos">
+            <summary>
+            Nano units of the amount (10^-9)
+            Must be same sign as units
             </summary>
         </member>
         <member name="T:Currency.CurrencyApiServiceReflection">

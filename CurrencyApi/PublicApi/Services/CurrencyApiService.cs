@@ -32,7 +32,7 @@ public class CurrencyApiService : ICurrencyApiService
         var response = new CurrencyRate
         {
             Code = grpcResponse.CurrencyCode,
-            Value = Helpers.CurrencyHelper.RoundCurrencyValue(grpcResponse.Value, _currencySetting.Accuracy)
+            Value = Helpers.CurrencyHelper.RoundCurrencyValue((decimal)grpcResponse.Value, _currencySetting.Accuracy)
         };
 
         return response;

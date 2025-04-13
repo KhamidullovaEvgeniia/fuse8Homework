@@ -18,7 +18,6 @@ public static class Bootstrapper
                         npgsqlOptionsAction: sqlOptionsBuilder => { sqlOptionsBuilder.EnableRetryOnFailure(); })
                     .UseSnakeCaseNamingConvention();
             })
-            .AddScoped<IExchangeDateRepository, ExchangeDateRepository>()
-            .AddScoped<ICurrencyRateRepository, CurrencyRateRepository>();
+            .AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }

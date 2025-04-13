@@ -58,6 +58,7 @@ public class CurrencyController : ControllerBase
     /// Получает текущий курс указанной валюты.
     /// </summary>
     /// <param name="currencyCode">Код валюты (например, "RUB").</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Текущий курс валюты.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс валюты.
@@ -86,6 +87,7 @@ public class CurrencyController : ControllerBase
     /// </summary>
     /// <param name="currencyCode">Код валюты (например, "RUB").</param>
     /// <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Курс валюты на указанную дату.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс валюты.

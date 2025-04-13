@@ -12,16 +12,19 @@ public class CurrencyRateRepository: ICurrencyRateRepository
     {
         _context = context;
     }
-
-    public async Task<List<CurrencyRate>> GetAllAsync()
-    {
-        return await _context.CurrencyRates.ToListAsync();
-    }
+    
 
     public async Task<CurrencyRate?> GetByKeyAsync(int currency, int dateId)
     {
         return await _context.CurrencyRates
             .FirstOrDefaultAsync(c => c.Currency == currency && c.DateId == dateId);
+    }
+    
+    public async Task<List<CurrencyRate>> GetByCurrencyTypesAndDateAsync(IEnumerable<int> currencyTypes, int exchangeDateId)
+    {
+        return await _context.CurrencyRates
+            .Where(rate => currencyTypes.Contains(rate.Currency) && rate.DateId == exchangeDateId)
+            .ToListAsync();
     }
 
     public async Task AddAsync(CurrencyRate currencyRate)

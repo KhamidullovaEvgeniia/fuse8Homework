@@ -10,10 +10,12 @@ public class FavoriteCurrencyDbContext : DbContext
     }
 
     public DbSet<FavoriteCurrencyRate> FavoriteCurrencyRates { get; set; }
+    
+    public const string SchemaName = "user";
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("user");
+        modelBuilder.HasDefaultSchema(SchemaName);
 
         modelBuilder.Entity<FavoriteCurrencyRate>(
             entity =>

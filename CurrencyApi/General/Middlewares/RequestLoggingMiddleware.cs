@@ -18,8 +18,15 @@ public class RequestLoggingMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var request = context.Request;
-        _logger.LogInformation("Method {Method}, Path {Path}", request.Method, request.Path);
+        _logger.LogInformation("Get request for Method {Method}, Path {Path}", request.Method, request.Path);
 
         await _next(context);
+
+        var response = context.Response;
+        _logger.LogInformation(
+            "Response for Method {Method}, Path {Path}, completed with status code {Code}",
+            request.Method,
+            request.Path,
+            response.StatusCode);
     }
 }

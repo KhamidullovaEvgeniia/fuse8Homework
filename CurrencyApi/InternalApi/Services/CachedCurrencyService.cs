@@ -13,9 +13,7 @@ namespace InternalApi.Services;
 
 public class CachedCurrencyService : ICachedCurrencyAPI
 {
-    private readonly IExchangeDateRepository _exchangeDateRepository;
-
-    private readonly ICurrencyRateRepository _currencyRateRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     private readonly ICurrencyAPI _currencyApi;
 
@@ -26,15 +24,12 @@ public class CachedCurrencyService : ICachedCurrencyAPI
     public CachedCurrencyService(
         ICurrencyAPI currencyApi,
         IOptionsSnapshot<CurrencySetting> currencySetting,
-        IExchangeDateRepository exchangeDateRepository,
-        ICurrencyRateRepository currencyRateRepository)
+        IUnitOfWork unitOfWork)
     {
         _currencyApi = currencyApi;
         _currencySetting = currencySetting.Value;
-        Directory.CreateDirectory(_currencySetting.CacheDirectory);
 
-        _exchangeDateRepository = exchangeDateRepository;
-        _currencyRateRepository = currencyRateRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<CurrencyDTO> GetCurrentCurrencyAsync(
@@ -42,34 +37,37 @@ public class CachedCurrencyService : ICachedCurrencyAPI
         CurrencyType currencyType,
         CancellationToken cancellationToken)
     {
-        var exchangeDate = await _exchangeDateRepository.FindByDateWithinExpirationAsync(
+        var exchangeDate = await _unitOfWork.ExchangeDateRepository.FindByDateWithinExpirationAsync(
             DateTime.UtcNow,
             _currencySetting.CacheExpiration);
 
-        if (exchangeDate != null)
+        if (exchangeDate == null)
         {
-            return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, exchangeDate.Id);
+            var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync(_currencyType.ToString(), cancellationToken);
+            exchangeDate = await SaveCurrencyRatesAsync(currencies.Rates, DateTime.UtcNow);
         }
 
-        var currencies = await _currencyApi.GetAllCurrentCurrenciesAsync(_currencyType.ToString(), cancellationToken);
-
-        // Так как в данный момент внешний API, если запросить текущий курс, возвращает дату предыдущего дня со временем 23.59.59,
-        // то при запросе в любой момент времени текущего дня, сначала выполняется запрос к базе с текущим временем, если кэша нет,
-        // то выполняется запрос к API, далее проверяется есть ли в БД запись даты, которую вернул API
-        // В теории API не обязательно вернет дату предыдущего дня со временем 23.59.59, но по моим тестам это пока что так,
-        // поэтому реализовано немного неудобно
-        exchangeDate = await _exchangeDateRepository.FindByDateWithinExpirationAsync(
-            currencies.Date,
-            _currencySetting.CacheExpiration);
-
-        if (exchangeDate != null)
+        if (baseCurrencyType == _currencyType)
         {
-            return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, exchangeDate.Id);
+            var currencyRate = await GetCurrencyRateFromDbAsync((int)currencyType, exchangeDate.Id);
+            var resultValue = currencyRate.Value;
+            return new CurrencyDTO((CurrencyType)currencyRate.Currency, resultValue);
         }
+        else
+        {
+            var currencyRates = await GetCurrencyRatesFromDbAsync(
+                new[] { (int)currencyType, (int)baseCurrencyType },
+                exchangeDate.Id);
 
-        var newExchangeDate = await SaveCurrencyRatesAsync(currencies.Rates, currencies.Date);
+            var currentRate = currencyRates.FirstOrDefault(r => r.Currency == (int)currencyType);
+            var baseRate = currencyRates.FirstOrDefault(r => r.Currency == (int)baseCurrencyType);
 
-        return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, newExchangeDate.Id);
+            if (currentRate == null || baseRate == null)
+                throw new Exception("Не удалось получить нужные курсы из БД.");
+
+            var resultValue = currentRate.Value / baseRate.Value;
+            return new CurrencyDTO((CurrencyType)currentRate.Currency, resultValue);
+        }
     }
 
     public async Task<CurrencyDTO> GetCurrencyOnDateAsync(
@@ -80,43 +78,58 @@ public class CachedCurrencyService : ICachedCurrencyAPI
     {
         var dateTime = DateTime.SpecifyKind(date.ToDateTime(TimeOnly.MaxValue), DateTimeKind.Utc);
         var exchangeDate =
-            await _exchangeDateRepository.FindByDateWithinExpirationAsync(dateTime, _currencySetting.CacheExpiration);
-
-        if (exchangeDate != null)
+            await _unitOfWork.ExchangeDateRepository.FindByDateWithinExpirationAsync(dateTime, _currencySetting.CacheExpiration);
+        
+        if (exchangeDate == null)
         {
-            return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, exchangeDate.Id);
+            var currencies = await _currencyApi.GetAllCurrenciesOnDateAsync(_currencyType.ToString(), date,cancellationToken);
+            exchangeDate = await SaveCurrencyRatesAsync(currencies.Rates, dateTime);
         }
 
-        var currenciesOnDate = await _currencyApi.GetAllCurrenciesOnDateAsync(_currencyType.ToString(), date, cancellationToken);
+        if (baseCurrencyType == _currencyType)
+        {
+            var currencyRate = await GetCurrencyRateFromDbAsync((int)currencyType, exchangeDate.Id);
+            var resultValue = currencyRate.Value;
+            return new CurrencyDTO((CurrencyType)currencyRate.Currency, resultValue);
+        }
+        else
+        {
+            var currencyRates = await GetCurrencyRatesFromDbAsync(
+                new[] { (int)currencyType, (int)baseCurrencyType },
+                exchangeDate.Id);
 
-        var newExchangeDate = await SaveCurrencyRatesAsync(currenciesOnDate.Rates, currenciesOnDate.Date);
+            var currentRate = currencyRates.FirstOrDefault(r => r.Currency == (int)currencyType);
+            var baseRate = currencyRates.FirstOrDefault(r => r.Currency == (int)baseCurrencyType);
 
-        return await GetCurrencyDTOAsync((int)baseCurrencyType, (int)currencyType, newExchangeDate.Id);
+            if (currentRate == null || baseRate == null)
+                throw new Exception("Не удалось получить нужные курсы из БД.");
+
+            var resultValue = currentRate.Value / baseRate.Value;
+            return new CurrencyDTO((CurrencyType)currentRate.Currency, resultValue);
+        }
     }
 
     private async Task<CurrencyRate> GetCurrencyRateFromDbAsync(int currencyType, int dateId)
     {
-        var currentCurrencyRate = await _currencyRateRepository.GetByKeyAsync(currencyType, dateId);
+        var currentCurrencyRate = await _unitOfWork.CurrencyRateRepository.GetByKeyAsync(currencyType, dateId);
         if (currentCurrencyRate is null)
             throw new InvalidOperationException("Could not find currency rates");
 
         return currentCurrencyRate;
     }
 
-    private async Task<CurrencyDTO> GetCurrencyDTOAsync(int baseCurrencyType, int currencyType, int dateId)
+    private async Task<List<CurrencyRate>> GetCurrencyRatesFromDbAsync(IEnumerable<int> currencyTypes, int exchangeDateId)
     {
-        var currentCurrencyRate = await GetCurrencyRateFromDbAsync(currencyType, dateId);
+        var currentCurrencyRates = await _unitOfWork.CurrencyRateRepository.GetByCurrencyTypesAndDateAsync(currencyTypes, exchangeDateId);
+        if (currentCurrencyRates.Count < 2)
+            throw new InvalidOperationException("Could not find currency rates");
 
-        var baseCurrencyRate = await GetCurrencyRateFromDbAsync(baseCurrencyType, dateId);
-
-        var resultCurrencyValue = currentCurrencyRate.Value / baseCurrencyRate.Value;
-
-        return new CurrencyDTO((CurrencyType)currentCurrencyRate.Currency, resultCurrencyValue);
+        return currentCurrencyRates;
     }
 
     private async Task<ExchangeDate> SaveCurrencyRatesAsync(IEnumerable<CurrencyRates> rates, DateTime dateTime)
     {
-        var newExchangeDate = await _exchangeDateRepository.AddAsync(dateTime);
+        var newExchangeDate = await _unitOfWork.ExchangeDateRepository.AddAsync(dateTime);
         if (newExchangeDate == null)
             throw new InvalidOperationException("Could not add currency date");
 
@@ -135,17 +148,13 @@ public class CachedCurrencyService : ICachedCurrencyAPI
 
             var currencyRate = new CurrencyRate
             {
-                Currency = (int)currencyType,
-                Value = rate.Value,
-                DateId = newExchangeDate.Id,
-                ExchangeDate = newExchangeDate,
+                Currency = (int)currencyType, Value = rate.Value, DateId = newExchangeDate.Id, ExchangeDate = newExchangeDate,
             };
 
-            await _currencyRateRepository.AddAsync(currencyRate);
+            await _unitOfWork.CurrencyRateRepository.AddAsync(currencyRate);
         }
 
-        await _exchangeDateRepository.SaveChangesAsync();
-        await _currencyRateRepository.SaveChangesAsync();
+        _unitOfWork.Commit();
 
         return newExchangeDate;
     }

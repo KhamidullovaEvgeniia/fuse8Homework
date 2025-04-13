@@ -7,12 +7,14 @@ public class CurrencyDbContext: DbContext
 {
     public DbSet<ExchangeDate> ExchangeDates { get; set; }
     public DbSet<CurrencyRate> CurrencyRates { get; set; }
+    
+    public const string SchemaName = "cur";
 
     public CurrencyDbContext(DbContextOptions<CurrencyDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("cur");
+        modelBuilder.HasDefaultSchema(SchemaName);
         
         modelBuilder.Entity<ExchangeDate>()
             .HasKey(e => e.Id);
@@ -24,5 +26,20 @@ public class CurrencyDbContext: DbContext
             .WithMany(ed => ed.CurrencyRates)
             .HasForeignKey(cr => cr.DateId)
             .HasPrincipalKey(ed => ed.Id); 
+    }
+    
+    public void BeginTransaction()
+    {
+        Database.BeginTransaction();
+    }
+
+    public void CommitTransaction()
+    {
+        Database.CommitTransaction();
+    }
+
+    public void RollbackTransaction()
+    {
+        Database.RollbackTransaction();
     }
 }

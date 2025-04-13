@@ -1,16 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 using Audit.Http;
 using Currency;
-using Fuse8.BackendInternship.PublicApi.Binders;
-using Fuse8.BackendInternship.PublicApi.Filters;
+using Framework.Binders;
+using Framework.Filters;
+using Framework.JsonConvectors;
+using Framework.Middlewares;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
-using Fuse8.BackendInternship.PublicApi.Middlewares;
 using Fuse8.BackendInternship.PublicApi.Services;
 using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
+using PublicApi.DataAccess;
 
 namespace Fuse8.BackendInternship.PublicApi;
 
@@ -56,8 +58,8 @@ public class Startup
             });
 
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
-        services.AddScoped<ICurrencyHttpApi, CurrencyHttpApi>();
-        services.AddTransient<LoggingHandler>();
+        services.AddScoped<IFavoriteCurrencyService, FavoriteCurrencyService>();
+        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
 
         services
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(

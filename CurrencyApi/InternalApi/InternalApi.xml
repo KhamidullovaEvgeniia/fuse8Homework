@@ -4,16 +4,6 @@
         <name>InternalApi</name>
     </assembly>
     <members>
-        <member name="T:InternalApi.Binders.DateOnlyBinderProvider">
-            <summary>
-            Задает ModelBinder для специфичного парсинга значений в запросах
-            </summary>
-        </member>
-        <member name="T:InternalApi.Binders.DateOnlyModelBinder">
-            <summary>
-            Model Binder для парсинга даты
-            </summary>
-        </member>
         <member name="T:InternalApi.Controllers.CurrencyController">
             <summary>
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
@@ -26,7 +16,7 @@
             <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
             <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс валюты по умолчанию.
             </summary>
@@ -44,10 +34,11 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.String,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>
+            <param name="baseCurrencyCode">Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"</param>
             <param name="currencyCode">Код валюты (например, "RUB").</param>
             <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
             <returns>Курс валюты на указанную дату.</returns>
@@ -131,43 +122,20 @@
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
         </member>
-        <member name="T:InternalApi.Enums.CurrencyType">
-            <summary>
-            Код валюты
-            </summary>
-        </member>
-        <member name="F:InternalApi.Enums.CurrencyType.NotSet">
-            <summary>
-            Default value
-            </summary>
-        </member>
-        <member name="F:InternalApi.Enums.CurrencyType.USD">
-            <summary>
-            USD
-            </summary>
-        </member>
-        <member name="F:InternalApi.Enums.CurrencyType.RUB">
-            <summary>
-            RUB
-            </summary>
-        </member>
-        <member name="F:InternalApi.Enums.CurrencyType.KZT">
-            <summary>
-            KZT
-            </summary>
-        </member>
-        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrentCurrencyAsync(InternalApi.Enums.CurrencyType,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrentCurrencyAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс
             </summary>
+            <param name="baseCurrencyType">Валюта, относительно которой необходимо получить курс</param>
             <param name="currencyType">Валюта, для которой необходимо получить курс</param>
             <param name="cancellationToken">Токен отмены</param>
             <returns>Текущий курс</returns>
         </member>
-        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrencyOnDateAsync(InternalApi.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrencyOnDateAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс валюты, актуальный на <paramref name="date"/>
             </summary>
+            <param name="baseCurrencyType">Валюта, относительно которой необходимо получить курс</param>
             <param name="currencyType">Валюта, для которой необходимо получить курс</param>
             <param name="date">Дата, на которую нужно получить курс валют</param>
             <param name="cancellationToken">Токен отмены</param>
@@ -197,11 +165,6 @@
             <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
             <param name="cancellationToken">Токен отмены</param>
             <returns>Список курсов валют на дату</returns>
-        </member>
-        <member name="T:InternalApi.JsonConvectors.DateOnlyJsonConvector">
-            <summary>
-            Json-конвектор для получения и записи DateOnly в Json
-            </summary>
         </member>
         <member name="T:InternalApi.Models.ApiSettings">
             <summary>
@@ -283,6 +246,23 @@
             Значение курса валюты.
             </summary>
         </member>
+        <member name="F:Currency.DecimalValue.UnitsFieldNumber">
+            <summary>Field number for the "units" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Units">
+            <summary>
+            Whole units part of the amount
+            </summary>
+        </member>
+        <member name="F:Currency.DecimalValue.NanosFieldNumber">
+            <summary>Field number for the "nanos" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Nanos">
+            <summary>
+            Nano units of the amount (10^-9)
+            Must be same sign as units
+            </summary>
+        </member>
         <member name="T:Currency.CurrencyApiServiceReflection">
             <summary>Holder for reflection information generated from CurrencyApiService.proto</summary>
         </member>
@@ -294,12 +274,20 @@
             Запрос на получение курса валюты
             </summary>
         </member>
+        <member name="F:Currency.CurrencyRateRequest.BaseCurrencyCodeFieldNumber">
+            <summary>Field number for the "baseCurrencyCode" field.</summary>
+        </member>
+        <member name="P:Currency.CurrencyRateRequest.BaseCurrencyCode">
+            <summary>
+            Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+            </summary>
+        </member>
         <member name="F:Currency.CurrencyRateRequest.CurrencyCodeFieldNumber">
             <summary>Field number for the "currencyCode" field.</summary>
         </member>
         <member name="P:Currency.CurrencyRateRequest.CurrencyCode">
             <summary>
-            Код валюты, например, "USD"
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="T:Currency.CurrencyRateResponse">
@@ -312,7 +300,7 @@
         </member>
         <member name="P:Currency.CurrencyRateResponse.CurrencyCode">
             <summary>
-            Код валюты
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="F:Currency.CurrencyRateResponse.ValueFieldNumber">
@@ -357,12 +345,20 @@
             Запрос на получение курса валюты на дату
             </summary>
         </member>
+        <member name="F:Currency.CurrencyRateOnDateRequest.BaseCurrencyCodeFieldNumber">
+            <summary>Field number for the "baseCurrencyCode" field.</summary>
+        </member>
+        <member name="P:Currency.CurrencyRateOnDateRequest.BaseCurrencyCode">
+            <summary>
+            Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+            </summary>
+        </member>
         <member name="F:Currency.CurrencyRateOnDateRequest.CurrencyCodeFieldNumber">
             <summary>Field number for the "currencyCode" field.</summary>
         </member>
         <member name="P:Currency.CurrencyRateOnDateRequest.CurrencyCode">
             <summary>
-            Код валюты
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="F:Currency.CurrencyRateOnDateRequest.DateFieldNumber">
@@ -391,7 +387,7 @@
         </member>
         <member name="P:Currency.CurrencyRateOnDateResponse.CurrencyCode">
             <summary>
-            Код валюты
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="F:Currency.CurrencyRateOnDateResponse.ValueFieldNumber">
@@ -405,14 +401,6 @@
         <member name="T:Currency.ApiSettingsResponse">
             <summary>
             Ответ с настройками API
-            </summary>
-        </member>
-        <member name="F:Currency.ApiSettingsResponse.BaseCurrencyFieldNumber">
-            <summary>Field number for the "baseCurrency" field.</summary>
-        </member>
-        <member name="P:Currency.ApiSettingsResponse.BaseCurrency">
-            <summary>
-            Базовая валюта
             </summary>
         </member>
         <member name="F:Currency.ApiSettingsResponse.HasRequestsLeftFieldNumber">

@@ -5,9 +5,9 @@ namespace Fuse8.BackendInternship.PublicApi.Interfaces;
 
 public interface ICurrencyApiService
 {
-    Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode);
+    Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode, CancellationToken cancellationToken);
 
-    Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date);
+    Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date, CancellationToken cancellationToken);
 
     Task<ApiSettings> GetApiSettingsAsync(Empty request);
 }

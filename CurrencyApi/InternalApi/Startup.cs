@@ -6,11 +6,12 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Audit.Core;
 using Audit.Http;
-using InternalApi.Binders;
-using InternalApi.Filters;
+using Framework.Binders;
+using Framework.Filters;
+using Framework.JsonConvectors;
+using Framework.Middlewares;
+using InternalApi.DataAccess;
 using InternalApi.Interfaces;
-using InternalApi.JsonConvectors;
-using InternalApi.Middlewares;
 using InternalApi.Services;
 using InternalApi.Settings;
 using InterpolatedParsing;
@@ -86,6 +87,7 @@ public class Startup
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
         
+        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
 
         services.AddGrpc();
 

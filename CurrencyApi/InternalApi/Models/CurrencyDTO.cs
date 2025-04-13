@@ -1,4 +1,4 @@
-﻿using InternalApi.Enums;
+﻿using Framework.Enums;
 
 namespace InternalApi.Models;
 

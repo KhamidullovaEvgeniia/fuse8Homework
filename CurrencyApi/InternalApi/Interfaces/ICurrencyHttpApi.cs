@@ -1,18 +1,15 @@
-﻿
-
-using InternalApi.Responses;
+﻿using InternalApi.Responses;
 
 namespace InternalApi.Interfaces;
-// TODO: удалить неиспользуемое
+
 public interface ICurrencyHttpApi
 {
-    Task<CurrencyResponse> GetCurrencyRateAsync(string currencyCode);
-
-    Task<CurrencyResponse> GetCurrencyDataWithRateAsync(string currencyCode, DateOnly date);
-
     Task<QuotaResponse> GetApiQuotasAsync();
 
-    Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency);
+    Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency, CancellationToken cancellationToken);
 
-    Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(string currencyCode, DateOnly date);
+    Task<CurrencyResponse> GetAllCurrenciesDataWithRateAsync(
+        string currencyCode,
+        DateOnly date,
+        CancellationToken cancellationToken);
 }

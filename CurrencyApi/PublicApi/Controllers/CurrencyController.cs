@@ -49,15 +49,16 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyRate> GetCurrencyRateAsync()
+    public async Task<CurrencyRate> GetCurrencyRateAsync(CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetCurrencyRateAsync(_currencyCode);
+        return await _currencyApiService.GetCurrencyRateAsync(_currencyCode, cancellationToken);
     }
 
     /// <summary>
     /// Получает текущий курс указанной валюты.
     /// </summary>
     /// <param name="currencyCode">Код валюты (например, "RUB").</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Текущий курс валюты.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс валюты.
@@ -76,9 +77,9 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] string currencyCode)
+    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] string currencyCode, CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetCurrencyRateAsync(currencyCode);
+        return await _currencyApiService.GetCurrencyRateAsync(currencyCode, cancellationToken);
     }
 
     /// <summary>
@@ -86,6 +87,7 @@ public class CurrencyController : ControllerBase
     /// </summary>
     /// <param name="currencyCode">Код валюты (например, "RUB").</param>
     /// <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Курс валюты на указанную дату.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс валюты.
@@ -104,9 +106,11 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync([FromRoute] string currencyCode, [FromRoute] DateOnly date)
+    public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync(
+        [FromRoute] string currencyCode,
+        [FromRoute] DateOnly date,
+        CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetCurrencyDataWithRateAsync(currencyCode, date);
+        return await _currencyApiService.GetCurrencyDataWithRateAsync(currencyCode, date, cancellationToken);
     }
-    // TODO:  string currencyCode
 }

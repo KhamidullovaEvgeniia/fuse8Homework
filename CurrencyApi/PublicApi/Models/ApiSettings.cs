@@ -14,12 +14,6 @@ public class ApiSettings
     public required string DefaultCurrency { get; set; }
 
     /// <summary>
-    /// Базовая валюта.
-    /// </summary>
-    [JsonPropertyName("baseCurrency")]
-    public required string BaseCurrency { get; set; }
-
-    /// <summary>
     /// Есть ли доступные запросы к API.
     /// </summary>
     [JsonPropertyName("newRequestsAvailable")]

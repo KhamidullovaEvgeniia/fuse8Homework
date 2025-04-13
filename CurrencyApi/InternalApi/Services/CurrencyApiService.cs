@@ -1,5 +1,4 @@
-﻿using InternalApi.Enums;
-using InternalApi.Interfaces;
+﻿using InternalApi.Interfaces;
 using InternalApi.Models;
 using InternalApi.Responses;
 using InternalApi.Settings;
@@ -37,7 +36,7 @@ public class CurrencyApiService : ICurrencyAPI
 
     public async Task<CurrenciesOnDate> GetAllCurrentCurrenciesAsync(string baseCurrency, CancellationToken cancellationToken)
     {
-        var result = await _currencyHttpApi.GetAllCurrenciesRateAsync(baseCurrency);
+        var result = await _currencyHttpApi.GetAllCurrenciesRateAsync(baseCurrency, cancellationToken);
         var resultCurrencies = GetAllCurrenciesRates(result);
 
         return new CurrenciesOnDate
@@ -52,7 +51,7 @@ public class CurrencyApiService : ICurrencyAPI
         DateOnly date,
         CancellationToken cancellationToken)
     {
-        var result = await _currencyHttpApi.GetAllCurrenciesDataWithRateAsync(currencyCode, date);
+        var result = await _currencyHttpApi.GetAllCurrenciesDataWithRateAsync(currencyCode, date, cancellationToken);
         var resultCurrencies = GetAllCurrenciesRates(result);
 
         return new CurrenciesOnDate

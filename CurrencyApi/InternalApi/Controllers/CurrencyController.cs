@@ -1,4 +1,5 @@
-﻿using InternalApi.Enums;
+﻿using Framework.Enums;
+using Framework.Helper;
 using InternalApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -49,16 +50,24 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<CurrencyDTO>> GetCurrencyRateAsync([FromQuery]CurrencyType currencyType,CancellationToken cancellationToken)
+    public async Task<ActionResult<CurrencyDTO>> GetCurrencyRateAsync(
+        [FromQuery] CurrencyType baseCurrencyType,
+        [FromQuery] CurrencyType currencyType,
+        CancellationToken cancellationToken)
     {
         if (currencyType == CurrencyType.NotSet)
             return BadRequest();
-        return await _cachedCurrencyAPI.GetCurrentCurrencyAsync(currencyType, cancellationToken);
+
+        if (baseCurrencyType == CurrencyType.NotSet)
+            return BadRequest();
+
+        return await _cachedCurrencyAPI.GetCurrentCurrencyAsync(baseCurrencyType, currencyType, cancellationToken);
     }
 
     /// <summary>
     /// Получает курс указанной валюты на определенную дату.
     /// </summary>
+    /// <param name="baseCurrencyCode">Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"</param>
     /// <param name="currencyCode">Код валюты (например, "RUB").</param>
     /// <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
     /// <returns>Курс валюты на указанную дату.</returns>
@@ -80,13 +89,13 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<CurrencyDTO> GetDatedCurrencyRateAsync(
+        [FromRoute] string baseCurrencyCode,
         [FromRoute] string currencyCode,
         [FromRoute] DateOnly date,
         CancellationToken cancellationToken)
     {
-        Enum.TryParse(currencyCode, true, out CurrencyType currencyType);
-        return await _cachedCurrencyAPI.GetCurrencyOnDateAsync(currencyType, date, cancellationToken);
+        var baseCurrencyType = CurrencyHelper.ParsingCurrencyCode(baseCurrencyCode);
+        var currencyType = CurrencyHelper.ParsingCurrencyCode(currencyCode);
+        return await _cachedCurrencyAPI.GetCurrencyOnDateAsync(baseCurrencyType, currencyType, date, cancellationToken);
     }
-    
-    // TODO:  string currencyCode
 }

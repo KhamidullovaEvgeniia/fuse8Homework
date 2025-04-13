@@ -4,16 +4,6 @@
         <name>PublicApi</name>
     </assembly>
     <members>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyBinderProvider">
-            <summary>
-            Задает ModelBinder для специфичного парсинга значений в запросах
-            </summary>
-        </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.Binders.DateOnlyModelBinder">
-            <summary>
-            Model Binder для парсинга даты
-            </summary>
-        </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController">
             <summary>
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
@@ -26,7 +16,7 @@
             <param name="currencyApiService">Сервис для получения данных о валюте.</param>
             <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyRateAsync">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyRateAsync(System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс валюты по умолчанию.
             </summary>
@@ -44,11 +34,12 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс указанной валюты.
             </summary>
             <param name="currencyCode">Код валюты (например, "RUB").</param>
+            <param name="cancellationToken">Токен отмены</param>
             <returns>Текущий курс валюты.</returns>
             <response code="200">
             Успешный запрос, возвращает курс валюты.
@@ -63,7 +54,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>
@@ -75,6 +66,127 @@
             </response>
             <response code="404">
             Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="T:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController">
+            <summary>
+            Методы для операций над Избранными курсами валют
+            </summary>
+            
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.#ctor(Fuse8.BackendInternship.PublicApi.Interfaces.IFavoriteCurrencyService)">
+            <summary>
+            Конструктор контроллера.
+            </summary>
+            <param name="favoriteCurrencyService">Сервис для получения данных об Избранных курсах валют.</param>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetFavoriteCurrencyRateByNameAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Получает Избранное по его названию.
+            </summary>
+            <param name="name">Избранное (например, "RubToEuro").</param>
+            <returns>Избранное по его названию.</returns>
+            <response code="200">
+            Успешный запрос, возвращает Избранное по его названию.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetAllFavoriteCurrencyRatesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Получает список всех Избранных.
+            </summary>
+            <returns>Список всех Избранных.</returns>
+            <response code="200">
+            Успешный запрос, возвращает список всех Избранных.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByName(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Получает текущий курс для Избранной валюты по её названию.
+            </summary>
+            <returns>Текущий курс для Избранной валюты по её названию.</returns>
+            <response code="200">
+            Успешный запрос, возвращает текущий курс для Избранной валюты по её названию.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.GetSelectedCurrencyRateByDate(System.String,System.DateOnly,System.Threading.CancellationToken)">
+            <summary>
+            Получает курс для Избранного по его названию на конкретную дату.
+            </summary>
+            <returns>Курс для Избранного по его названию на конкретную дату.</returns>
+            <response code="200">
+            Успешный запрос, возвращает курс для Избранного по его названию на конкретную дату.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.AddFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO,System.Threading.CancellationToken)">
+            <summary>
+            Добавляет новое Избранное.
+            </summary>
+            <response code="200">
+            Успешный запрос, добавляет новое Избранное.
+            </response>
+            <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.UpdateFavoriteCurrencyRateAsync(Fuse8.BackendInternship.PublicApi.Models.FavoriteCurrencyRateDTO,System.Threading.CancellationToken)">
+            <summary>
+            Изменяет Избранное по его названию.
+            </summary>
+            <response code="200">
+            Успешный запрос, изменяет Избранное по его названию.
+            </response>
+            /// <response code="404">
+            Курс валюты не найден.
+            </response>
+            <response code="429">
+            Превышен лимит запросов.
+            </response>
+            <response code="500">
+            Ошибка сервера.
+            </response>
+        </member>
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.FavoriteCurrencyController.DeleteFavoriteCurrencyRateByNameAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Удаляет Избранное по его названию.
+            </summary>
+            <response code="200">
+            Успешный запрос, удаляет Избранное по его названию.
             </response>
             <response code="429">
             Превышен лимит запросов.
@@ -150,11 +262,6 @@
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
         </member>
-        <member name="T:Fuse8.BackendInternship.PublicApi.DateOnlyJsonConvector">
-            <summary>
-            Json-конвектор для получения и записи DateOnly в Json
-            </summary>
-        </member>
         <member name="T:Fuse8.BackendInternship.PublicApi.Models.ApiSettings">
             <summary>
             Настройки API.
@@ -163,11 +270,6 @@
         <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.DefaultCurrency">
             <summary>
             Валюта по умолчанию.
-            </summary>
-        </member>
-        <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.BaseCurrency">
-            <summary>
-            Базовая валюта.
             </summary>
         </member>
         <member name="P:Fuse8.BackendInternship.PublicApi.Models.ApiSettings.NewRequestsAvailable">
@@ -215,6 +317,23 @@
             Значение курса валюты.
             </summary>
         </member>
+        <member name="F:Currency.DecimalValue.UnitsFieldNumber">
+            <summary>Field number for the "units" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Units">
+            <summary>
+            Whole units part of the amount
+            </summary>
+        </member>
+        <member name="F:Currency.DecimalValue.NanosFieldNumber">
+            <summary>Field number for the "nanos" field.</summary>
+        </member>
+        <member name="P:Currency.DecimalValue.Nanos">
+            <summary>
+            Nano units of the amount (10^-9)
+            Must be same sign as units
+            </summary>
+        </member>
         <member name="T:Currency.CurrencyApiServiceReflection">
             <summary>Holder for reflection information generated from CurrencyApiService.proto</summary>
         </member>
@@ -226,12 +345,20 @@
             Запрос на получение курса валюты
             </summary>
         </member>
+        <member name="F:Currency.CurrencyRateRequest.BaseCurrencyCodeFieldNumber">
+            <summary>Field number for the "baseCurrencyCode" field.</summary>
+        </member>
+        <member name="P:Currency.CurrencyRateRequest.BaseCurrencyCode">
+            <summary>
+            Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+            </summary>
+        </member>
         <member name="F:Currency.CurrencyRateRequest.CurrencyCodeFieldNumber">
             <summary>Field number for the "currencyCode" field.</summary>
         </member>
         <member name="P:Currency.CurrencyRateRequest.CurrencyCode">
             <summary>
-            Код валюты, например, "USD"
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="T:Currency.CurrencyRateResponse">
@@ -244,7 +371,7 @@
         </member>
         <member name="P:Currency.CurrencyRateResponse.CurrencyCode">
             <summary>
-            Код валюты
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="F:Currency.CurrencyRateResponse.ValueFieldNumber">
@@ -289,12 +416,20 @@
             Запрос на получение курса валюты на дату
             </summary>
         </member>
+        <member name="F:Currency.CurrencyRateOnDateRequest.BaseCurrencyCodeFieldNumber">
+            <summary>Field number for the "baseCurrencyCode" field.</summary>
+        </member>
+        <member name="P:Currency.CurrencyRateOnDateRequest.BaseCurrencyCode">
+            <summary>
+            Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+            </summary>
+        </member>
         <member name="F:Currency.CurrencyRateOnDateRequest.CurrencyCodeFieldNumber">
             <summary>Field number for the "currencyCode" field.</summary>
         </member>
         <member name="P:Currency.CurrencyRateOnDateRequest.CurrencyCode">
             <summary>
-            Код валюты
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="F:Currency.CurrencyRateOnDateRequest.DateFieldNumber">
@@ -323,7 +458,7 @@
         </member>
         <member name="P:Currency.CurrencyRateOnDateResponse.CurrencyCode">
             <summary>
-            Код валюты
+            Код валюты, например, "RUB"
             </summary>
         </member>
         <member name="F:Currency.CurrencyRateOnDateResponse.ValueFieldNumber">
@@ -337,14 +472,6 @@
         <member name="T:Currency.ApiSettingsResponse">
             <summary>
             Ответ с настройками API
-            </summary>
-        </member>
-        <member name="F:Currency.ApiSettingsResponse.BaseCurrencyFieldNumber">
-            <summary>Field number for the "baseCurrency" field.</summary>
-        </member>
-        <member name="P:Currency.ApiSettingsResponse.BaseCurrency">
-            <summary>
-            Базовая валюта
             </summary>
         </member>
         <member name="F:Currency.ApiSettingsResponse.HasRequestsLeftFieldNumber">

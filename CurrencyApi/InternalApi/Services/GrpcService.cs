@@ -3,6 +3,7 @@ using Framework.Enums;
 using Framework.Helper;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using InternalApi.Helpers;
 using InternalApi.Interfaces;
 using InternalApi.Settings;
 using Microsoft.Extensions.Options;
@@ -26,8 +27,8 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
     public override async Task<CurrencyRateResponse> GetCurrencyRate(CurrencyRateRequest request, ServerCallContext context)
     {
-        var baseCurrencyType = CurrencyHelper.ParsingCurrencyCode(request.BaseCurrencyCode);
-        var currencyType = CurrencyHelper.ParsingCurrencyCode(request.CurrencyCode);
+        var baseCurrencyType = CurrencyTypeHelper.ParsingCurrencyCode(request.BaseCurrencyCode);
+        var currencyType = CurrencyTypeHelper.ParsingCurrencyCode(request.CurrencyCode);
 
         var currencyData = await _cachedCurrencyApi.GetCurrentCurrencyAsync(
             baseCurrencyType,
@@ -45,8 +46,8 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
         CurrencyRateOnDateRequest request,
         ServerCallContext context)
     {
-        var baseCurrencyType = CurrencyHelper.ParsingCurrencyCode(request.BaseCurrencyCode);
-        var currencyType = CurrencyHelper.ParsingCurrencyCode(request.CurrencyCode);
+        var baseCurrencyType = CurrencyTypeHelper.ParsingCurrencyCode(request.BaseCurrencyCode);
+        var currencyType = CurrencyTypeHelper.ParsingCurrencyCode(request.CurrencyCode);
 
         var grpcDateOnly = request.Date;
         var date = new DateOnly(grpcDateOnly.Year, grpcDateOnly.Month, grpcDateOnly.Day);
@@ -62,7 +63,7 @@ public class GrpcService : CurrencyApi.CurrencyApiBase
 
     public override async Task<ApiSettingsResponse> GetApiSettings(Empty request, ServerCallContext context)
     {
-        var settings = await _currencyApiService.GetApiSettingsAsync();
+        var settings = await _currencyApiService.GetApiSettingsAsync(context.CancellationToken);
 
         return new ApiSettingsResponse
         {

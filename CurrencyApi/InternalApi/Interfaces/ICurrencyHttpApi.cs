@@ -4,7 +4,7 @@ namespace InternalApi.Interfaces;
 
 public interface ICurrencyHttpApi
 {
-    Task<QuotaResponse> GetApiQuotasAsync();
+    Task<QuotaResponse> GetApiQuotasAsync(CancellationToken cancellationToken);
 
     Task<CurrencyResponse> GetAllCurrenciesRateAsync(string baseCurrency, CancellationToken cancellationToken);
 

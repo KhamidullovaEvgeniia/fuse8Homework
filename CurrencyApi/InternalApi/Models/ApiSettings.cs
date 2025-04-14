@@ -30,10 +30,4 @@ public class ApiSettings
     /// </summary>
     [JsonPropertyName("requestCount")]
     public int RequestCount { get; set; }
-
-    /// <summary>
-    /// Количество знаков после запятой для округления валюты.
-    /// </summary>
-    [JsonPropertyName("currencyRoundCount")]
-    public int CurrencyRoundCount { get; set; }
 }

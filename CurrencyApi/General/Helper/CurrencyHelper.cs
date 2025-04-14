@@ -14,4 +14,15 @@ public static class CurrencyHelper
             _ => throw new InvalidOperationException($"Invalid currency code: '{currencyCode}'")
         };
     }
+
+    public static string ToCurrencyCode(CurrencyType currencyCode)
+    {
+        return currencyCode switch
+        {
+            CurrencyType.USD => "USD",
+            CurrencyType.RUB => "RUB",
+            CurrencyType.KZT => "KZT",
+            _ => throw new InvalidOperationException($"Invalid currency code: '{currencyCode}'")
+        };
+    }
 }

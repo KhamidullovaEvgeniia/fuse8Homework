@@ -1,4 +1,6 @@
-﻿using Fuse8.BackendInternship.PublicApi.Interfaces;
+﻿using Framework.Enums;
+using Framework.Helper;
+using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
 using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +53,8 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<CurrencyRate> GetCurrencyRateAsync(CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetCurrencyRateAsync(_currencyCode, cancellationToken);
+        var currencyType = CurrencyHelper.ParsingCurrencyCode(_currencyCode);
+        return await _currencyApiService.GetCurrencyRateAsync(currencyType, cancellationToken);
     }
 
     /// <summary>
@@ -77,7 +80,7 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] string currencyCode, CancellationToken cancellationToken)
+    public async Task<CurrencyRate> GetCurrencyCodeRateAsync([FromRoute] CurrencyType currencyCode, CancellationToken cancellationToken)
     {
         return await _currencyApiService.GetCurrencyRateAsync(currencyCode, cancellationToken);
     }
@@ -107,7 +110,7 @@ public class CurrencyController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<DatedCurrencyRate> GetDatedCurrencyRateAsync(
-        [FromRoute] string currencyCode,
+        [FromRoute] CurrencyType currencyCode,
         [FromRoute] DateOnly date,
         CancellationToken cancellationToken)
     {

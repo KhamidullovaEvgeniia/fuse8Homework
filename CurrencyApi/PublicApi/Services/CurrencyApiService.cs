@@ -1,4 +1,6 @@
 ﻿using Currency;
+using Framework.Enums;
+using Fuse8.BackendInternship.PublicApi.Helpers;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
 using Fuse8.BackendInternship.PublicApi.Settings;
@@ -19,33 +21,38 @@ public class CurrencyApiService : ICurrencyApiService
         _currencySetting = currencySetting.Value;
     }
 
-    public async Task<CurrencyRate> GetCurrencyRateAsync(string currencyCode, CancellationToken cancellationToken)
+    public async Task<CurrencyRate> GetCurrencyRateAsync(CurrencyType currencyType, CancellationToken cancellationToken)
     {
+        var baseCurrencyCode = CurrencyTypeHelper.ToCurrencyCode(_currencySetting.BaseCurrency);
+        var currencyCode = CurrencyTypeHelper.ToCurrencyCode(currencyType);
         var request = new CurrencyRateRequest
         {
-            BaseCurrencyCode = _currencySetting.BaseCurrency,
+            BaseCurrencyCode = baseCurrencyCode,
             CurrencyCode = currencyCode
         };
 
-        var grpcResponse = await _currencyApiClient.GetCurrencyRateAsync(request);
+        var grpcResponse = await _currencyApiClient.GetCurrencyRateAsync(request, cancellationToken: cancellationToken);
 
+        var resultCode = CurrencyTypeHelper.ParsingCurrencyCodeToString(grpcResponse.CurrencyCode);
         var response = new CurrencyRate
         {
-            Code = grpcResponse.CurrencyCode,
-            Value = Helpers.CurrencyHelper.RoundCurrencyValue((decimal)grpcResponse.Value, _currencySetting.Accuracy)
+            Code = resultCode,
+            Value = RoundHelper.RoundCurrencyValue((decimal)grpcResponse.Value, _currencySetting.Accuracy)
         };
 
         return response;
     }
 
     public async Task<DatedCurrencyRate> GetCurrencyDataWithRateAsync(
-        string currencyCode,
+        CurrencyType currencyType,
         DateOnly date,
         CancellationToken cancellationToken)
     {
+        var baseCurrencyCode = CurrencyTypeHelper.ToCurrencyCode(_currencySetting.BaseCurrency);
+        var currencyCode = CurrencyTypeHelper.ToCurrencyCode(currencyType);
         var request = new CurrencyRateOnDateRequest
         {
-            BaseCurrencyCode = _currencySetting.BaseCurrency,
+            BaseCurrencyCode = baseCurrencyCode,
             CurrencyCode = currencyCode,
             Date = new GRPCDateOnly
             {
@@ -55,21 +62,22 @@ public class CurrencyApiService : ICurrencyApiService
             }
         };
 
-        var response = await _currencyApiClient.GetCurrencyDataWithRateAsync(request);
+        var response = await _currencyApiClient.GetCurrencyDataWithRateAsync(request, cancellationToken: cancellationToken);
 
+        var resultCode = CurrencyTypeHelper.ParsingCurrencyCodeToString(response.CurrencyCode);
         var datedCurrencyRate = new DatedCurrencyRate()
         {
             Date = date,
-            Code = response.CurrencyCode,
-            Value = Helpers.CurrencyHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy)
+            Code = resultCode,
+            Value = RoundHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy)
         };
 
         return datedCurrencyRate;
     }
 
-    public async Task<ApiSettings> GetApiSettingsAsync(Empty request)
+    public async Task<ApiSettings> GetApiSettingsAsync(Empty request, CancellationToken cancellationToken)
     {
-        var response = await _currencyApiClient.GetApiSettingsAsync(request);
+        var response = await _currencyApiClient.GetApiSettingsAsync(request, cancellationToken: cancellationToken);
 
         var settingsApi = new ApiSettings
         {

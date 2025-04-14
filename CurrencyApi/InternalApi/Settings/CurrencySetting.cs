@@ -8,7 +8,5 @@ public class CurrencySetting
 
     public required string Currency { get; init; }
 
-    public int Accuracy { get; set; }
-
     public required TimeSpan CacheExpiration { get; init; }
 }

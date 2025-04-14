@@ -19,6 +19,8 @@ services:
       retries: 5
 
   internal-api:
+    container_name: internalapi
+    image: internal-api:latest
     build:
       context: .
       dockerfile: InternalApi/Dockerfile
@@ -29,33 +31,38 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: "http://+:5243;http://+:5244;"
+      REST_PORT: ${INTERNAL_API_REST_PORT}
+      GRPC_PORT: ${INTERNAL_API_GRPC_PORT}
       ConnectionStrings__CurrencyDb: "Host=postgres;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}"
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5243/healthcheck"]
-      interval: 100000s
+      interval: 10s
       timeout: 5s
       retries: 5
 
   public-api:
+    container_name: publicapi
+    image: public-api:latest
     build:
       context: .
-      target: public-api
-    container_name: api_public
+      dockerfile: PublicApi/Dockerfile
     restart: unless-stopped
-    image: ${PUBLIC_API_IMAGE:-public-api}:${API_VERSION:-latest}
     ports:
       - "${PUBLIC_API_REST_PORT}:5001"
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: "http://+:5001;"
-      ConnectionStrings__Database: "Host=postgres;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}"
-      InternalApi__GrpcEndpoint: "http://internal-api:5002"
+      ConnectionStrings__Database: "Host=postgres;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}"
+      InternalApi__GrpcEndpoint: "http://internal-api:5244"
+    depends_on:
+      internal-api:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/healthcheck"]
-      interval: 100000s
+      interval: 10s
       timeout: 5s
       retries: 5
 

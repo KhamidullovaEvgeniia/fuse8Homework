@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
 using Serilog;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace InternalApi;
 
@@ -58,14 +59,7 @@ public class Startup
         services.AddSwaggerGen(
             c =>
             {
-                c.SwaggerDoc(
-                    "v1",
-                    new OpenApiInfo()
-                    {
-                        Title = "API",
-                        Version = "v1",
-                        Description = "Api"
-                    });
+                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "API", Version = "v1", Description = "Api" });
 
                 c.IncludeXmlComments(
                     Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml"),
@@ -86,9 +80,10 @@ public class Startup
 
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
-        
-        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__CurrencyDb") 
+
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__CurrencyDb")
                                ?? _configuration.GetConnectionString("CurrencyDb");
+
         services.AddDataAccess(connectionString);
 
         services.AddGrpc();
@@ -147,8 +142,8 @@ public class Startup
 
     private (int GrpcPort, int WebApiPort) GetPorts()
     {
-        var grpcPortFromEnv = Environment.GetEnvironmentVariable("INTERNAL_API_GRPC_PORT");
-        var webApiPortFromEnv = Environment.GetEnvironmentVariable("INTERNAL_API_REST_PORT");
+        var grpcPortFromEnv = Environment.GetEnvironmentVariable("GRPC_PORT");
+        var webApiPortFromEnv = Environment.GetEnvironmentVariable("REST_PORT");
 
         if (!string.IsNullOrWhiteSpace(grpcPortFromEnv) && !string.IsNullOrWhiteSpace(webApiPortFromEnv))
         {
@@ -156,7 +151,7 @@ public class Startup
             var parsedWebApiPort = int.Parse(webApiPortFromEnv);
             return (parsedGrpcPort, parsedWebApiPort);
         }
-        
+
         var grpcPort = ParsePortFromEndpoint("gRPC");
         var webApiPort = ParsePortFromEndpoint("WebApi");
 

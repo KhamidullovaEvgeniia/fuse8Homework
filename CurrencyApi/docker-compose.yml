@@ -5,11 +5,66 @@ services:
     image: postgres:17.4
     restart: unless-stopped
     environment:
-      DATABASE_HOST: 127.0.0.1
-      POSTGRES_USER: someUser
-      POSTGRES_PASSWORD: P@ssw0rd
-      POSTGRES_DB: fuse8Internship
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "60001:5432"
+      - "${DB_PORT}:5432"
     volumes:
        - /DockerData/postgres/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  internal-api:
+    build:
+      context: .
+      target: internal-api
+    container_name: api_internal
+    restart: unless-stopped
+    image: ${INTERNAL_API_IMAGE:-internal-api}:${API_VERSION:-latest}
+    ports:
+      - "${INTERNAL_API_REST_PORT}:5000"
+      - "${INTERNAL_API_GRPC_PORT}:5002"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: "http://+:5000;http://+:5002"
+      ConnectionStrings__Database: "Host=postgres;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}"
+      Kestrel__Endpoints__Http__Url: "http://+:5000"
+      Kestrel__Endpoints__Grpc__Url: "http://+:5002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  public-api:
+    build:
+      context: .
+      target: public-api
+    container_name: api_public
+    restart: unless-stopped
+    image: ${PUBLIC_API_IMAGE:-public-api}:${API_VERSION:-latest}
+    ports:
+      - "${PUBLIC_API_REST_PORT}:5001"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: "http://+:5001;"
+      ConnectionStrings__Database: "Host=postgres;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}"
+      InternalApi__GrpcEndpoint: "http://internal-api:5002"
+    depends_on:
+      internal-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

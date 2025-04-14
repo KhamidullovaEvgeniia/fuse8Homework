@@ -87,7 +87,9 @@ public class Startup
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
         
-        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__CurrencyDb") 
+                               ?? _configuration.GetConnectionString("CurrencyDb");
+        services.AddDataAccess(connectionString);
 
         services.AddGrpc();
 
@@ -145,6 +147,16 @@ public class Startup
 
     private (int GrpcPort, int WebApiPort) GetPorts()
     {
+        var grpcPortFromEnv = Environment.GetEnvironmentVariable("INTERNAL_API_GRPC_PORT");
+        var webApiPortFromEnv = Environment.GetEnvironmentVariable("INTERNAL_API_REST_PORT");
+
+        if (!string.IsNullOrWhiteSpace(grpcPortFromEnv) && !string.IsNullOrWhiteSpace(webApiPortFromEnv))
+        {
+            var parsedGrpcPort = int.Parse(grpcPortFromEnv);
+            var parsedWebApiPort = int.Parse(webApiPortFromEnv);
+            return (parsedGrpcPort, parsedWebApiPort);
+        }
+        
         var grpcPort = ParsePortFromEndpoint("gRPC");
         var webApiPort = ParsePortFromEndpoint("WebApi");
 

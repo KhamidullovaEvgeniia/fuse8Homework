@@ -59,7 +59,10 @@ public class Startup
 
         services.AddScoped<ICurrencyApiService, CurrencyApiService>();
         services.AddScoped<IFavoriteCurrencyService, FavoriteCurrencyService>();
-        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
+        
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__CurrencyDb") 
+                               ?? _configuration.GetConnectionString("CurrencyDb");
+        services.AddDataAccess(connectionString);
 
         services
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(

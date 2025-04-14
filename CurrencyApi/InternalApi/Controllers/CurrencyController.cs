@@ -2,9 +2,7 @@
 using Framework.Helper;
 using InternalApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using InternalApi.Models;
-using InternalApi.Settings;
 
 namespace InternalApi.Controllers;
 
@@ -15,18 +13,15 @@ namespace InternalApi.Controllers;
 public class CurrencyController : ControllerBase
 {
     private readonly ICachedCurrencyAPI _cachedCurrencyAPI;
-
-    private readonly string _currencyCode;
+    
 
     /// <summary>
     /// Конструктор контроллера.
     /// </summary>
     /// <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
-    /// <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
-    public CurrencyController(ICachedCurrencyAPI cachedCurrencyApi, IOptions<CurrencySetting> currencySetting)
+    public CurrencyController(ICachedCurrencyAPI cachedCurrencyApi)
     {
         _cachedCurrencyAPI = cachedCurrencyApi;
-        _currencyCode = currencySetting.Value.Currency;
     }
 
     /// <summary>
@@ -70,6 +65,7 @@ public class CurrencyController : ControllerBase
     /// <param name="baseCurrencyCode">Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"</param>
     /// <param name="currencyCode">Код валюты (например, "RUB").</param>
     /// <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Курс валюты на указанную дату.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс валюты.

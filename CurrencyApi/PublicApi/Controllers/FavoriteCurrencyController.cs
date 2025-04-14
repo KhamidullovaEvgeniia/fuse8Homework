@@ -26,6 +26,7 @@ public class FavoriteCurrencyController : ControllerBase
     /// Получает Избранное по его названию.
     /// </summary>
     /// <param name="name">Избранное (например, "RubToEuro").</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Избранное по его названию.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает Избранное по его названию.

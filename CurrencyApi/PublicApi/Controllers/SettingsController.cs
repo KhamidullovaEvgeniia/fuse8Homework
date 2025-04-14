@@ -1,8 +1,6 @@
 ﻿using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
-using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Google.Protobuf.WellKnownTypes;
 
 namespace Fuse8.BackendInternship.PublicApi.Controllers;

@@ -1,4 +1,5 @@
-﻿using Framework.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using Framework.Enums;
 using Framework.Helper;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
@@ -12,6 +13,7 @@ namespace Fuse8.BackendInternship.PublicApi.Controllers;
 /// Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
 /// </summary>
 [Route("currency")]
+[SuppressMessage("ReSharper", "RouteTemplates.ParameterTypeAndConstraintsMismatch")]
 public class CurrencyController : ControllerBase
 {
     private readonly ICurrencyApiService _currencyApiService;

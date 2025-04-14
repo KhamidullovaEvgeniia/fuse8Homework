@@ -1,10 +1,5 @@
 using InternalApi;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog;
-using Serilog.Exceptions;
-using Serilog.Exceptions.Core;
-using Serilog.Exceptions.Filters;
 
 var webHost = Host
     .CreateDefaultBuilder(args)

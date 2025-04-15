@@ -4,8 +4,9 @@ using Serilog;
 var webHost = Host
     .CreateDefaultBuilder(args)
     .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder.UseStartup<Startup>())
-    .UseSerilog((context, _, loggerConfiguration) => loggerConfiguration
-        .ReadFrom.Configuration(context.Configuration))
+    .UseSerilog(
+        (context, _, loggerConfiguration) =>
+            loggerConfiguration.ReadFrom.Configuration(context.Configuration))
     .Build();
 
 await webHost.RunAsync();

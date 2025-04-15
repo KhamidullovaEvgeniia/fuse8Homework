@@ -9,12 +9,11 @@
             Методы для получения актуального курс валюты, курса валюты по коду и курс на определенную дату.
             </summary>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.#ctor(InternalApi.Interfaces.ICachedCurrencyAPI,Microsoft.Extensions.Options.IOptions{InternalApi.Settings.CurrencySetting})">
+        <member name="M:InternalApi.Controllers.CurrencyController.#ctor(InternalApi.Interfaces.ICachedCurrencyAPI)">
             <summary>
             Конструктор контроллера.
             </summary>
             <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
-            <param name="currencySetting">Настройки валюты, содержащие валюту по умолчанию, дефолтную валюту и количество знаков после запятой.</param>
         </member>
         <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
@@ -41,6 +40,7 @@
             <param name="baseCurrencyCode">Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"</param>
             <param name="currencyCode">Код валюты (например, "RUB").</param>
             <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+            <param name="cancellationToken">Токен отмены</param>
             <returns>Курс валюты на указанную дату.</returns>
             <response code="200">
             Успешный запрос, возвращает курс валюты.

@@ -1,9 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Globalization;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+﻿using System.Text.Json.Serialization;
 using Audit.Core;
 using Audit.Http;
 using Framework.Binders;
@@ -15,13 +10,10 @@ using InternalApi.Interfaces;
 using InternalApi.Services;
 using InternalApi.Settings;
 using InterpolatedParsing;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
-using Serilog;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace InternalApi;
 

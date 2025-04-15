@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Audit.Core;
 using Audit.Http;
 using Currency;
 using Framework.Binders;
@@ -10,8 +11,6 @@ using Fuse8.BackendInternship.PublicApi.Services;
 using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Polly;
-using Polly.Extensions.Http;
 using PublicApi.DataAccess;
 
 namespace Fuse8.BackendInternship.PublicApi;
@@ -63,6 +62,8 @@ public class Startup
         var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__CurrencyDb") 
                                ?? _configuration.GetConnectionString("CurrencyDb");
         services.AddDataAccess(connectionString);
+        
+        Configuration.Setup().UseSerilog();
 
         services
             .AddGrpcClient<CurrencyApi.CurrencyApiClient>(
@@ -72,7 +73,9 @@ public class Startup
                     {
                         var scopedProvider = scope.ServiceProvider;
                         var settings = scopedProvider.GetRequiredService<IOptionsSnapshot<CurrencyApiSettings>>().Value;
-                        options.Address = new Uri(settings.GrpcUrl);
+                        var grpcUrl = Environment.GetEnvironmentVariable("InternalApi__GrpcEndpoint") 
+                                      ?? settings.GrpcUrl;
+                        options.Address = new Uri(grpcUrl);
                     }
                 })
             .AddAuditHandler(

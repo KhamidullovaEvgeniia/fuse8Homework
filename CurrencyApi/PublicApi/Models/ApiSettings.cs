@@ -5,7 +5,7 @@ namespace Fuse8.BackendInternship.PublicApi.Models;
 /// <summary>
 /// Настройки API.
 /// </summary>
-public class ApiSettings
+public sealed class ApiSettings
 {
     /// <summary>
     /// Валюта по умолчанию.

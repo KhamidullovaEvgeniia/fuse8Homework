@@ -2,4 +2,4 @@
 
 namespace InternalApi.Models;
 
-public record CurrencyDTO(CurrencyType CurrencyType, decimal Value);
+public sealed record CurrencyDTO(CurrencyType CurrencyType, decimal Value);

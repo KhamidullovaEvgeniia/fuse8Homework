@@ -2,7 +2,7 @@
 
 namespace Fuse8.BackendInternship.PublicApi.Settings;
 
-public class CurrencyApiSettings
+public sealed class CurrencyApiSettings
 {
     public const string SectionName = "CurrencyApiSettings";
 

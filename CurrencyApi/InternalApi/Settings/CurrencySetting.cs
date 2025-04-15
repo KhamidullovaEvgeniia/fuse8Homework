@@ -2,7 +2,7 @@
 
 namespace InternalApi.Settings;
 
-public class CurrencySetting
+public sealed class CurrencySetting
 {
     public const string SectionName = "CurrencySetting";
 

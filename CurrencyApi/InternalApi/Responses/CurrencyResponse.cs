@@ -2,14 +2,14 @@
 
 namespace InternalApi.Responses;
 
-public class Meta
+public sealed class Meta
 {
     [JsonInclude] 
     [JsonPropertyName("last_updated_at")]
     public required DateTime LastUpdatedAt { get; set; }
 }
 
-public class CurrencyInfo
+public sealed class CurrencyInfo
 {
     [JsonInclude] 
     [JsonPropertyName("code")]
@@ -20,7 +20,7 @@ public class CurrencyInfo
     public decimal Value { get; set; }
 }
 
-public class CurrencyResponse
+public sealed class CurrencyResponse
 {
     [JsonPropertyName("meta")]
     public required Meta Meta { get; set; }

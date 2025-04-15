@@ -1,6 +1,6 @@
 ﻿namespace InternalApi.DataAccess.Models;
 
-public class ExchangeDate
+public sealed class ExchangeDate
 {
     public int Id { get; set; }
 

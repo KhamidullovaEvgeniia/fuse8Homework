@@ -1,6 +1,6 @@
 ﻿namespace InternalApi.DataAccess.Models;
 
-public class CurrencyRate
+public sealed class CurrencyRate
 {
     public int Currency { get; set; }
     public decimal Value { get; set; }

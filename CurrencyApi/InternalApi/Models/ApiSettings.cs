@@ -5,7 +5,7 @@ namespace InternalApi.Models;
 /// <summary>
 /// Настройки API.
 /// </summary>
-public class ApiSettings
+public sealed class ApiSettings
 {
     /// <summary>
     /// Лимит запросов к API.

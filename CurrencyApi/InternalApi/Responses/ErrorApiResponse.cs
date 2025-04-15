@@ -2,7 +2,7 @@
 
 namespace InternalApi.Responses;
 
-public class ErrorApiResponse
+public sealed class ErrorApiResponse
 {
     [JsonInclude] 
     [JsonPropertyName("message")]

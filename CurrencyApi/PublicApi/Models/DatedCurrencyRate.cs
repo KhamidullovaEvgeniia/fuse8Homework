@@ -5,7 +5,7 @@ namespace Fuse8.BackendInternship.PublicApi.Models;
 /// <summary>
 /// Курс валюты с датой.
 /// </summary>
-public class DatedCurrencyRate
+public sealed class DatedCurrencyRate
 {
     /// <summary>
     /// Дата курса валюты в формате yyyy-MM-dd.

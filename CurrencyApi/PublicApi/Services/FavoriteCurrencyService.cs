@@ -37,9 +37,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
 
         return new FavoriteCurrencyRateDTO
         {
-            Name = currencyRate.Name,
-            Currency = currencyRate.Currency,
-            BaseCurrency = currencyRate.BaseCurrency
+            Name = currencyRate.Name, Currency = currencyRate.Currency, BaseCurrency = currencyRate.BaseCurrency
         };
     }
 
@@ -50,13 +48,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
             throw new InvalidOperationException("Favorite currency not found");
 
         return currencyRates
-            .Select(
-                x => new FavoriteCurrencyRateDTO
-                {
-                    Name = x.Name,
-                    Currency = x.Currency,
-                    BaseCurrency = x.BaseCurrency
-                })
+            .Select(x => new FavoriteCurrencyRateDTO { Name = x.Name, Currency = x.Currency, BaseCurrency = x.BaseCurrency })
             .ToArray();
     }
 
@@ -74,9 +66,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
 
         var currencyRate = new FavoriteCurrencyRate
         {
-            Name = currencyRateDTO.Name,
-            Currency = currencyRateDTO.Currency,
-            BaseCurrency = currencyRateDTO.BaseCurrency
+            Name = currencyRateDTO.Name, Currency = currencyRateDTO.Currency, BaseCurrency = currencyRateDTO.BaseCurrency
         };
 
         await _repository.AddAsync(currencyRate, cancellationToken);
@@ -94,9 +84,7 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
 
         var currencyRate = new FavoriteCurrencyRate
         {
-            Name = currencyRateDTO.Name,
-            Currency = currencyRateDTO.Currency,
-            BaseCurrency = currencyRateDTO.BaseCurrency
+            Name = currencyRateDTO.Name, Currency = currencyRateDTO.Currency, BaseCurrency = currencyRateDTO.BaseCurrency
         };
 
         await _repository.UpdateByNameAsync(currencyRate, cancellationToken);
@@ -115,19 +103,14 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
 
         var baseCurrencyCode = CurrencyTypeHelper.ToCurrencyCode(currencyRate.BaseCurrency);
         var currencyCode = CurrencyTypeHelper.ToCurrencyCode(currencyRate.Currency);
-        var currencyRateRequest = new CurrencyRateRequest
-        {
-            BaseCurrencyCode = baseCurrencyCode,
-            CurrencyCode = currencyCode,
-        };
+        var currencyRateRequest = new CurrencyRateRequest { BaseCurrencyCode = baseCurrencyCode, CurrencyCode = currencyCode, };
 
         var response = await _currencyApiClient.GetCurrencyRateAsync(currencyRateRequest, cancellationToken: cancellationToken);
 
         var resultCode = CurrencyTypeHelper.ParsingCurrencyCodeToString(response.CurrencyCode);
         return new CurrencyRate
         {
-            Code = resultCode,
-            Value = RoundHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy)
+            Code = resultCode, Value = RoundHelper.RoundCurrencyValue(response.Value, _currencySetting.Accuracy)
         };
     }
 
@@ -140,20 +123,13 @@ public class FavoriteCurrencyService : IFavoriteCurrencyService
         if (currencyRate is null)
             throw new KeyNotFoundException();
 
-        var grpcDate = new GRPCDateOnly
-        {
-            Year = date.Year,
-            Month = date.Month,
-            Day = date.Day
-        };
+        var grpcDate = new GRPCDateOnly { Year = date.Year, Month = date.Month, Day = date.Day };
 
         var baseCurrencyCode = CurrencyTypeHelper.ToCurrencyCode(currencyRate.BaseCurrency);
         var currencyCode = CurrencyTypeHelper.ToCurrencyCode(currencyRate.Currency);
         var currencyRateRequest = new CurrencyRateOnDateRequest
         {
-            BaseCurrencyCode = baseCurrencyCode,
-            CurrencyCode = currencyCode,
-            Date = grpcDate
+            BaseCurrencyCode = baseCurrencyCode, CurrencyCode = currencyCode, Date = grpcDate
         };
 
         var response = await _currencyApiClient.GetCurrencyDataWithRateAsync(currencyRateRequest);

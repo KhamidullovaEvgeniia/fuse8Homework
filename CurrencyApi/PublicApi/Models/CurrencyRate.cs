@@ -5,7 +5,7 @@ namespace Fuse8.BackendInternship.PublicApi.Models;
 /// <summary>
 /// Курс валюты.
 /// </summary>
-public class CurrencyRate
+public sealed class CurrencyRate
 {
     /// <summary>
     /// Код валюты (например, "RUB").

@@ -1,5 +1,4 @@
 ﻿using InternalApi.DataAccess.Interfaces;
-using InternalApi.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

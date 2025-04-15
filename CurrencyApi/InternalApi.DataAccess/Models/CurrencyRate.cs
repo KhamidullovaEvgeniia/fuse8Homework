@@ -6,5 +6,5 @@ public class CurrencyRate
     public decimal Value { get; set; }
 
     public int DateId { get; set; }
-    public ExchangeDate ExchangeDate { get; set; }
+    public required ExchangeDate ExchangeDate { get; set; }
 }

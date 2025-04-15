@@ -10,12 +10,14 @@ public class CurrencyRate
     /// <summary>
     /// Код валюты (например, "RUB").
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("code")]
     public required string Code { get; set; }
 
     /// <summary>
     /// Значение курса валюты.
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("value")]
     public decimal Value { get; set; }
 }

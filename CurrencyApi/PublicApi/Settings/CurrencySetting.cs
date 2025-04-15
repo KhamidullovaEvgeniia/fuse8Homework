@@ -1,9 +1,17 @@
-﻿namespace Fuse8.BackendInternship.PublicApi.Settings;
+﻿using System.Text.Json.Serialization;
+
+namespace Fuse8.BackendInternship.PublicApi.Settings;
 
 public class CurrencySetting
 {
     public const string SectionName = "CurrencySetting";
+
+    [JsonInclude]
     public required string BaseCurrency { get; init; }
-    public required string Currency { get; init; } 
+
+    [JsonInclude]
+    public required string Currency { get; init; }
+
+    [JsonInclude]
     public int Accuracy { get; set; }
 }

@@ -10,18 +10,21 @@ public class ApiSettings
     /// <summary>
     /// Валюта по умолчанию.
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("defaultCurrency")]
     public required string DefaultCurrency { get; set; }
 
     /// <summary>
     /// Есть ли доступные запросы к API.
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("newRequestsAvailable")]
     public bool NewRequestsAvailable { get; set; }
 
     /// <summary>
     /// Количество знаков после запятой для округления валюты.
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("currencyRoundCount")]
     public int CurrencyRoundCount { get; set; }
 }

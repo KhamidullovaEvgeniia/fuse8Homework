@@ -1,6 +1,4 @@
-﻿using Fuse8.BackendInternship.PublicApi.Settings;
-
-namespace Fuse8.BackendInternship.PublicApi.Helpers;
+﻿namespace Fuse8.BackendInternship.PublicApi.Helpers;
 
 public static class RoundHelper
 {

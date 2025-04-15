@@ -9,7 +9,7 @@ public static class CurrencyTypeHelper
     public static CurrencyType ParsingCurrencyCode(CurrencyCode inputCurrencyCode)
     {
         var currencyCode = (CurrencyType)inputCurrencyCode;
-        if (currencyCode == default || System.Enum.IsDefined(currencyCode) is false)
+        if (currencyCode == default || Enum.IsDefined(currencyCode) is false)
         {
             throw new InvalidOperationException($"В запросе пришел неизвестный код валюты: '{inputCurrencyCode}'");
         }
@@ -19,7 +19,7 @@ public static class CurrencyTypeHelper
     public static CurrencyCode ToCurrencyCode(CurrencyType currencyCodeFromRequest)
     {
         var currencyCode = (CurrencyCode)currencyCodeFromRequest;
-        if (currencyCode == default || System.Enum.IsDefined(currencyCode) is false)
+        if (currencyCode == default || Enum.IsDefined(currencyCode) is false)
         {
             throw new InvalidOperationException($"В запросе пришел неизвестный код валюты: '{currencyCodeFromRequest}'");
         }

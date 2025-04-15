@@ -1,10 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Framework.Exceptions;
+using General.Exceptions;
 using InternalApi.Interfaces;
 using InternalApi.Responses;
-using Microsoft.Extensions.Options;
-using InternalApi.Settings;
 
 namespace InternalApi.Services;
 

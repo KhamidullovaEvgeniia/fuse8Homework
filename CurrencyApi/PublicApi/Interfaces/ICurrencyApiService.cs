@@ -1,5 +1,5 @@
 ﻿using Currency;
-using Framework.Enums;
+using General.Enums;
 using Fuse8.BackendInternship.PublicApi.Models;
 using Google.Protobuf.WellKnownTypes;
 

@@ -1,5 +1,5 @@
-﻿using Framework.Enums;
-using Framework.Helper;
+﻿using General.Enums;
+using General.Helper;
 using InternalApi.DataAccess.Interfaces;
 using InternalApi.DataAccess.Models;
 using InternalApi.Interfaces;

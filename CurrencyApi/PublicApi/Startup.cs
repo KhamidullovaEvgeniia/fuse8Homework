@@ -2,10 +2,10 @@
 using Audit.Core;
 using Audit.Http;
 using Currency;
-using Framework.Binders;
-using Framework.Filters;
-using Framework.JsonConvectors;
-using Framework.Middlewares;
+using General.Binders;
+using General.Filters;
+using General.JsonConvectors;
+using General.Middlewares;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Services;
 using Fuse8.BackendInternship.PublicApi.Settings;

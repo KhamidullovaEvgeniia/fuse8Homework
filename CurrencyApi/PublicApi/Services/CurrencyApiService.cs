@@ -1,5 +1,5 @@
 ﻿using Currency;
-using Framework.Enums;
+using General.Enums;
 using Fuse8.BackendInternship.PublicApi.Helpers;
 using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;

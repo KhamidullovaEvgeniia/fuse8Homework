@@ -1,5 +1,5 @@
-﻿using Framework.Enums;
-using Framework.Helper;
+﻿using General.Enums;
+using General.Helper;
 using InternalApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using InternalApi.Models;

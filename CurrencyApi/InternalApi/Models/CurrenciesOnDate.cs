@@ -9,6 +9,7 @@ public class CurrenciesOnDate
     /// <summary>
     /// Дата обновления данных
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("lastUpdatedAt")]
     public required DateTime Date { get; init; }
 

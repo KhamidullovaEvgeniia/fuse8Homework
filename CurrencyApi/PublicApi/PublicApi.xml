@@ -34,7 +34,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(Framework.Enums.CurrencyType,System.Threading.CancellationToken)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(General.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс указанной валюты.
             </summary>
@@ -54,7 +54,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(Framework.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(General.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>

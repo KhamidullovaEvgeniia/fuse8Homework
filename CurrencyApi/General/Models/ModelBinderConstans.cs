@@ -1,4 +1,4 @@
-﻿namespace Framework.Models;
+﻿namespace General.Models;
 
 public class ModelBinderConstans
 {

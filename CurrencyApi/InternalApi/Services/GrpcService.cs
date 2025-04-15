@@ -1,13 +1,8 @@
 ﻿using Currency;
-using Framework.Enums;
-using Framework.Helper;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using InternalApi.Helpers;
 using InternalApi.Interfaces;
-using InternalApi.Settings;
-using Microsoft.Extensions.Options;
-using Enum = System.Enum;
 
 namespace InternalApi.Services;
 

@@ -1,6 +1,6 @@
 ﻿using Currency;
-using Framework.Enums;
-using Framework.Helper;
+using General.Enums;
+using General.Helper;
 
 namespace Fuse8.BackendInternship.PublicApi.Helpers;
 

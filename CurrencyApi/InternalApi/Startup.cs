@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Audit.Core;
 using Audit.Http;
-using Framework.Binders;
-using Framework.Filters;
-using Framework.JsonConvectors;
-using Framework.Middlewares;
+using General.Binders;
+using General.Filters;
+using General.JsonConvectors;
+using General.Middlewares;
 using InternalApi.DataAccess;
 using InternalApi.Interfaces;
 using InternalApi.Services;

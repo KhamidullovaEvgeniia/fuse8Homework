@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
-using Framework.Models;
+using General.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Framework.Binders;
+namespace General.Binders;
 
 /// <summary>
 /// Model Binder для парсинга даты

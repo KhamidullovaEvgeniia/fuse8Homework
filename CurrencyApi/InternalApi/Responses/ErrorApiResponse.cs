@@ -4,9 +4,11 @@ namespace InternalApi.Responses;
 
 public class ErrorApiResponse
 {
+    [JsonInclude] 
     [JsonPropertyName("message")]
     public required string Message { get; init; }
 
+    [JsonInclude] 
     [JsonPropertyName("errors")]
     public required Dictionary<string, List<string>> ErrorsByRequestFieldName { get; init; }
 

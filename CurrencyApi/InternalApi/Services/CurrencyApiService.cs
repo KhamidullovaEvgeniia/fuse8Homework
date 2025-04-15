@@ -1,8 +1,6 @@
 ﻿using InternalApi.Interfaces;
 using InternalApi.Models;
 using InternalApi.Responses;
-using InternalApi.Settings;
-using Microsoft.Extensions.Options;
 
 namespace InternalApi.Services;
 
@@ -10,25 +8,16 @@ public class CurrencyApiService : ICurrencyAPI
 {
     private readonly ICurrencyHttpApi _currencyHttpApi;
 
-    private readonly CurrencySetting _currencySetting;
-
-    public CurrencyApiService(ICurrencyHttpApi currencyHttpApi, IOptionsSnapshot<CurrencySetting> currencySetting)
+    public CurrencyApiService(ICurrencyHttpApi currencyHttpApi)
     {
         _currencyHttpApi = currencyHttpApi;
-        _currencySetting = currencySetting.Value;
     }
 
     public async Task<ApiSettings> GetApiSettingsAsync(CancellationToken cancellationToken)
     {
         var result = await _currencyHttpApi.GetApiQuotasAsync(cancellationToken: cancellationToken);
 
-        var settingsApi = new ApiSettings()
-        {
-            DefaultCurrency = _currencySetting.Currency,
-            BaseCurrency = _currencySetting.BaseCurrency,
-            RequestLimit = result.Quotas.Month.Total,
-            RequestCount = result.Quotas.Month.Used
-        };
+        var settingsApi = new ApiSettings() { RequestLimit = result.Quotas.Month.Total, RequestCount = result.Quotas.Month.Used };
 
         return settingsApi;
     }

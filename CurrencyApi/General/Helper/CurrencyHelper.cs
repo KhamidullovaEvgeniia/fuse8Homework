@@ -1,6 +1,6 @@
-﻿using Framework.Enums;
+﻿using General.Enums;
 
-namespace Framework.Helper;
+namespace General.Helper;
 
 public static class CurrencyHelper
 {

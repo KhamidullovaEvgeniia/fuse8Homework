@@ -15,7 +15,7 @@
             </summary>
             <param name="cachedCurrencyApi">Сервис для получения данных о валюте</param>
         </member>
-        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Controllers.CurrencyController.GetCurrencyRateAsync(General.Enums.CurrencyType,General.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс валюты по умолчанию.
             </summary>
@@ -122,7 +122,7 @@
             <response code="429">Превышен лимит запросов.</response>
             <response code="500">Ошибка сервера.</response>
         </member>
-        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrentCurrencyAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrentCurrencyAsync(General.Enums.CurrencyType,General.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс
             </summary>
@@ -131,7 +131,7 @@
             <param name="cancellationToken">Токен отмены</param>
             <returns>Текущий курс</returns>
         </member>
-        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrencyOnDateAsync(Framework.Enums.CurrencyType,Framework.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
+        <member name="M:InternalApi.Interfaces.ICachedCurrencyAPI.GetCurrencyOnDateAsync(General.Enums.CurrencyType,General.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс валюты, актуальный на <paramref name="date"/>
             </summary>
@@ -170,16 +170,6 @@
             Настройки API.
             </summary>
         </member>
-        <member name="P:InternalApi.Models.ApiSettings.DefaultCurrency">
-            <summary>
-            Валюта по умолчанию.
-            </summary>
-        </member>
-        <member name="P:InternalApi.Models.ApiSettings.BaseCurrency">
-            <summary>
-            Базовая валюта.
-            </summary>
-        </member>
         <member name="P:InternalApi.Models.ApiSettings.RequestLimit">
             <summary>
             Лимит запросов к API.
@@ -216,26 +206,6 @@
             </summary>
         </member>
         <member name="P:InternalApi.Models.CurrencyRates.Value">
-            <summary>
-            Значение курса валюты.
-            </summary>
-        </member>
-        <member name="T:InternalApi.Models.DatedCurrencyRate">
-            <summary>
-            Курс валюты с датой.
-            </summary>
-        </member>
-        <member name="P:InternalApi.Models.DatedCurrencyRate.Date">
-            <summary>
-            Дата курса валюты в формате yyyy-MM-dd.
-            </summary>
-        </member>
-        <member name="P:InternalApi.Models.DatedCurrencyRate.Code">
-            <summary>
-            Код валюты (например, "RUB").
-            </summary>
-        </member>
-        <member name="P:InternalApi.Models.DatedCurrencyRate.Value">
             <summary>
             Значение курса валюты.
             </summary>

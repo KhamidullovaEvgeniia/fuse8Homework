@@ -10,9 +10,11 @@ public class Quotas
 
 public class QuotaDetails
 {
+    [JsonInclude]
     [JsonPropertyName("total")]
     public int Total { get; set; }
 
+    [JsonInclude]
     [JsonPropertyName("used")]
     public int Used { get; set; }
 }

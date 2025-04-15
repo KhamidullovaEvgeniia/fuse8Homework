@@ -52,6 +52,7 @@ public class FavoriteCurrencyController : ControllerBase
     /// <summary>
     /// Получает список всех Избранных.
     /// </summary>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Список всех Избранных.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает список всех Избранных.
@@ -75,6 +76,8 @@ public class FavoriteCurrencyController : ControllerBase
     /// <summary>
     /// Получает текущий курс для Избранной валюты по её названию.
     /// </summary>
+    /// <param name="name">Избранное (например, "RubToEuro").</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Текущий курс для Избранной валюты по её названию.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает текущий курс для Избранной валюты по её названию.
@@ -98,6 +101,9 @@ public class FavoriteCurrencyController : ControllerBase
     /// <summary>
     /// Получает курс для Избранного по его названию на конкретную дату.
     /// </summary>
+    /// <param name="name">Избранное (например, "RubToEuro").</param>
+    /// <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Курс для Избранного по его названию на конкретную дату.</returns>
     /// <response code="200">
     /// Успешный запрос, возвращает курс для Избранного по его названию на конкретную дату.
@@ -124,6 +130,8 @@ public class FavoriteCurrencyController : ControllerBase
     /// <summary>
     /// Добавляет новое Избранное.
     /// </summary>
+    /// <param name="currencyRate">Избранное (например, "RubToEuro"), валюта, для которой нужно получить курс ("RUB"), базовая валюта ("EURO").</param>
+    /// <param name="cancellationToken"></param>
     /// <response code="200">
     /// Успешный запрос, добавляет новое Избранное.
     /// </response>
@@ -150,6 +158,8 @@ public class FavoriteCurrencyController : ControllerBase
     /// <summary>
     /// Изменяет Избранное по его названию.
     /// </summary>
+    /// <param name="currencyRate">Избранное (например, "RubToEuro"), валюта, для которой нужно получить курс ("RUB"), базовая валюта ("EURO").</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">
     /// Успешный запрос, изменяет Избранное по его названию.
     /// </response>
@@ -176,6 +186,8 @@ public class FavoriteCurrencyController : ControllerBase
     /// <summary>
     /// Удаляет Избранное по его названию.
     /// </summary>
+    /// <param name="name">Избранное (например, "RubToEuro").</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">
     /// Успешный запрос, удаляет Избранное по его названию.
     /// </response>

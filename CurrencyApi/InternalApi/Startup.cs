@@ -51,7 +51,14 @@ public class Startup
         services.AddSwaggerGen(
             c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "API", Version = "v1", Description = "Api" });
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo()
+                    {
+                        Title = "API",
+                        Version = "v1",
+                        Description = "Api"
+                    });
 
                 c.IncludeXmlComments(
                     Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml"),
@@ -134,16 +141,6 @@ public class Startup
 
     private (int GrpcPort, int WebApiPort) GetPorts()
     {
-        // var grpcPortFromEnv = Environment.GetEnvironmentVariable("GRPC_PORT");
-        // var webApiPortFromEnv = Environment.GetEnvironmentVariable("REST_PORT");
-        //
-        // if (!string.IsNullOrWhiteSpace(grpcPortFromEnv) && !string.IsNullOrWhiteSpace(webApiPortFromEnv))
-        // {
-        //     var parsedGrpcPort = int.Parse(grpcPortFromEnv);
-        //     var parsedWebApiPort = int.Parse(webApiPortFromEnv);
-        //     return (parsedGrpcPort, parsedWebApiPort);
-        // }
-
         var grpcPort = ParsePortFromEndpoint("gRPC");
         var webApiPort = ParsePortFromEndpoint("WebApi");
 

@@ -1,8 +1,6 @@
 ﻿using Fuse8.BackendInternship.PublicApi.Interfaces;
 using Fuse8.BackendInternship.PublicApi.Models;
-using Fuse8.BackendInternship.PublicApi.Settings;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Google.Protobuf.WellKnownTypes;
 
 namespace Fuse8.BackendInternship.PublicApi.Controllers;
@@ -30,8 +28,8 @@ public class SettingsController : ControllerBase
     /// <response code="429">Превышен лимит запросов.</response>
     /// <response code="500">Ошибка сервера.</response>
     [HttpGet]
-    public async Task<ApiSettings> GetSettingsAsync()
+    public async Task<ApiSettings> GetSettingsAsync(CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetApiSettingsAsync(new Empty());
+        return await _currencyApiService.GetApiSettingsAsync(new Empty(), cancellationToken);
     }
 }

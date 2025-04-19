@@ -6,23 +6,19 @@ namespace InternalApi.DataAccess;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly CurrencyDbContext _context;
-    private IExchangeDateRepository _exchangeDateRepository;
-    private ICurrencyRateRepository _currencyRateRepository;
+    private readonly IExchangeDateRepository _exchangeDateRepository;
+    private readonly ICurrencyRateRepository _currencyRateRepository;
 
     public UnitOfWork(CurrencyDbContext context)
     {
         _context = context;
+        _exchangeDateRepository = new ExchangeDateRepository(_context);
+        _currencyRateRepository = new CurrencyRateRepository(_context);
     }
 
-    public IExchangeDateRepository ExchangeDateRepository
-    {
-        get { return _exchangeDateRepository ??= new ExchangeDateRepository(_context); }
-    }
+    public IExchangeDateRepository ExchangeDateRepository => _exchangeDateRepository;
 
-    public ICurrencyRateRepository CurrencyRateRepository
-    {
-        get { return _currencyRateRepository ??= new CurrencyRateRepository(_context); }
-    }
+    public ICurrencyRateRepository CurrencyRateRepository => _currencyRateRepository;
 
     public void Commit()
     {

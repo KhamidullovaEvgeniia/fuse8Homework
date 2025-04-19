@@ -1,4 +1,4 @@
-﻿namespace Framework.Exceptions;
+﻿namespace General.Exceptions;
 
 public class CurrencyNotFoundException : Exception
 {

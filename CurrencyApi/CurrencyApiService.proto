@@ -11,25 +11,34 @@ service CurrencyApi {
   rpc GetApiSettings (google.protobuf.Empty) returns (ApiSettingsResponse);
 }
 
+// Тип валюты
+enum CurrencyCode
+{
+  CURRENCY_CODE_NOT_SET = 0; // Значение по умолчанию
+  CURRENCY_CODE_USD = 1; // United States Dollar
+  CURRENCY_CODE_RUB = 2; // Russian Ruble
+  CURRENCY_CODE_KZT = 3; // Kazakhstani Tenge
+}
+
+// Кастомный decimal
 message DecimalValue {
 
-  // Whole units part of the amount
+  // Целые единицы
   int64 units = 1;
 
-  // Nano units of the amount (10^-9)
-  // Must be same sign as units
+  // Значение после запятой
   sfixed32 nanos = 2;
 }
 
 // Запрос на получение курса валюты
 message CurrencyRateRequest {
-  string baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
-  string currencyCode = 2; // Код валюты, например, "RUB"
+  CurrencyCode baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+  CurrencyCode currencyCode = 2; // Код валюты, например, "RUB"
 }
 
 // Ответ с курсом валюты
 message CurrencyRateResponse {
-  string currencyCode = 1;  // Код валюты, например, "RUB"
+  CurrencyCode currencyCode = 1;  // Код валюты, например, "RUB"
   DecimalValue value = 2;         // Значение курса
 }
 // Тип для передачи даты
@@ -43,15 +52,15 @@ message GRPCDateOnly {
 }
 // Запрос на получение курса валюты на дату
 message CurrencyRateOnDateRequest {
-  string baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
-  string currencyCode = 2; // Код валюты, например, "RUB"
+  CurrencyCode baseCurrencyCode = 1; // Код базовой валюты, относительно которой необходимо вычислить курс, например, "USD"
+  CurrencyCode currencyCode = 2; // Код валюты, например, "RUB"
   GRPCDateOnly date = 3;   // Дата в формате "yyyy-MM-dd"
 }
 
 // Ответ с курсом валюты на дату
 message CurrencyRateOnDateResponse {
   GRPCDateOnly date = 1;    // Дата в формате "yyyy-MM-dd"
-  string currencyCode = 2;  // Код валюты, например, "RUB"
+  CurrencyCode currencyCode = 2;  // Код валюты, например, "RUB"
   DecimalValue value = 3;         // Значение курса
 }
 

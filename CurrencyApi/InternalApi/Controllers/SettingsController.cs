@@ -29,8 +29,8 @@ public class SettingsController : ControllerBase
     /// <response code="429">Превышен лимит запросов.</response>
     /// <response code="500">Ошибка сервера.</response>
     [HttpGet]
-    public async Task<ApiSettings> GetSettingsAsync()
+    public async Task<ApiSettings> GetSettingsAsync(CancellationToken cancellationToken)
     {
-        return await _currencyApiService.GetApiSettingsAsync();
+        return await _currencyApiService.GetApiSettingsAsync(cancellationToken);
     }
 }

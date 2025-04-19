@@ -4,11 +4,12 @@ namespace InternalApi.Models;
 /// <summary>
 /// Курс валюты с датой.
 /// </summary>
-public class CurrenciesOnDate
+public sealed class CurrenciesOnDate
 {
     /// <summary>
     /// Дата обновления данных
     /// </summary>
+    [JsonInclude]
     [JsonPropertyName("lastUpdatedAt")]
     public required DateTime Date { get; init; }
 

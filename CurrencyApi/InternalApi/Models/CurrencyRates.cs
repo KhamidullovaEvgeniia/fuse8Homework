@@ -5,7 +5,7 @@ namespace InternalApi.Models;
 /// <summary>
 /// Курс валюты.
 /// </summary>
-public class CurrencyRates
+public sealed class CurrencyRates
 {
     /// <summary>
     /// Код валюты (например, "RUB").

@@ -21,12 +21,10 @@ public interface ICurrencyAPI
     /// <returns>Список курсов валют на дату</returns>
     Task<CurrenciesOnDate> GetAllCurrenciesOnDateAsync(string baseCurrency, DateOnly date, CancellationToken cancellationToken);
 
-    // TODO
     /// <summary>
     /// Получает настройки 
     /// </summary>
-    /// <param name="baseCurrency">Базовая валюта, относительно которой необходимо получить курс</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    /// <returns>Список курсов валют на дату</returns>
-    Task<ApiSettings> GetApiSettingsAsync();
+    /// <returns>Настройки</returns>
+    Task<ApiSettings> GetApiSettingsAsync(CancellationToken cancellationToken);
 }

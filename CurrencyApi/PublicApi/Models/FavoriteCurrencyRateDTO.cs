@@ -1,6 +1,6 @@
 ﻿namespace Fuse8.BackendInternship.PublicApi.Models;
 
-public class FavoriteCurrencyRateDTO
+public sealed class FavoriteCurrencyRateDTO
 {
     public required string Name { get; init; }
 

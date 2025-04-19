@@ -2,22 +2,24 @@
 
 namespace InternalApi.Responses;
 
-public class Quotas
+public sealed class Quotas
 {
     [JsonPropertyName("month")]
     public QuotaDetails Month { get; set; } = new();
 }
 
-public class QuotaDetails
+public sealed class QuotaDetails
 {
+    [JsonInclude]
     [JsonPropertyName("total")]
     public int Total { get; set; }
 
+    [JsonInclude]
     [JsonPropertyName("used")]
     public int Used { get; set; }
 }
 
-public class QuotaResponse
+public sealed class QuotaResponse
 {
     [JsonPropertyName("quotas")]
     public Quotas Quotas { get; set; } = new();

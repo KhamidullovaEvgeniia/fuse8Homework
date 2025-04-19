@@ -33,12 +33,14 @@ namespace PublicApi.DataAccess.Migrations
 
                     b.Property<string>("BaseCurrency")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("base_currency");
 
                     b.Property<string>("Currency")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("currency");
 
                     b.Property<string>("Name")

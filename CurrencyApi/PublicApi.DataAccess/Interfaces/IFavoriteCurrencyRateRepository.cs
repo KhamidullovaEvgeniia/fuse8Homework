@@ -4,11 +4,11 @@ namespace PublicApi.DataAccess.Interfaces;
 
 public interface IFavoriteCurrencyRateRepository
 {
-    Task<IEnumerable<FavoriteCurrencyRate>> GetAllAsync();
-    Task<FavoriteCurrencyRate?> GetByNameAsync(string name);
-    Task AddAsync(FavoriteCurrencyRate rate);
-    Task UpdateByNameAsync(FavoriteCurrencyRate rate);
-    Task DeleteAsync(string name);
-    Task<bool> ExistsByNameAsync(string name);
-    Task<bool> ExistsByCurrenciesAsync(string currency, string baseCurrency);
+    Task<IEnumerable<FavoriteCurrencyRate>> GetAllAsync(CancellationToken cancellationToken);
+    Task<FavoriteCurrencyRate?> GetByNameAsync(string name, CancellationToken cancellationToken);
+    Task AddAsync(FavoriteCurrencyRate rate, CancellationToken cancellationToken);
+    Task UpdateByNameAsync(FavoriteCurrencyRate rate, CancellationToken cancellationToken);
+    Task DeleteAsync(string name, CancellationToken cancellationToken);
+    Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken);
+    Task<bool> ExistsByCurrenciesAsync(string currency, string baseCurrency, CancellationToken cancellationToken);
 }

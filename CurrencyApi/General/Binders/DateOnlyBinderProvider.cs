@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Framework.Binders;
+namespace General.Binders;
 
 /// <summary>
 /// Задает ModelBinder для специфичного парсинга значений в запросах

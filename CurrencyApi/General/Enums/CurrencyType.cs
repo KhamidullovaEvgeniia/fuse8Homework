@@ -1,4 +1,4 @@
-﻿namespace Framework.Enums;
+﻿namespace General.Enums;
 /// <summary>
 /// Код валюты
 /// </summary>

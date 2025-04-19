@@ -4,11 +4,15 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
       </Content>
       <Content Include="..\CurrencyApiService.proto">
         <Link>Protos\CurrencyApiService.proto</Link>
@@ -16,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AspNetCore.HealthChecks" Version="1.0.0" />
       <PackageReference Include="Audit.HttpClient" Version="27.5.0" />
       <PackageReference Include="Audit.NET" Version="27.5.0" />
       <PackageReference Include="Audit.NET.Serilog" Version="27.5.0" />

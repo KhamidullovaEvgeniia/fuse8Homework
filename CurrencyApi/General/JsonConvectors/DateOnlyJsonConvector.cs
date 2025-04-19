@@ -2,9 +2,9 @@
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Framework.Models;
+using General.Models;
 
-namespace Framework.JsonConvectors;
+namespace General.JsonConvectors;
 
 /// <summary>
 /// Json-конвектор для получения и записи DateOnly в Json

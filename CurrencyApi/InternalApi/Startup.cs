@@ -134,15 +134,15 @@ public class Startup
 
     private (int GrpcPort, int WebApiPort) GetPorts()
     {
-        var grpcPortFromEnv = Environment.GetEnvironmentVariable("GRPC_PORT");
-        var webApiPortFromEnv = Environment.GetEnvironmentVariable("REST_PORT");
-
-        if (!string.IsNullOrWhiteSpace(grpcPortFromEnv) && !string.IsNullOrWhiteSpace(webApiPortFromEnv))
-        {
-            var parsedGrpcPort = int.Parse(grpcPortFromEnv);
-            var parsedWebApiPort = int.Parse(webApiPortFromEnv);
-            return (parsedGrpcPort, parsedWebApiPort);
-        }
+        // var grpcPortFromEnv = Environment.GetEnvironmentVariable("GRPC_PORT");
+        // var webApiPortFromEnv = Environment.GetEnvironmentVariable("REST_PORT");
+        //
+        // if (!string.IsNullOrWhiteSpace(grpcPortFromEnv) && !string.IsNullOrWhiteSpace(webApiPortFromEnv))
+        // {
+        //     var parsedGrpcPort = int.Parse(grpcPortFromEnv);
+        //     var parsedWebApiPort = int.Parse(webApiPortFromEnv);
+        //     return (parsedGrpcPort, parsedWebApiPort);
+        // }
 
         var grpcPort = ParsePortFromEndpoint("gRPC");
         var webApiPort = ParsePortFromEndpoint("WebApi");

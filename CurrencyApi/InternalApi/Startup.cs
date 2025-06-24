@@ -1,26 +1,19 @@
-﻿using System.Collections.Immutable;
-using System.Globalization;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+﻿using System.Text.Json.Serialization;
 using Audit.Core;
 using Audit.Http;
-using Framework.Binders;
-using Framework.Filters;
-using Framework.JsonConvectors;
-using Framework.Middlewares;
+using General.Binders;
+using General.Filters;
+using General.JsonConvectors;
+using General.Middlewares;
 using InternalApi.DataAccess;
 using InternalApi.Interfaces;
 using InternalApi.Services;
 using InternalApi.Settings;
 using InterpolatedParsing;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
-using Serilog;
 
 namespace InternalApi;
 
@@ -86,8 +79,11 @@ public class Startup
 
         services.AddScoped<ICachedCurrencyAPI, CachedCurrencyService>();
         services.AddScoped<ICurrencyAPI, CurrencyApiService>();
-        
-        services.AddDataAccess(_configuration.GetConnectionString("CurrencyDb"));
+
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__CurrencyDb")
+                               ?? _configuration.GetConnectionString("CurrencyDb");
+
+        services.AddDataAccess(connectionString);
 
         services.AddGrpc();
 

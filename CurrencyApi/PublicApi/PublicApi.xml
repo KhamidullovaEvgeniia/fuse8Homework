@@ -34,7 +34,7 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetCurrencyCodeRateAsync(General.Enums.CurrencyType,System.Threading.CancellationToken)">
             <summary>
             Получает текущий курс указанной валюты.
             </summary>
@@ -54,12 +54,13 @@
             Ошибка сервера.
             </response>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(System.String,System.DateOnly,System.Threading.CancellationToken)">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.CurrencyController.GetDatedCurrencyRateAsync(General.Enums.CurrencyType,System.DateOnly,System.Threading.CancellationToken)">
             <summary>
             Получает курс указанной валюты на определенную дату.
             </summary>
             <param name="currencyCode">Код валюты (например, "RUB").</param>
             <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+            <param name="cancellationToken">Токен отмены</param>
             <returns>Курс валюты на указанную дату.</returns>
             <response code="200">
             Успешный запрос, возвращает курс валюты.
@@ -90,7 +91,8 @@
             <summary>
             Получает Избранное по его названию.
             </summary>
-            <param name="name">Избранное (например, "RubToEuro").</param>
+            <param name="name">Избранное (например, "RubToUsd").</param>
+            <param name="cancellationToken">Токен отмены</param>
             <returns>Избранное по его названию.</returns>
             <response code="200">
             Успешный запрос, возвращает Избранное по его названию.
@@ -106,6 +108,7 @@
             <summary>
             Получает список всех Избранных.
             </summary>
+            <param name="cancellationToken">Токен отмены</param>
             <returns>Список всех Избранных.</returns>
             <response code="200">
             Успешный запрос, возвращает список всех Избранных.
@@ -121,6 +124,8 @@
             <summary>
             Получает текущий курс для Избранной валюты по её названию.
             </summary>
+            <param name="name">Избранное (например, "RubToUsd").</param>
+            <param name="cancellationToken"></param>
             <returns>Текущий курс для Избранной валюты по её названию.</returns>
             <response code="200">
             Успешный запрос, возвращает текущий курс для Избранной валюты по её названию.
@@ -136,6 +141,9 @@
             <summary>
             Получает курс для Избранного по его названию на конкретную дату.
             </summary>
+            <param name="name">Избранное (например, "RubToUsd").</param>
+            <param name="date">Дата формата yyyy-MM-dd, на которую требуется курс.</param>
+            <param name="cancellationToken">Токен отмены</param>
             <returns>Курс для Избранного по его названию на конкретную дату.</returns>
             <response code="200">
             Успешный запрос, возвращает курс для Избранного по его названию на конкретную дату.
@@ -151,6 +159,8 @@
             <summary>
             Добавляет новое Избранное.
             </summary>
+            <param name="currencyRate">Избранное (например, "RubToUsd"), валюта, для которой нужно получить курс ("RUB"), базовая валюта ("USD").</param>
+            <param name="cancellationToken"></param>
             <response code="200">
             Успешный запрос, добавляет новое Избранное.
             </response>
@@ -168,6 +178,8 @@
             <summary>
             Изменяет Избранное по его названию.
             </summary>
+            <param name="currencyRate">Избранное (например, "RubToUsd"), валюта, для которой нужно получить курс ("RUB"), базовая валюта ("USD").</param>
+            <param name="cancellationToken">Токен отмены</param>
             <response code="200">
             Успешный запрос, изменяет Избранное по его названию.
             </response>
@@ -185,6 +197,8 @@
             <summary>
             Удаляет Избранное по его названию.
             </summary>
+            <param name="name">Избранное (например, "RubToUsd").</param>
+            <param name="cancellationToken">Токен отмены</param>
             <response code="200">
             Успешный запрос, удаляет Избранное по его названию.
             </response>
@@ -253,7 +267,7 @@
             </summary>
             <param name="currencyApiService">Сервис для работы с API валют.</param>
         </member>
-        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController.GetSettingsAsync">
+        <member name="M:Fuse8.BackendInternship.PublicApi.Controllers.SettingsController.GetSettingsAsync(System.Threading.CancellationToken)">
             <summary>
             Получает текущие настройки API.
             </summary>
@@ -317,12 +331,17 @@
             Значение курса валюты.
             </summary>
         </member>
+        <member name="T:Currency.DecimalValue">
+            <summary>
+            Кастомный decimal
+            </summary>
+        </member>
         <member name="F:Currency.DecimalValue.UnitsFieldNumber">
             <summary>Field number for the "units" field.</summary>
         </member>
         <member name="P:Currency.DecimalValue.Units">
             <summary>
-            Whole units part of the amount
+            Целые единицы
             </summary>
         </member>
         <member name="F:Currency.DecimalValue.NanosFieldNumber">
@@ -330,8 +349,7 @@
         </member>
         <member name="P:Currency.DecimalValue.Nanos">
             <summary>
-            Nano units of the amount (10^-9)
-            Must be same sign as units
+            Значение после запятой
             </summary>
         </member>
         <member name="T:Currency.CurrencyApiServiceReflection">
@@ -339,6 +357,31 @@
         </member>
         <member name="P:Currency.CurrencyApiServiceReflection.Descriptor">
             <summary>File descriptor for CurrencyApiService.proto</summary>
+        </member>
+        <member name="T:Currency.CurrencyCode">
+            <summary>
+            Тип валюты
+            </summary>
+        </member>
+        <member name="F:Currency.CurrencyCode.NotSet">
+            <summary>
+            Значение по умолчанию
+            </summary>
+        </member>
+        <member name="F:Currency.CurrencyCode.Usd">
+            <summary>
+            United States Dollar
+            </summary>
+        </member>
+        <member name="F:Currency.CurrencyCode.Rub">
+            <summary>
+            Russian Ruble
+            </summary>
+        </member>
+        <member name="F:Currency.CurrencyCode.Kzt">
+            <summary>
+            Kazakhstani Tenge
+            </summary>
         </member>
         <member name="T:Currency.CurrencyRateRequest">
             <summary>

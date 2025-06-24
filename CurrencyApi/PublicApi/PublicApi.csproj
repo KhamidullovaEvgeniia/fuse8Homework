@@ -5,11 +5,13 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>Fuse8.BackendInternship.PublicApi</RootNamespace>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Audit.HttpClient" Version="27.5.0" />
         <PackageReference Include="Audit.NET" Version="27.5.0" />
+        <PackageReference Include="Audit.NET.Serilog" Version="27.5.0" />
         <PackageReference Include="Google.Protobuf" Version="3.30.2" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
         <PackageReference Include="Grpc.Tools" Version="2.71.0">
@@ -32,6 +34,9 @@
     <ItemGroup>
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
       </Content>
       <Content Include="..\CurrencyApiService.proto">
         <Link>Protos\CurrencyApiService.proto</Link>

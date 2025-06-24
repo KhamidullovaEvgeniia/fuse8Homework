@@ -1,10 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Framework.Exceptions;
+using General.Exceptions;
 using InternalApi.Interfaces;
 using InternalApi.Responses;
-using Microsoft.Extensions.Options;
-using InternalApi.Settings;
 
 namespace InternalApi.Services;
 
@@ -21,9 +19,9 @@ public class CurrencyHttpApi : ICurrencyHttpApi
         _httpClient = httpClient;
     }
 
-    public async Task<QuotaResponse> GetApiQuotasAsync()
+    public async Task<QuotaResponse> GetApiQuotasAsync(CancellationToken cancellationToken)
     {
-        var result = await GetQuotasResponse();
+        var result = await GetQuotasResponseAsync(cancellationToken);
 
         return result;
     }
@@ -56,19 +54,19 @@ public class CurrencyHttpApi : ICurrencyHttpApi
             throw new ApiRequestLimitException();
     }
 
-    private async Task GetAndCheckRequestLimit()
+    private async Task GetAndCheckRequestLimitAsync(CancellationToken cancellationToken)
     {
-        var result = await GetQuotasResponse();
+        var result = await GetQuotasResponseAsync(cancellationToken);
         CheckRequestLimit(result);
     }
 
-    private async Task<QuotaResponse> GetQuotasResponse()
+    private async Task<QuotaResponse> GetQuotasResponseAsync(CancellationToken cancellationToken)
     {
         var url = "status";
-        var response = await _httpClient.GetAsync(url);
+        var response = await _httpClient.GetAsync(url, cancellationToken);
 
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
         var result = JsonSerializer.Deserialize<QuotaResponse>(content);
         if (result is null)
@@ -79,13 +77,13 @@ public class CurrencyHttpApi : ICurrencyHttpApi
 
     private async Task<CurrencyResponse> FetchCurrencyDataAsync(string url, CancellationToken cancellationToken)
     {
-        await GetAndCheckRequestLimit();
+        await GetAndCheckRequestLimitAsync(cancellationToken);
 
-        var response = await _httpClient.GetAsync(url);
+        var response = await _httpClient.GetAsync(url, cancellationToken);
 
         if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
         {
-            var validationError = await response.Content.ReadFromJsonAsync<ErrorApiResponse>();
+            var validationError = await response.Content.ReadFromJsonAsync<ErrorApiResponse>(cancellationToken);
             if (validationError is { Message: "Validation error", ErrorsByRequestFieldName: var errors })
             {
                 // При передаче неизвестной валюты, api возвращает ErrorApiResponse с конкретным сообщением.
@@ -100,7 +98,7 @@ public class CurrencyHttpApi : ICurrencyHttpApi
 
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var result = JsonSerializer.Deserialize<CurrencyResponse>(content);
 
         if (result is null)
